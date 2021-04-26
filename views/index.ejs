@@ -259,6 +259,7 @@
                                         saveSkills();
                                         $("#paginator").hide();
                                         $("#learningResources").hide();
+                                        $("#learningResources").empty();
                                     });
                                     $("#del" + skillID).click(function () {
                                         var thisID = String($(this).attr('id')).substring('del'.length);
@@ -284,6 +285,7 @@
                                         $("#tr" + thisID).fadeOut(150, function() { $(this).remove(); });
                                         $("#paginator").hide();
                                         $("#learningResources").hide();
+                                        $("#learningResources").empty();
                                     });
                                     skillID++;
                                     skillsListBackup.push(predictedSkill);
@@ -332,6 +334,7 @@
                                     $("#userInfo").hide();
                                     $("#plzWait").show();
                                     $("#newSkillsContainer").empty();
+                                    $("#learningResources").empty();
                                     $("#learningResources").hide();
                                     $("#recommendation").hide();
                                     $("#pagBot").hide();
