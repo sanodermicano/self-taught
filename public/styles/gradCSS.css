@@ -1,0 +1,239 @@
+body
+{
+	background-color:rgb(255,248,245);
+	font-family: Arial, Helvetica, sans-serif;
+}
+* {box-sizing: border-box;}
+td {
+	padding: 5px;
+}
+/* the center class is cursed */
+.center{
+  position: absolute;
+  width: 600px;
+  height: 400px;
+  z-index: 15;
+  top: 60%;
+  left: 50%;
+  margin: -200px 0 0 -300px;
+}
+footer {
+   position: sticky;
+   z-index: 20;
+   left: 0;
+   bottom: 0;
+   top: 100%;
+   width: 100%;
+   text-align: center;
+   font-size:12px;
+}
+.square-border{
+	border-style:solid;
+	border-color:#FF7F50;
+	padding:10px 15px 10px 15px;
+}
+.topnav
+{
+	overflow: hidden;
+   
+}
+.topnav  img{
+	position:absolute;
+	top:2%;
+	right:1%;
+	width:60px;
+	height:60px;
+}
+
+#img1
+{
+	top:11%;
+	right:1%;
+	width: 50px;
+	height: 50px;
+}
+#links-section
+{
+	top:15%;
+	right:1%; 
+	display: none;
+}
+.heading-text
+{
+	font-weight:bold;
+	font-size:3.0em;
+	font-family:georgia,san-serif;
+	letter-spacing:1px;
+	text-align:center;
+}
+label {
+    display: block;
+    font: 1rem 'Fira Sans', sans-serif;
+}
+
+input,
+label {
+    margin: .4rem 0;
+}
+#skills-tl
+{
+	position:absolute;
+	top:1%;
+	left:1%;
+	border-style:solid;
+	height:100px;
+	width:400px;
+}
+.skills-tl
+{
+	position:absolute;
+	top:1%;
+	left:1%;
+	border-style:solid;
+	height:200px;
+	width:400px;
+}
+#skillsbtn
+{
+	background-image:url('img/skills.png');
+	cursor:pointer;
+	border:none;
+	width:60px;
+	height:60px;
+}
+#skills-section
+{
+	display:none;
+}
+#options-img
+{
+	position:absolute;
+	top:3.2%;
+	left:1%;
+	width:60px;
+	height:60px;
+	
+}
+#skill-search
+{
+	position:relative;
+	top:2%;
+	left:50%;
+	border-style:solid;
+	border-color:red;
+	border-width:1px;
+}
+#searchskillbtn
+{
+	height:10px;
+	width:20px;
+}
+
+/* button {
+	background-color: #4CAF50;
+	color: white;
+	padding: 14px 20px;
+	margin: 8px 0;
+	border: none;
+	cursor: pointer;
+	width: 100%;
+	opacity: 0.9;
+  } */
+
+  button {
+	background-color: #FF7F50;
+	color: white;
+	padding: 5px 7px;
+	margin: 3px 0;
+	cursor: pointer;
+	opacity: 0.9;
+	font-size: medium;
+  } 
+  
+  button:hover {
+	opacity:1;
+  }
+  
+  /* Float cancel and delete buttons and add an equal width */
+  .cancelbtn, .deletebtn {
+	float: left;
+	width: 50%;
+  }
+  
+  /* Add a color to the cancel button */
+  .cancelbtn {
+	background-color: #ccc;
+	color: black;
+  }
+  
+  /* Add a color to the delete button */
+  .deletebtn {
+	background-color: #f44336;
+  }
+  
+  /* Add padding and center-align text to the container */
+  .container {
+	padding: 16px;
+	text-align: center;
+  }
+  
+  /* The Modal (background) */
+  .hideable {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: #474e5d;
+	padding-top: 50px;
+  }
+  
+  /* Modal Content/Box */
+  .hideable-content {
+	background-color: #fefefe;
+	margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+	border: 1px solid #888;
+	width: 80%; /* Could be more or less, depending on screen size */
+  }
+  
+  /* Style the horizontal ruler */
+  hr {
+	border: 1px solid #f1f1f1;
+	margin-bottom: 25px;
+  }
+   
+  /* The Modal Close Button (x) */
+  .close {
+	position: absolute;
+	right: 35px;
+	top: 15px;
+	font-size: 40px;
+	font-weight: bold;
+	color: #f1f1f1;
+  }
+  
+  .close:hover,
+  .close:focus {
+	color: #f44336;
+	cursor: pointer;
+  }
+  
+  /* Clear floats */
+  .clearfix::after {
+	content: "";
+	clear: both;
+	display: table;
+  }
+  
+  /* Change styles for cancel button and delete button on extra small screens */
+  @media screen and (max-width: 300px) {
+	.cancelbtn, .deletebtn {
+	   width: 100%;
+	}
+  }
+
+
+  /* hassan */

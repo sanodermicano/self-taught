@@ -1,0 +1,44 @@
+<html>
+
+<head lang="en">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Self Taught</title>
+	<link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
+
+	<link href="styles/signin.css" rel="stylesheet">
+	<link href="./styles/gradCSS.css" rel="stylesheet">
+</head>
+
+<body class="text-center">
+	<main class="form-signin">
+		<a href="/">Home</a>
+		<form action="/acc/register" method="POST">
+			<h1 class="h3 mb-3 fw-normal">Self-Taught Register</h1>
+			<div>
+				<% var message; %>
+					<%if (message) { %>
+						<h3>
+							<%= message %>
+						</h3>
+					<% } %>
+			</div>
+			<label for="inputName" class="visually-hidden">Name</label>
+			<input type="text" id="inputName" class="form-control" placeholder="Name" name="name" required autofocus>
+			<label for="inputEmail" class="visually-hidden">Email Address</label>
+			<input type="email" id="inputEmail" class="form-control" placeholder="Email Address" name="email" required>
+			<label for="inputPassword" class="visually-hidden">Password</label>
+			<input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+			<label for="confirmPassword" class="visually-hidden">Confirm Password</label>
+			<input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" name="confirmPassword" required>
+			<br>
+			<button class="w-100 btn btn-lg btn-primary" type="submit">Register</button>
+		</form>
+	</main>
+
+</body>
+
+</html>

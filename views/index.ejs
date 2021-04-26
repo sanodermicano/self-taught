@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <!-- search skills -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+        integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+        integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
+    <!-- search skills -->
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' http://xxxx 'unsafe-inline' 'unsafe-eval';">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- rating -->
+    <link rel="stylesheet" href="./styles/jstarbox.css" type="text/css" media="screen" charset="utf-8">
+    <script src="./scripts/jstarbox.js"></script>
+    <!-- rating -->
+    <link rel="stylesheet" href="./styles/starter-template.css">
+    <link rel="stylesheet" href="./styles/gradCSS.css">
+    <link rel="icon" href="./img/self-taught.png">
+
+    <script src="./scripts/nav.js"></script>
+    <title>Self-Taught</title>
+    <style>
+        .center-top {
+            position: absolute;
+            width: 600px;
+            height: 400px;
+            z-index: 15;
+            top: 50%;
+            left: 50%;
+            margin: -200px 0 0 -300px;
+        }
+
+        .center {
+            position: absolute;
+            width: 600px;
+            height: 400px;
+            z-index: 15;
+            top: 60%;
+            left: 60%;
+            margin: -200px 0 0 -300px;
+        }
+
+        .center-bottom {
+            position: absolute;
+            z-index: 15;
+            top: 67%;
+            left: 78%;
+            margin: -200px 0 0 -300px;
+        }
+    </style>
+</head>
+
+<body>
+    <% var user; %>
+    <%if (user) { %>
+    <div class="topnav" id="topNav">
+        <!--Is faulty, box is wrong place-->
+        <div style="width:30%;right:1%;">
+            <img id="img1" title="Learning Resources History" class="collapsible" style="top: 3%;right:1%;position: absolute;" src="./img/skills.png" />
+            <div class="square-border"
+                style="position:absolute;right:1%;top: 14%;width: 25%;overflow-y: auto; max-height:200px;"
+                id="links-section">
+                <!-- <h3>Learning Resources</h3> -->
+                <!-- insert injected links here, example: -->
+                <h3>Learning Resources:</h3>
+                <!-- △ ▽  -->
+                <table>
+                    <thead>
+                        <tr>
+                            <td>
+                                <a href="#" id="dateSort" style="text-decoration: none;">Date <span>▽</span></a>
+                            </td>
+                            <td>
+                                <a href="#" id="ratingSort" style="text-decoration: none;">Rating <span>△</span></a>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody id="linksPocket">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        // figure out this sorting issue, do it in an object array
+        // do the pagination in the front-end
+        //arrow up means ascending, arrow down means descending
+        //when adding a new link into the links pocket, it won't be in the correct order
+        //https://stackoverflow.com/questions/1069666/sorting-object-property-by-values
+        $("#dateSort").click(function () {
+            event.preventDefault();
+            $("#dateSort").children().show();
+            if($(this).children()[0].innerText=="△"){
+                $(this).children()[0].innerText = "▽";
+                lrList.sort(function(a, b){
+                    return a.date - b.date;
+                });
+            }else{
+                $(this).children()[0].innerText = "△";
+                lrList.sort(function(a, b){
+                    return b.date - a.date;
+                });
+            }
+            $("#ratingSort").children().hide();
+            reloadLinks();
+        });
+        $("#ratingSort").click(function () {
+            event.preventDefault();
+            $("#ratingSort").children().show();
+            if($(this).children()[0].innerText=="△"){
+                $(this).children()[0].innerText = "▽";
+                lrList.sort(function(a, b){
+                    return a.rating - b.rating;
+                });
+            }else{
+                $(this).children()[0].innerText = "△";
+                lrList.sort(function(a, b){
+                    return b.rating - a.rating;
+                });
+            }
+            $("#dateSort").children().hide();
+            reloadLinks();
+        });
+    </script>
+    <% } %>
+    <!-- source: loading source http://www.ajaxload.info/ -->
+    <div id="loading" class="heading-text hideable-content container" style="display: none;width: 100%;height: 100%;">
+        <h2 style="font-family:helvatica,arial;text-align:center;color:#FF7F50;">Please Wait...</h2>
+        <br>
+        <img src="./img/loading.gif" alt="Loading..." width="30%" style="max-width: 100%;max-height: 100%;">
+    </div>
+    <main id="allContent">
+        <!--Skills Section-->
+        <div id="nextSkill" class="hideable" style="position: absolute;">
+            <span onclick=showAll() class="close" title="Close Modal">×</span>
+            <div class="container hideable-content">
+                <h1>Next Skill!</h1>
+                <p>Choose the Next Skill you want to Learn.</p>
+
+                <div id="newSkillsContainer" class="clearfix">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4" style="width:30%">
+            <img id="options-img" title="Skills List" class="collapsible" src="./img/myskillsimg2.png" />
+            <div class="skillsContent square-border" id="skils-section" style="display:none;">
+                <!-- overflow: auto; height: 30%; -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <form class="d-flex">
+
+                            <!-- search skills & add skills -->
+                            <% var skills; %>
+                            <table>
+                                <tr>
+                                    <td style="width:90%">
+                                        <select id="select-skill">
+                                        </select>
+                                    </td>
+                                    <td style="width:10%">
+                                        <img src="img/help.png" width="16" height="16" title="Can't find the Skill you're looking for? Insert learning resources' links related to that skill and wait a day, the Skill you're looking for will be automatically added to the Skills List." alt="Help"/>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    var skillSearch = $('#select-skill');
+                                    skillSearch.append('<option value="">Select a Skill...</option>');
+
+                                    var data = "<%- skills; %>".split(",");
+                                    $.each(data, function (key, entry) {
+                                        skillSearch.append($('<option></option>').attr(
+                                            'value', entry).text(entry));
+                                    });
+                                    loadLinks();
+                                    loadSkills();
+                                    $("#ratingSort").children().hide();
+                                    $("#select-skill").selectize({});
+                                });
+                                $("#select-skill").change(addSkills);
+
+                                var isLoading = true;
+                                var predictedSkill = "";
+                                var skillRange = 1;
+                                var skillID = 0;
+                                var skillsList = [];
+                                var skillsListBackup = [];
+                                var positionsList = [];
+                                var rangesList = [];
+
+                                function addSkills() {
+                                    if (predictedSkill == "" && !isLoading) {
+                                        predictedSkill = $("#select-skill").val();
+                                    }
+                                    if (skillsListBackup.includes(predictedSkill) || predictedSkill == "") {
+                                        if (!isLoading) {
+                                            predictedSkill = "";
+                                            return;
+                                        }
+                                    }
+                                    $("#paginator").hide();
+                                    $("#learningResources").hide();
+                                    $("#skills").append('<tr id="tr' + skillID + '"><th id="th' + skillID +
+                                        '" class="skills">' +
+                                        predictedSkill +
+                                        '</th><td class="level"><input type="range" min="1" max="5" value="' +
+                                        skillRange + '" ' +
+                                        'id="range' + skillID + '"></td><td>Level: <span id="level' +
+                                        skillID + '">' + skillRange + '</span></td>' +
+                                        '<td><img width="32" height="32" src="img/delete.png" id="del' +
+                                        skillID + '"</td></tr>');
+                                    $("#tr" + skillID).hide().fadeIn();
+                                    skillRange = 1;
+                                    $("#range" + skillID).change(function () {
+                                        var thisID = String($(this).attr('id')).substring('level'
+                                            .length);
+                                        var level = $(this).val();
+                                        var skillName = $("#th" + thisID).html()
+                                        $("#level" + thisID).html(level);
+                                        if (level == 5) {
+                                            $.ajax({
+                                                url: 'http://localhost:8000/predict',
+                                                data: skillName,
+                                                type: 'POST',
+                                                jsonpCallback: 'callback',
+                                                success: function (data) {
+                                                    var newSkills = JSON.stringify(data
+                                                        .message);
+                                                    newSkills = JSON.stringify(newSkills
+                                                            .substring(3, newSkills.length -
+                                                                3)).replace(/['"]+/g, '')
+                                                        .replace(/\\|\//g, '');
+                                                    foundNewSkills(newSkills);
+                                                },
+                                                error: function (xhr, status, error) {
+                                                    console.log('Error predict: ' + error.message);
+                                                },
+                                            });
+                                        }
+                                        var position = Array.prototype.slice.call(document.getElementById(
+                                            'skills').children).indexOf(document.getElementById('tr' +
+                                            thisID)); //do this using vanilla js
+                                        console.log("position: " + position);
+                                        rangesList.splice(position, 1, {
+                                            value: level
+                                        }.value);
+                                        console.log("rangesList[position] = " + rangesList[position]);
+                                        console.log("rangesList = " + rangesList);
+                                        editSQLSkill(skillName, level);
+                                        saveSkills();
+                                        $("#paginator").hide();
+                                        $("#learningResources").hide();
+                                    });
+                                    $("#del" + skillID).click(function () {
+                                        var thisID = String($(this).attr('id')).substring('del'.length);
+
+                                        var removedItem = $("#th" + thisID).text();
+                                        const index = skillsListBackup.indexOf(removedItem);
+                                        console.log("attempting to delete: " + thisID);
+                                        if (index > -1) {
+                                            console.log("managed to delete");
+                                            //here add sql delete if user is logged in
+                                            delSQLSkill(removedItem);
+                                            //
+                                            skillsList.splice(index, 1);
+                                            skillsListBackup.splice(index, 1);
+                                            rangesList.splice(index, 1);
+                                            positionsList.splice(index, 1);
+                                            saveSkills();
+                                        } else {
+                                            console.log("could not delete");
+                                        }
+                                        console.log(skillsList);
+
+                                        $("#tr" + thisID).fadeOut(150, function() { $(this).remove(); });
+                                        $("#paginator").hide();
+                                        $("#learningResources").hide();
+                                    });
+                                    skillID++;
+                                    skillsListBackup.push(predictedSkill);
+                                    if (!isLoading) {
+                                        skillsList.push(
+                                            predictedSkill); //make it into a dictionary {"skill":levelnum}
+                                        rangesList.push(2);
+                                        positionsList.push(skillsList.length - 1);
+                                    }
+                                    //here add sql insert if user is logged in
+                                    if (!isLoading) {
+                                        addNewSQLSkill();
+                                    }
+                                    saveSkills();
+                                    console.log(skillsList);
+                                    console.log(rangesList);
+                                    console.log(positionsList);
+                                    predictedSkill = "";
+                                }
+                                // Get the hideable
+                                var hideable = document.getElementById('nextSkill');
+                                // When the user clicks anywhere outside of the hideable, close it
+                                function showAll() {
+                                    hideable.style.display = "none"; 
+                                    $("#allContent").show();
+                                    $("#topNav").show();
+                                    $("#userInfo").show();
+                                    $("#plzWait").hide();
+                                    $("#loading").hide();
+                                    $("#newSkillsContainer").empty();
+                                    $("#learningResources").show();
+                                    $("#pagBot").show();
+                                    $("#recommendation").show();
+                                    $("#skils-section").show();
+                                    $("#siteName").show();
+                                    $("#injectLink").show();
+                                    $("#wdiln").show();
+                                    $("#url").show();
+                                    $("#randomBlock").show();
+                                    $("#educational").show();
+                                }
+                                function hideAll() {
+                                    hideable.style.display = "none"; 
+                                    $("#allContent").hide();
+                                    $("#topNav").hide();
+                                    $("#userInfo").hide();
+                                    $("#plzWait").show();
+                                    $("#newSkillsContainer").empty();
+                                    $("#learningResources").hide();
+                                    $("#recommendation").hide();
+                                    $("#pagBot").hide();
+                                    $("#skils-section").hide();
+                                    $("#siteName").hide();
+                                    $("#injectLink").hide();
+                                    $("#wdiln").hide();
+                                    $("#url").hide();
+                                    $("#randomBlock").hide();
+                                    $("#educational").hide();
+                                    $("#loading").css('display', 'block')
+                                    $("#loading").show();
+                                }
+                                window.onclick = function (event) {
+                                    if (event.target == hideable) {
+                                        showAll();
+                                    }
+                                }
+                            </script>
+                            <%if (user) { %>
+                            <script>
+                                function loadSkills() {
+                                    var loadedSkills = "<%= userSkills; %>"; //for json
+                                    if (!loadedSkills) {
+                                        console.log("NULL");
+                                        isLoading = false;
+                                        return;
+                                    }
+                                    loadedSkills = JSON.parse(loadedSkills.replace(/&#34;/g, "\""));
+                                    var skillOptions = document.getElementById("options-img");
+                                    var so = skillOptions.nextElementSibling;
+                                    so.style.display = "block";
+                                    if (loadedSkills.length > 0) {
+                                        console.log("There exists storage");
+                                    } else {
+                                        isLoading = false;
+                                        return;
+                                    }
+                                    for (var i = 0; i < loadedSkills.length; i++) {
+                                        const element = loadedSkills[i];
+                                        predictedSkill = element.name;
+                                        skillRange = element.level;
+                                        console.log("predictedSkill = " + predictedSkill);
+                                        addSkills();
+                                    }
+                                    isLoading = false;
+                                }
+
+                                function editSQLSkill(skillName, newRange) {
+                                    var editSkill = {
+                                        name: skillName,
+                                        level: newRange,
+                                        userid: "<%- user.id; %>",
+                                        email: "<%- user.email; %>"
+                                    };
+                                    $.ajax({
+                                        url: 'http://localhost:8000/editSkill',
+                                        data: editSkill,
+                                        type: 'POST',
+                                        jsonpCallback: 'callback',
+                                        success: function (data) {
+                                            console.log("Edited Skill");
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.log('Error editSQLSkill: ' + error.message);
+                                        },
+                                    });
+                                }
+
+                                function delSQLSkill(removedItem) {
+                                    var delSkill = {
+                                        name: removedItem,
+                                        userid: "<%- user.id; %>",
+                                        email: "<%- user.email; %>"
+                                    };
+                                    $.ajax({
+                                        url: 'http://localhost:8000/delSkill',
+                                        data: delSkill,
+                                        type: 'POST',
+                                        jsonpCallback: 'callback',
+                                        success: function (data) {
+                                            console.log("Deleted Skill");
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.log('Error delSQLSkill: ' + error.message);
+                                        },
+                                    });
+                                }
+
+                                function addNewSQLSkill() {
+                                    var isLoggedIn = "<%- user; %>";
+                                    console.log("isLoggedIn = " + isLoggedIn);
+                                    if (isLoggedIn != null) {
+                                        var addSkill = {
+                                            name: predictedSkill,
+                                            level: 1,
+                                            position: positionsList[positionsList.length - 1],
+                                            userid: "<%- user.id; %>",
+                                            email: "<%- user.email; %>"
+                                        };
+                                        $.ajax({
+                                            url: 'http://localhost:8000/skills',
+                                            data: addSkill,
+                                            type: 'POST',
+                                            jsonpCallback: 'callback',
+                                            success: function (data) {
+                                                console.log("Added Skill");
+                                            },
+                                            error: function (xhr, status, error) {
+                                                console.log('Error skills: ' + error.message);
+                                            },
+                                        });
+                                    }
+                                }
+
+                                function saveSkills() {
+                                    console.log("nah dude saveSkills");
+                                }
+
+                                // Links Pocket_____________________________
+                                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                                ];
+                                var linksPocketID = 0;
+                                var lrList = [];
+
+                                function addRating(elem = null, isReloading = false, isInject = false) {
+                                    if (!('rating' in elem)) {
+                                        elem = null;
+                                    }
+                                    if(isInject){
+                                        for(var i = 0;i<lrList.length;i++){
+                                            if(lrList[i].id == elem.lrid) return;
+                                        }
+                                    }
+                                    console.log("Didn't pass through the if statement");
+                                    // <!-- updates date if the user visisted the link again -->
+                                    // <!-- stars https://github.com/sabberworm/jStarbox -->
+                                    var d, day, month, year, lrLink, lrTitle, lrDesc, lrId, rating;
+                                    if (elem != null) {
+                                        console.log("elem is not null");
+                                        // d = new Date(String(elem.date).replace(/-/g,"/"));
+                                        d = new Date(elem.date);
+                                        day = d.getDate();
+                                        month = monthNames[d.getMonth()];
+                                        year = d.getFullYear();
+                                        lrLink = elem.link;
+                                        lrTitle = elem.title;
+                                        lrDesc = elem.description;
+                                        lrId = elem.lrid;
+                                        rating = elem.rating;
+                                    } else {
+                                        console.log("elem is null");
+                                        d = new Date();
+                                        day = d.getDate();
+                                        month = monthNames[d.getMonth()];
+                                        year = d.getFullYear();
+                                        lrLink = $(this).attr('href');
+                                        lrTitle = $(this).text();
+                                        lrDesc = $(this).parent().parent().children()[1].innerText;
+                                        lrId = $(this).parent().parent().children()[1].getAttribute("id").substring(
+                                            'lrId'.length);
+                                        rating = 2.5;
+                                    }
+                                    console.log("\nlrLink = " + lrLink + "\nlrTitle = " + lrTitle + "\nlrDesc = " +
+                                        lrDesc + "\nlrId = " + lrId + "\nday = " + day);
+
+                                    $("#linksPocket").prepend(
+                                        '<tr><td style="width: 60%;">' + month + ' ' + day +
+                                        ', ' + year +
+                                        ':<a id="lp' + linksPocketID + '" href="' + lrLink + '"' + ' title="' +
+                                        lrDesc +
+                                        '" target="_blank">' + lrTitle + '</a></td>' +
+                                        '<td><div class="block"><div id="star' + linksPocketID +
+                                        '" class="starbox ghosting autoupdate"><div class="positioner rated">' +
+                                        '<div class="stars"><div class="ghost" style="width: 165px;' +
+                                        ' display: none;"></div><div class="colorbar" style="width: 165px;"></div><div class="star_holder"><div ' +
+                                        'class="star star-0"></div><div class="star star-1"></div><div class="star star-2"></div><div class="star star-3">' +
+                                        '</div><div class="star star-4"></div></div></div></div></div></div></td></tr>'
+                                    );
+                                    $("#star"+linksPocketID).hide().fadeIn();
+                                    const lr = {
+                                        id: lrId,
+                                        title: lrTitle,
+                                        desc: lrDesc,
+                                        link: lrLink,
+                                        rating: rating,
+                                        date: d
+                                    };
+                                    if(!isReloading){
+                                        lrList.push(lr);
+                                    }
+                                    // (C)RUD SQL
+                                    if (elem == null || isInject) {
+                                        // https://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetime/5133807
+                                        addSQLLink(d.toISOString().slice(0, 19).replace('T', ' '));
+                                    }
+                                    //rating
+                                    var starbox = $("#star" + linksPocketID);
+                                    starbox.starbox({
+                                        // average: starbox.attr('data-start-value'),
+                                        average: rating / 5,
+                                        changeable: starbox.hasClass('unchangeable') ? false : starbox.hasClass(
+                                            'clickonce') ? 'once' : true,
+                                        ghosting: starbox.hasClass('ghosting'),
+                                        autoUpdateAverage: starbox.hasClass('autoupdate'),
+                                        buttons: starbox.hasClass('smooth') ? false : starbox.attr(
+                                            'data-button-count') || 10,
+                                        stars: starbox.attr('data-star-count') || 5
+                                    }).bind('starbox-value-changed', function (event, value) {
+                                        const starID = String($(this).attr('id')).substring('star'.length);
+                                        editRatingSQLLink(value*5, lrList[starID].id);
+                                    });
+                                    $("#lp" + linksPocketID).click(function () {
+                                        const lpID = String($(this).attr('id')).substring('lp'.length);
+                                        updateDateSQLLink(new Date().toISOString().slice(0, 19).replace('T', ' '), lrList[lpID].id);
+                                    });
+                                    linksPocketID++;
+                                }
+
+                                function editRatingSQLLink(rating, lrid) {
+                                    var editRating = {
+                                        lrid: lrid,
+                                        rating: rating,
+                                        userid: "<%- user.id; %>",
+                                        email: "<%- user.email; %>"
+                                    };
+                                    $.ajax({
+                                        url: 'http://localhost:8000/rlinkspocket',
+                                        data: editRating,
+                                        type: 'POST',
+                                        jsonpCallback: 'callback',
+                                        success: function (data) {
+                                            console.log("Edited Rating");
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.log('Error editRatingSQLLink: ' + error.message);
+                                        },
+                                    });
+                                }
+
+                                function updateDateSQLLink(date, lrid) {
+                                    var updateDate = {
+                                        lrid: lrid,
+                                        date: date,
+                                        userid: "<%- user.id; %>",
+                                        email: "<%- user.email; %>"
+                                    };
+                                    $.ajax({
+                                        url: 'http://localhost:8000/ulinkspocket',
+                                        data: updateDate,
+                                        type: 'POST',
+                                        jsonpCallback: 'callback',
+                                        success: function (data) {
+                                            console.log("Edited Rating");
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.log('Error updateDateSQLLink: ' + error.message);
+                                        },
+                                    });
+                                }
+
+                                function addSQLLink(lrDate) {
+                                    console.log("lrDate = " + lrDate);
+                                    var isLoggedIn = "<%- user; %>";
+                                    console.log("isLoggedIn = " + isLoggedIn);
+                                    if (isLoggedIn != null) {
+                                        var newLink = {
+                                            title: lrList[lrList.length - 1].title,
+                                            desc: lrList[lrList.length - 1].desc,
+                                            link: lrList[lrList.length - 1].link,
+                                            date: lrDate,
+                                            lrid: lrList[lrList.length - 1].id,
+                                            userid: "<%- user.id; %>",
+                                            email: "<%- user.email; %>"
+                                        };
+                                        $.ajax({
+                                            url: 'http://localhost:8000/clinkspocket',
+                                            data: newLink,
+                                            type: 'POST',
+                                            jsonpCallback: 'callback',
+                                            success: function (data) {
+                                                console.log("Added Link");
+                                            },
+                                            error: function (xhr, status, error) {
+                                                console.log('Error Link: ' + error.message);
+                                            },
+                                        });
+                                    }
+                                }
+
+                                function loadLinks() {
+                                    var loadedLinks = "<%= userLinks; %>"; //for json
+                                    if (!loadedLinks) {
+                                        console.log("NULL");
+                                        return;
+                                    }
+                                    loadedLinks = JSON.parse(loadedLinks.replace(/&#34;/g, "\""));
+                                    if (loadedLinks.length > 0) {
+                                        var skillOptions = document.getElementById("img1");
+                                        var so = skillOptions.nextElementSibling;
+                                        so.style.display = "block";
+                                    } else {
+                                        return;
+                                    }
+                                    for (var i = 0; i < loadedLinks.length; i++) {
+                                        const element = loadedLinks[i];
+                                        console.log("linksPocket_________________________");
+                                        addRating(element, false, false);
+                                    }
+                                }
+                                function reloadLinks() {
+                                    if (!lrList) {
+                                        console.log("NULL");
+                                        return;
+                                    }
+                                    $("#linksPocket").empty();
+                                    for (var i = 0; i < lrList.length; i++) {
+                                        const element = lrList[i];
+                                        addRating(element, true, false);
+                                    }
+                                }
+                            </script>
+                            <% } %>
+                            <% if (!user){ %>
+                            <script>
+                                function loadSkills() {
+                                    var skillLen = 0;
+                                    if (typeof (Storage) !== "undefined") {
+                                        if (localStorage.getItem("skillsList") == null) {
+                                            isLoading = false;
+                                            return;
+                                        }
+                                        skillsList = JSON.parse(localStorage.getItem("skillsList"));
+                                        positionsList = JSON.parse(localStorage.getItem("positionsList"));
+                                        rangesList = JSON.parse(localStorage.getItem("rangesList"));
+                                        console.log("skillsList = " + skillsList);
+                                        console.log("positionsList = " + positionsList);
+                                        console.log("rangesList = " + rangesList);
+                                        skillLen = skillsList.length
+                                        var skillOptions = document.getElementById("options-img");
+                                        var so = skillOptions.nextElementSibling;
+                                        so.style.display = "block";
+                                        if (skillLen > 0) {
+                                            console.log("There exists storage");
+                                        }
+                                    } else {
+                                        console.log("No support for Web Storage");
+                                    }
+                                    for (var i = 0; i < skillLen; i++) {
+                                        predictedSkill = skillsList[i];
+                                        skillRange = rangesList[i];
+                                        console.log("predictedSkill = " + predictedSkill);
+                                        addSkills();
+                                    }
+                                    isLoading = false;
+                                }
+
+                                function loadLinks(){
+                                    console.log("oops");
+                                }
+
+                                function saveSkills() {
+                                    //use to empty local session variables
+                                    // skillsList.splice(0, skillsList.length);
+                                    // positionsList.splice(0, positionsList.length);
+                                    // rangesList.splice(0, rangesList.length);
+                                    if (typeof (Storage) !== "undefined") {
+                                        localStorage.setItem('skillsList', JSON.stringify(skillsListBackup));
+                                        localStorage.setItem('positionsList', JSON.stringify(positionsList));
+                                        localStorage.setItem('rangesList', JSON.stringify(rangesList));
+                                    } else {
+                                        console.log("No support for Web Storage");
+                                    }
+                                }
+
+                                function addNewSQLSkill() {
+                                    console.log("nah dude addNewSQLSkill");
+                                }
+
+                                function editSQLSkill(skillName, newRange) {
+                                    console.log("nah dude editSQLSkill");
+                                }
+
+                                function delSQLSkill(removedItem) {
+                                    console.log("nah dude delSQLSkill");
+                                }
+                                function addRating(elem = null, isReloading = false, isInject = false) {
+                                    console.log("nah dude addRating");
+                                }
+                            </script>
+                            <% } %>
+                            <!-- search skills & add skills -->
+                        </form>
+                    </div>
+                </div>
+                <table style="align-content: space-around;">
+                    <div id="skills" style="overflow-y: auto; max-height:200px;">
+
+                    </div>
+                </table>
+            </div>
+        </div>
+
+        <img src="./img/self-taught.png" class="topnav" width="96px" height="96px" style="position:absolute;top: 1%;left:47%;right:50%"/>
+        <span class="square-border heading-text"
+            style="position: absolute;font-family:helvatica,arial;background-color:white;text-align:center;top: 17%;left:37%;right:37%;color:#FF7F50;">Self-Taught</span>
+        
+
+        <p id="siteName" class="center-top" style="text-align: center;">
+            <div id="randomBlock" class="center">
+                <form id="linkSubmit">
+                    <p id="plzWait" class="center-bottom">Please wait...</p>
+                    <input type="url" name="url" id="url" placeholder="Insert/Paste a link that taught you something"
+                        pattern="https://.*" size="40" required>
+                    <button type="submit" form="linkSubmit" id="injectLink">Insert Link</button>
+                </form>
+            </div>
+            <br/>
+            <input id="wdiln" type="submit" value="What Do I Learn Next?" class="center-bottom" role="button">
+        </p>
+        <div>
+
+            <p>
+            </p>
+        </div>
+    </main>
+    <% if (!user){ %>
+        <div class="topnav">
+            <img onclick=clickedLogin() src="img/icon-new.png" />
+        </div>
+    <% } %>
+
+    <!-- <div id="recommendation" style="display:none;"> -->
+    <div id="recommendation">
+        <!-- Don't know what this is
+            <button onclick=clickedLink()>Filter</button>
+        -->
+        <br><br><br><br>
+        <div id="pagTop">
+            <div id="paginator"></div>
+        </div>
+    </div>
+
+    <table id="learningResources" style="width:50%;padding-left: 5%;z-index: 30;position: relative;">
+    </table>
+
+    <div id="pagBot">
+        <br><br><br><br>
+    </div>
+    </div>
+    <script>
+        //concluded Skill
+        $("#plzWait").hide();
+        $("#loading").hide();
+        $("#linkSubmit").submit(function () {
+            event.preventDefault();
+            const injectedLink = $("#url").val();
+            // if(injectedLink.length < 10) return;
+            $("#plzWait").text("Please wait...");
+            $("#plzWait").show();
+            hideAll();
+            $.ajax({
+                url: 'http://localhost:8000/link',
+                data: injectedLink,
+                type: 'POST',
+                jsonpCallback: 'callback',
+                success: function (data) {
+                    var newSkills = JSON.stringify(data.message);
+                    console.log(newSkills);
+                    newSkills = JSON.stringify(newSkills.substring(3, newSkills.length - 3))
+                        .replace(/['"]+/g, '').replace(/\\|\//g, '');
+                    console.log(newSkills);
+                    $("#url").val("")
+                    showAll();
+                    foundNewSkills(newSkills);
+                    var lrObj = JSON.parse(data.lrObj);
+                    console.log(lrObj);
+                    //third should be true
+                    addRating(lrObj, false, true);
+                },
+                error: function (xhr, status, error) {
+                    console.log(status);
+                    console.log(error);
+                    showAll();
+                    $("#plzWait").text("Error: Please retry or insert another link").delay(5000).fadeOut(150);
+                    $("#plzWait").show();
+                    // window.location.href = "/login";
+                    console.log('Error login: ' + error.message);
+                },
+            });
+        });
+        
+        //predict
+        function foundNewSkills(newSkills) {
+
+            var newSkillsID = 0;
+            console.log("newSkills: " + newSkills);
+            if (newSkills == "") {
+                return;
+            }
+            document.getElementById('nextSkill').style.display = 'block';
+            var newSkillsArr = newSkills.split(",");
+
+            $.each(newSkillsArr, function (index, value) {
+                $("#newSkillsContainer").append('<button type="button" id="newSkillBtn' + newSkillsID +
+                    '" class="cancelbtn">' + value + '</button>');
+                $("#newSkillBtn" + newSkillsID).click(function () {
+
+                    predictedSkill = $(this).text();
+                    $("#select-skill").trigger('change');
+                    // $("#select-skill").val($(this).text()).trigger('change'); //didn't work
+                    showAll();
+                });
+                newSkillsID++;
+            });
+            $("#siteName").hide();
+            $("#injectLink").hide();
+            $("#wdiln").hide();
+            $("#randomBlock").hide();
+            $("#url").hide();
+            $("#skils-section").hide();
+        }
+        //wdiln
+        $("#wdiln").click(recommend);
+
+        function recommend() {
+            event.preventDefault();
+            if (skillsListBackup.length < 1) {
+                $("#plzWait").text("Cannot recommend Learning Resources, please add a skill to the skills section").delay(5000).fadeOut(150);
+                $("#plzWait").show();
+                return;
+            } else {
+                $("#plzWait").hide();
+            }
+            var limit = 10;
+            var currPage = 1;
+            console.log("$(this).attr('id') = " + $(this).attr('id'));
+            if ($(this).attr('id') != "wdiln" && $(this).attr('id') != "pgf") {
+                console.log(String($(this).attr('id')).substring('pg'.length));
+                currPage = parseInt(String($(this).attr('id')).substring('pg'.length));
+            }
+            console.log("currPage = " + currPage);
+            console.log(skillsListBackup);
+            $("#learningResources").empty();
+            $.ajax({
+                url: 'http://localhost:8000/recommend?page=' + currPage + '&limit=' + limit,
+                data: {
+                    skillsListBackup
+                },
+                type: 'POST',
+                jsonpCallback: 'callback',
+                success: function (data) {
+                    // var resources = JSON.stringify(data.message);
+                    var resources = data.message;
+                    console.log("resources: " + JSON.stringify(resources));
+
+                    $.each(resources['results'], function (i, value) {
+                        $("#learningResources").append('<tr><td><div><h3><a id="lr' + i +
+                            '" href="' + resources['results'][i].link + '" target="_blank">' +
+                            resources[
+                                'results'][i].title + '</a>&nbsp;<span>(' +
+                            resources['results'][i].type + ')</span></h3><p id="lrId' +
+                            resources['results'][i].lrId + '">' + resources[
+                                'results'][i].description + '</p></div></td></tr>'
+                        );
+                        $("#lr" + i).click(addRating);
+                        //not concerned with what's down there
+                        if (i > 10) {
+                            return false;
+                        }
+                    });
+                    $("#learningResources").hide().fadeIn();
+
+                    var pgNum = 1;
+                    $("#paginator").show();
+                    $("#paginator").empty();
+                    if (resources['next']) {
+                        pgNum = (resources['next']['page'] - 1);
+                    } else if (resources['previous']) {
+                        pgNum = (resources['previous']['page'] + 1);
+                    }
+
+                    $("#paginator").append('<button id="pgf">First</button>'); //worked
+                    $("#pgf").click(recommend);
+
+                    if (resources['previous']) {
+                        $("#paginator").append('<button id="pg' + (pgNum - 1) + '">' + (pgNum - 1) +
+                            '</button>');
+                        $("#pg" + (pgNum - 1)).click(recommend);
+                    }
+
+                    $("#paginator").append('<button style="background-color:#ccc;" id="pg' + pgNum + '">' +
+                        pgNum + '</button>');
+                    $("#pg" + pgNum).click(recommend);
+
+                    if (resources['next']) {
+                        $("#paginator").append('<button id="pg' + (pgNum + 1) + '">' + (pgNum + 1) +
+                            '</button>');
+                        $("#pg" + (pgNum + 1)).click(recommend);
+                    }
+                    $("#paginator").append('<button id="pg' + (resources['allPages']+1) + '">Last</button>');
+                    $("#pg" + (resources['allPages']+1)).click(recommend);
+
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error recommend: ' + error.message);
+                },
+            });
+
+            //those are the opposite?
+            $(document).on('scroll', function () {
+                if ($(this).scrollTop() >= $('#siteName').position().top) {
+                    $("#paginator").prependTo("#pagBot");
+                } else {
+                    $("#paginator").prependTo("#pagTop");
+                }
+            })
+        }
+
+        //skills collapse
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if($(content).is(":visible")){
+                    $(content).fadeOut(150);
+                }else{
+                    $(content).fadeIn();
+                }
+            });
+        }
+        //recommendation open
+    </script>
+
+</body>
+<footer class="py-5">
+    <div id="userInfo">
+        <%if (user) { %>
+            <br><br><br><br>
+        <h2>
+            Welcome <%= user.name %>
+        </h2>
+        <a href="/acc/logout">Logout</a>
+        <% } %>
+    </div>
+    <p class="m-0 text-center text-white" id="educational">All information used is for educational purposes</p>
+</footer>
+
+</html>
