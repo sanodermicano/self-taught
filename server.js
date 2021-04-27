@@ -53,20 +53,20 @@ app.use('/', require('./controllers/linksPocket'));
 server.listen(8000, function () {
     console.log("Server listening on port: 8000");
     
-    //periodic non-nodemon functions to make the system self-reliant
+    //periodic non-nodemon functions to make the system self-reliant - needs to be tested on a real server
     const injectController = require('./api/injector');
     const buildController = require('./api/skilltreeBuilder');
     const jsonController = require('./api/jsonOps');
-    setInterval(function() {
+    setInterval(async function() {
         console.log("every 3 hours visit 50 discovered links 10800000");
-        injectController.createLearningResoruces(null, null);
+        await injectController.createLearningResoruces(null, null);
     }, 10800000);
-    setInterval(function() {
-        console.log("every 24 horus update the skills list 86400000");
-        buildController.buildTree(null, null, null);
+    setInterval(async function() {
+        console.log("every 24 hours update the skills list 86400000");
+        await buildController.buildTree(null, null, null);
     }, 86400000);
-    setInterval(function() {
+    setInterval(async function() {
         console.log("every week, clean blocked links 604800000");
-        jsonController.deleteBlockedLinks();
+        await jsonController.deleteBlockedLinks();
     }, 604800000);
 });

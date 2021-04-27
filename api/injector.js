@@ -38,6 +38,7 @@ exports.inject = async function (req, res) {
                             break;
                         case "failed":
                             console.log("quickCheck failed inject"); //send error message to user
+                            await jsonController.setBlockedLinks(JSON.stringify([enteredURL]));
                             res.status(500).send();
                             break;
                         case "error":
@@ -50,6 +51,7 @@ exports.inject = async function (req, res) {
                                     break;
                                 case "failed":
                                     console.log("hcc failed inject 2"); //send error message to user
+                                    await jsonController.setBlockedLinks(JSON.stringify([enteredURL]));
                                     res.status(500).send();
                                     break;
                                 default:
@@ -415,14 +417,14 @@ async function hccCheck(link) {
             return "passed";
         }
         for (var j = 0; j < ti.length; j++) {
-            if (skillsData[i] == ti[j]) {
+            if (skillsData[i].includes(" " + ti[j] + " ") || skillsData[i] == ti[j]) {
                 console.log("title: " + ti[j]);
                 console.log("skillsData[" + i + "] = " + skillsData[i]);
                 return "passed";
             }
         }
         for (var k = 0; k < desc.length; k++) {
-            if (skillsData[i] == desc[k]) {
+            if (skillsData[i].includes(" " + desc[k] + " ") || skillsData[i] == desc[k]) {
                 console.log("description: " + desc[k]);
                 console.log("skillsData[" + i + "] = " + skillsData[i]);
                 return "passed";

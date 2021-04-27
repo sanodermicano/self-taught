@@ -12,6 +12,8 @@ exports.recommend = function (req, res) {
         const endIndex = page * limit;
 
         const result = {};
+        //instead of returning the original learningResources, return a copy modified by either the recommender or the filters
+        //if injection checked failed, add to blacklisted link
         console.log("startIndex = " + startIndex + ", endIndex = " + endIndex);
         console.log("learningResources.length = " + learningResources[0].length);
 
