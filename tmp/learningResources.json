@@ -28824,39 +28824,10 @@
         "lrId": 4117
     },
     {
-        "title": "Java Store large ArrayList for later use - Stack Overflow",
-        "link": "https://stackoverflow.com/questions/67259242/java-store-large-arraylist-for-later-use",
-        "type": "Questions & Answers",
-        "lrId": 4118
-    },
-    {
-        "title": "javascript - Remove all elements contained in another array - Stack Overflow",
-        "link": "https://stackoverflow.com/questions/19957348/remove-all-elements-contained-in-another-array",
-        "type": "Questions & Answers",
-        "lrId": 4119
-    },
-    {
-        "title": "Page not found - Stack Overflow",
-        "link": "https://stackoverflow.com/questions/67259242/java-store-large-arraylist-for-later-use",
-        "type": "Article",
-        "lrId": 4118
-    },
-    {
-        "title": "Newest Questions - Stack Overflow",
-        "link": "https://stackoverflow.com/questions",
-        "type": "Questions & Answers",
-        "lrId": 4121
-    },
-    {
         "title": "rest - Problems run SwaggerUI - Java (JAX-RS) - Stack Overflow",
+        "description": "",
         "link": "https://stackoverflow.com/questions/67271300/problems-run-swaggerui-java-jax-rs",
         "type": "Questions & Answers",
-        "lrId": 4122
-    },
-    {
-        "title": "Java - How to store huge amounts of values in an array - Stack Overflow",
-        "link": "https://stackoverflow.com/questions/36100896/java-how-to-store-huge-amounts-of-values-in-an-array",
-        "type": "Questions & Answers",
-        "lrId": 4123
+        "lrId": 4118
     }
 ]

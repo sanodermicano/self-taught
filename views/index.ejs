@@ -749,7 +749,8 @@
                 <form id="linkSubmit">
                     <p id="plzWait" class="center-bottom">Please wait...</p>
                     <input type="url" name="url" id="url" placeholder="Insert/Paste a link that taught you something"
-                        pattern="https://.*" size="40" required>
+                    pattern="((^|, )(https://.*|http://.*))+$" size="40" required> <!-- if we wanted to support http sites as well (not secure and will make us vulnerible)-->
+                        <!-- pattern="https://.*" size="40" required> -->
                     <button type="submit" form="linkSubmit" id="injectLink">Insert Link</button>
                 </form>
             </div>

@@ -230,6 +230,7 @@ async function injectLink(learningLink, res, lrId) {
 
             //skilltree buider plan: check if link if udemy or coursera then add it to rawdata.json, then have a cin command 
             //rst reload skilltree (or periodically), ist initialize skilltree
+            if (!courseDesc) courseDesc = "";
             learningResource = { "title": courseTitle, "description": courseDesc, "link": learningLink, "type": websiteType, "lrId": lrId };
             jsonController.appendResource(JSON.stringify(learningResource), desiredLink, JSON.stringify(desiredLinks));
 
@@ -237,7 +238,6 @@ async function injectLink(learningLink, res, lrId) {
 
             if (quickInjectFailed) {
                 quickInjectFailed = false;
-                if (!courseDesc) courseDesc = "";
                 let lrObj = { "title": courseTitle, "description": courseDesc, "link": learningLink, "rating": 2.5, "date": new Date(), "lrid": lrId };
                 predController.concludedSkill(courseTitle + "," + courseDesc, res, lrObj);
             }
