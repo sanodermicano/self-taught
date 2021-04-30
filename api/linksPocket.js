@@ -63,7 +63,7 @@ exports.loadLinks = async function (req, res, next) {
                     return res.status(500).send();
                 } else {
                     db.util.query('SELECT * FROM visited WHERE userid = ? ORDER BY date ASC', [SQLID], function (error, results) {
-                        console.log("______________________________________________");
+                        console.log("_____________________loadLinks_________________________");
                         if (error) {
                             console.log(error);
                         }

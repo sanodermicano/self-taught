@@ -8,7 +8,9 @@ let quickInjectFailed = false;
 
 exports.inject = async function (req, res) {
     if (!req.user) {
-        res.status(500).send();
+        console.log("holy");
+        return res.status(500).send();
+        // return;
     } else {
         try {
             var enteredURL = JSON.stringify(req.body).split("\"")[1];

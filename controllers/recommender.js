@@ -16,5 +16,12 @@ router.post('/recommend', function (req, res) {
     //     res.redirect("/");
     // }
 });
+router.post('/clean', function (req, res) {
+    try {
+        recController.cleanUser(req, res);
+    } catch (e) {
+        console.log(e);
+    }
+});
 
 module.exports = router;

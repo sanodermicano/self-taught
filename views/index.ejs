@@ -57,7 +57,7 @@
     </style>
 </head>
 
-<body>
+<body onbeforeunload="cleanData()">
     <% var user; %>
     <%if (user) { %>
     <div class="topnav" id="topNav">
@@ -292,7 +292,7 @@
                                     if (!isLoading) {
                                         skillsList.push(
                                             predictedSkill); //make it into a dictionary {"skill":levelnum}
-                                        rangesList.push(2);
+                                        rangesList.push(1);
                                         positionsList.push(skillsList.length - 1);
                                     }
                                     //here add sql insert if user is logged in
@@ -661,6 +661,9 @@
                             <% } %>
                             <% if (!user){ %>
                             <script>
+                                //https://stackoverflow.com/questions/23327010/how-to-generate-unique-id-with-node-js
+                                const uuid = (new Date()).getTime().toString(36) + Math.random().toString(36).slice(2)
+                                console.log("uuid: " + uuid);
                                 function loadSkills() {
                                     var skillLen = 0;
                                     if (typeof (Storage) !== "undefined") {
@@ -747,7 +750,7 @@
         <p id="siteName" class="center-top" style="text-align: center;">
             <div id="randomBlock" class="center">
                 <form id="linkSubmit">
-                    <p id="plzWait" class="center-bottom">Please wait...</p>
+                    <p id="plzWait" class="center">Please wait...</p>
                     <input type="url" name="url" id="url" placeholder="Insert/Paste a link that taught you something"
                     pattern="((^|, )(https://.*|http://.*))+$" size="40" required> <!-- if we wanted to support http sites as well (not secure and will make us vulnerible)-->
                         <!-- pattern="https://.*" size="40" required> -->
@@ -767,8 +770,19 @@
         <div class="topnav">
             <img onclick=clickedLogin() src="img/icon-new.png" />
         </div>
+        <script>
+            var uid = null;
+            var uEmail = null;
+        </script>
     <% } %>
-
+    
+    <%if (user) { %>
+            <script>
+                var uid = "<%- user.id; %>";
+                var uEmail = "<%- user.email; %>";
+                const uuid = null;
+            </script>
+    <% } %>
     <!-- <div id="recommendation" style="display:none;"> -->
     <div id="recommendation">
         <!-- Don't know what this is
@@ -788,6 +802,25 @@
     </div>
     </div>
     <script>
+        function cleanData(){
+            $.ajax({
+                url: 'http://localhost:8000/clean',
+                data: {
+                    uniqueID: uuid,
+                    userid: uid,
+                    email: uEmail
+                },
+                type: 'POST',
+                jsonpCallback: 'callback',
+                success: function (data) {
+                    
+                },
+                error: function (xhr, status, error) {
+                    
+                    console.log('Error login: ' + error.message);
+                },
+            });
+        }
         //concluded Skill
         $("#plzWait").hide();
         $("#loading").hide();
@@ -821,7 +854,12 @@
                     console.log(status);
                     console.log(error);
                     showAll();
-                    $("#plzWait").text("Error: Please retry or insert another link").delay(5000).fadeOut(150);
+                    var userAj = "<%- user; %>";
+                    if(userAj){
+                        $("#plzWait").text("Error: Please retry or insert another link").delay(5000).fadeOut(150);
+                    }else{
+                        $("#plzWait").text("Error: Must be logged in to Insert Links").delay(5000).fadeOut(150);
+                    }
                     $("#plzWait").show();
                     // window.location.href = "/login";
                     console.log('Error login: ' + error.message);
@@ -881,14 +919,16 @@
             console.log("currPage = " + currPage);
             console.log(skillsListBackup); 
             //backhere skills filtering can be done here in front-end, just reduce the skills in skillsListBackup to a new variable named concludedSkillsList
-            //but existing links pocket filteration, levels and LR type should be done in the backend
+            //but levels and LR type should be done in the backend
             $("#learningResources").empty();
+            
             $.ajax({
                 url: 'http://localhost:8000/recommend?page=' + currPage + '&limit=' + limit,
                 data: {
                     skillsListBackup,
-                    userid: "<%- user.id; %>",
-                    email: "<%- user.email; %>"
+                    uniqueID: uuid,
+                    userid: uid,
+                    email: uEmail
                 },
                 type: 'POST',
                 jsonpCallback: 'callback',
@@ -979,8 +1019,10 @@
     </script>
 
 </body>
-<footer class="py-5">
-    <div id="userInfo">
+<footer class="py-5" style="z-index: 0;">
+        <br><br><br><br>
+        <br><br>
+        <div id="userInfo">
         <%if (user) { %>
             <br><br><br><br>
         <h2>
