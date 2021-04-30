@@ -1,18 +1,25 @@
+import json
 import pandas as pd
 from math import sqrt
+import sys
 
 #storing info to pandas dataframe
 lr_df = pd.read_json('tmp/learningResources.json')
 rating_df=pd.read_json('tmp/ratings.json')
 
+
+#Only run this script when the user visits new links but first the link must be added to the ratings json file or else the program will crash
+
 #simulate is a user's account
-userInput = [
-{'title':'Demystifying Parallax: Learn to Create Interactive Web Pages | Udemy','description':'With JavaScript, HTML & CSS','link':'https://www.udemy.com/course/demystifying-parallax-learn-to-create-interactive-web-pages/','type':'Online Course','rating':5},
-{'title':'Create An Online Poll Maker From Scratch: PHP and MySQLI | Udemy','description':'Use HTML, CSS, Javascript, PHP and MySQL To Create Your Own Online Poll Maker','link':'https://www.udemy.com/course/create-an-online-poll-maker-from-scratch-php-and-mysqli/','type':'Online Course', 'rating':3.5},
-{'title':'Android Development Working With Databases Using Mysql & PHP | Udemy', 'description':'In this complete course students will learn android development by working with databases using Mysql and PHP','link':'https://www.udemy.com/course/android-development-course/','type':'Online Course','rating':2},
-{'title':"Advanced Corporate Level WordPress Training for 2020 | Udemy",'description':'WordPress Web Design - Beginners to advanced level WordPress training course','link':'https://www.udemy.com/course/advance-wordpress-2020-lectures/','type':'Online Course', 'rating':5},
-{'title':'Exploring SQL Server 2016: Intermediate | Udemy','description':'Exploring SQL Server 2016: Intermediate','link':'https://www.udemy.com/course/exploring-sql-server-2016-intermediate/','type':'Online Course', 'rating':4.5}
-]
+
+userInput = json.loads(sys.argv[1])
+# userInput = [
+# {'title':'Demystifying Parallax: Learn to Create Interactive Web Pages | Udemy','description':'With JavaScript, HTML & CSS','link':'https://www.udemy.com/course/demystifying-parallax-learn-to-create-interactive-web-pages/','type':'Online Course','rating':5},
+# {'title':'Create An Online Poll Maker From Scratch: PHP and MySQLI | Udemy','description':'Use HTML, CSS, Javascript, PHP and MySQL To Create Your Own Online Poll Maker','link':'https://www.udemy.com/course/create-an-online-poll-maker-from-scratch-php-and-mysqli/','type':'Online Course', 'rating':3.5},
+# {'title':'Android Development Working With Databases Using Mysql & PHP | Udemy', 'description':'In this complete course students will learn android development by working with databases using Mysql and PHP','link':'https://www.udemy.com/course/android-development-course/','type':'Online Course','rating':2},
+# {'title':"Advanced Corporate Level WordPress Training for 2020 | Udemy",'description':'WordPress Web Design - Beginners to advanced level WordPress training course','link':'https://www.udemy.com/course/advance-wordpress-2020-lectures/','type':'Online Course', 'rating':5},
+# {'title':'Exploring SQL Server 2016: Intermediate | Udemy','description':'Exploring SQL Server 2016: Intermediate','link':'https://www.udemy.com/course/exploring-sql-server-2016-intermediate/','type':'Online Course', 'rating':4.5}
+# ]
 input_lr = pd.DataFrame(userInput)
 
 #Filtering out the lr by title
@@ -90,7 +97,33 @@ recommendation_df['lrId'] = tempTopUsersRating.index
 #print(recommendation_df.head())
 
 recommendation_df = recommendation_df.sort_values(by='weighted average recommendation score', ascending=False)
-#print(recommendation_df.head(10))
 
-# print(lr_df.loc[lr_df['lrId'].isin(recommendation_df.head(10)['lrId'].tolist())])
-print(lr_df.loc[lr_df['lrId'].isin(recommendation_df.head(int(recommendation_df.size*0.025))['lrId'].tolist())])
+# print(recommendation_df.head(3))
+# print(lr_df.loc[lr_df['lrId'].isin(recommendation_df.head(int(recommendation_df.size*0.025))['lrId'].tolist())])
+
+
+#this is how we'll pass the results from python to node.js, kinda slow, we need to improve it - had hard times doing it myself
+lrJson = open('tmp/learningResources.json', "r+", encoding="utf8")
+lrData = json.load(lrJson)
+toBePrinted = []
+for rec in recommendation_df['lrId']:
+    for lr in lrData:
+        if rec == lr['lrId']:
+            toBePrinted.append(lr)
+            break
+# print(len(toBePrinted))
+for lr in lrData:
+    if lr['lrId'] not in recommendation_df['lrId']:
+        toBePrinted.append(lr)
+
+#remove visisted links
+for userin in userInput:
+    for tbp in toBePrinted:
+        if userin['link'] == tbp['link']:
+            toBePrinted.remove(tbp)
+            break
+
+
+lrJson.close()
+# print(len(toBePrinted))
+print(json.dumps(toBePrinted))

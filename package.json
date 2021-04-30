@@ -18,6 +18,7 @@
     "express-rate-limit": "^5.2.6",
     "express-session": "^1.17.1",
     "forever-monitor": "^3.0.3",
+    "hashmap": "^2.4.0",
     "hbs": "^4.1.1",
     "helmet": "^4.4.1",
     "jsonwebtoken": "^8.5.1",

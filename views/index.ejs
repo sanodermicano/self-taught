@@ -754,8 +754,8 @@
                     <button type="submit" form="linkSubmit" id="injectLink">Insert Link</button>
                 </form>
             </div>
-            <br/>
-            <input id="wdiln" type="submit" value="What Do I Learn Next?" class="center-bottom" role="button">
+            <br>
+            <input id="wdiln" type="submit" value="What Do I Learn Next?" style="z-index: 50;" class="center-bottom" role="button">
         </p>
         <div>
 
@@ -879,12 +879,16 @@
                 currPage = parseInt(String($(this).attr('id')).substring('pg'.length));
             }
             console.log("currPage = " + currPage);
-            console.log(skillsListBackup);
+            console.log(skillsListBackup); 
+            //backhere skills filtering can be done here in front-end, just reduce the skills in skillsListBackup to a new variable named concludedSkillsList
+            //but existing links pocket filteration, levels and LR type should be done in the backend
             $("#learningResources").empty();
             $.ajax({
                 url: 'http://localhost:8000/recommend?page=' + currPage + '&limit=' + limit,
                 data: {
-                    skillsListBackup
+                    skillsListBackup,
+                    userid: "<%- user.id; %>",
+                    email: "<%- user.email; %>"
                 },
                 type: 'POST',
                 jsonpCallback: 'callback',
@@ -902,7 +906,7 @@
                             resources['results'][i].lrId + '">' + resources[
                                 'results'][i].description + '</p></div></td></tr>'
                         );
-                        $("#lr" + i).click(addRating);
+                        $("#lr" + i).on('mouseup', addRating);
                         //not concerned with what's down there
                         if (i > 10) {
                             return false;

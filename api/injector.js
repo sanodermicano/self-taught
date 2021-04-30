@@ -350,7 +350,7 @@ exports.createLearningResoruces = async function (req, res) {
     await jsonController.writeJSON(newDl, "discoveredLinks").then((d) => d)
         .catch((err) => console.error('writeJSON() failed', err));
     //clear blocked list from links longer than 50 characters
-    res.status(201).send();
+    if(res) res.status(201).send();
 }
 
 async function quickCheck(link) {
@@ -372,7 +372,7 @@ async function quickCheck(link) {
                         reject({ success: false, err });
                     }
 
-                    console.log('PythonShell results: %j', results);
+                    // console.log('PythonShell results: %j', results);
 
                     resolve({ success: true, results });
                 }

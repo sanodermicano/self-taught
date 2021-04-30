@@ -1,4 +1,5 @@
 require("dotenv").config();
+const recController = require('../api/recommender');
 
 exports.getSkills =  async function(req, res, next) {
     req.skills = await getSkills();
@@ -177,6 +178,46 @@ async function appendDiscoveredLinks(newLinks) {
             console.log("results appendLinks = " + results);
             console.log("got url");
             // inputChoice();
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+exports.appendRating = async function (newRating, req = null, uEmail = "") {
+    const pShell = require('python-shell').PythonShell;
+    let options = {
+        mode: 'json',
+        pythonPath: process.env.PY_PATH,
+        pythonOptions: ['-u'], // get print results in real-time
+        scriptPath: process.env.PY_PROJ,
+        args: [newRating]
+    };
+    try {
+        pShell.run('appendRating.py', options, function (err, results) {
+            if (err) throw err;
+            console.log("results appendRating = " + results);
+            recController.collaborativeBasedFiltering(req, null, null, uEmail);
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+exports.updateRating = async function (newRating, req = null, uEmail = "") {
+    const pShell = require('python-shell').PythonShell;
+    let options = {
+        mode: 'json',
+        pythonPath: process.env.PY_PATH,
+        pythonOptions: ['-u'], // get print results in real-time
+        scriptPath: process.env.PY_PROJ,
+        args: [newRating]
+    };
+    try {
+        pShell.run('updateRating.py', options, function (err, results) {
+            if (err) throw err;
+            console.log("results appendRating = " + results);
+            recController.collaborativeBasedFiltering(req, null, null, uEmail);
         });
     } catch (e) {
         console.log(e)

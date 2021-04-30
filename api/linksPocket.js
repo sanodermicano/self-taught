@@ -1,5 +1,6 @@
 const db = require('../models/db');
 const bcrypt = require('bcrypt');
+const jsonController = require('./jsonOps');
 
 exports.addLink = async function (req, res) {
     try {
@@ -32,6 +33,14 @@ exports.addLink = async function (req, res) {
                         }
                     });
                     res.status(201).send();
+                    /*
+                    {
+                        "userId": 610,
+                        "lrId": 170875,
+                        "rating": 3
+                    }
+                    */
+                    jsonController.appendRating(JSON.stringify({"userId": SQLID, "lrId": parseInt(lrid), "rating":2.5}), req, email);
                 });
             }
         });
@@ -58,7 +67,7 @@ exports.loadLinks = async function (req, res, next) {
                         if (error) {
                             console.log(error);
                         }
-                        console.log("results: " + JSON.stringify(results));
+                        // console.log("results: " + JSON.stringify(results));
                         req.userLinks = results;
                         return next();
                     });
@@ -92,6 +101,7 @@ exports.rateLink = async function (req, res) {
                         console.log(error);
                     }
                     res.status(201).send();
+                    jsonController.updateRating(JSON.stringify({"userId": SQLID, "lrId": parseInt(lrid), "rating":rating}), req, email);
                 });
             }
         });

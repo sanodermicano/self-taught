@@ -60,7 +60,7 @@ exports.loadSkills = async function (req, res, next) {
                         if (error) {
                             console.log(error);
                         }
-                        console.log("results: " + JSON.stringify(results));
+                        // console.log("results: " + JSON.stringify(results));
                         req.userSkills = results;
                         return next();
                     });
