@@ -64,7 +64,7 @@ exports.buildSkillTree = async function () {
 //for testing purposes
 exports.buildTestSkillTree = async function () {
     let topicsIT = ["https://www.udemy.com/topic/web-development/", "https://www.udemy.com/topic/game-design/"];
-    
+
     // topicLinks.concat(topicsIT);
     topicLinks = topicLinks.concat(topicsIT);
     console.log(topicLinks);
@@ -108,27 +108,31 @@ exports.buildTestSkillTree = async function () {
 async function getMoreTopics(topicLink) {
     console.log("Processing: " + topicLink);
 
-    const crawler = await HCCrawler.launch({
-        maxConcurrency: 1,
-        evaluatePage: (() => ({
-            topics: Array.from(document.querySelectorAll("a[class ='udlite-heading-md popular-topics-unit--topic-tag--6fHd8']")).map(topic => {
-                return topic.href
+    try {
+        const crawler = await HCCrawler.launch({
+            maxConcurrency: 1,
+            evaluatePage: (() => ({
+                topics: Array.from(document.querySelectorAll("a[class ='udlite-heading-md popular-topics-unit--topic-tag--6fHd8']")).map(topic => {
+                    return topic.href
+                }),
+            })),
+            onSuccess: (result => {
+                topics = result.result.topics;
+                topicLinks = topicLinks.concat(topics);
+                console.log("Done 1");
             }),
-        })),
-        onSuccess: (result => {
-            topics = result.result.topics;
-            topicLinks = topicLinks.concat(topics);
-            console.log("Done 1");
-        }),
-    });
-    await crawler.queue({
-        url: topicLink,
-        waitUntil: 'networkidle0',
-        delay: 1500,
-        device: 'Nexus 7',
-    });
-    await crawler.onIdle(); // Resolved when no queue is left
-    await crawler.close(); // Close the crawler
+        });
+        await crawler.queue({
+            url: topicLink,
+            waitUntil: 'networkidle0',
+            delay: 1500,
+            device: 'Nexus 7',
+        });
+        await crawler.onIdle(); // Resolved when no queue is left
+        await crawler.close(); // Close the crawler
+    } catch (e) {
+        console.log(e);
+    }
 }
 //inside a for each link recursion at the onsuccess function
 async function crawlIntoTopic(topicLink, optionsLink) {
@@ -164,44 +168,49 @@ async function crawlIntoTopic(topicLink, optionsLink) {
 async function crawlIntoCourse(courseLink) {
     console.log("Processing: " + courseLink);
 
-    const crawler = await HCCrawler.launch({
-        maxConcurrency: 1,
-        evaluatePage: (() => ({
-            parent: document.title,
-            desc: $("meta[name='description']").attr('content'),
-            ///html/body/div[2]/div[3]/div[1]/div[4]/div[6]/div/div/div/div/ul/li[1]/div/div
-            children: Array.from(document.querySelectorAll("div.ud-component--course-landing-page-udlite--requirements > div > ul > li > div > div[class='udlite-block-list-item-content']")).map(topic => {
-                return topic.innerHTML;
+    try {
+        const crawler = await HCCrawler.launch({
+            maxConcurrency: 1,
+            evaluatePage: (() => ({
+                parent: document.title,
+                desc: $("meta[name='description']").attr('content'),
+                ///html/body/div[2]/div[3]/div[1]/div[4]/div[6]/div/div/div/div/ul/li[1]/div/div
+                children: Array.from(document.querySelectorAll("div.ud-component--course-landing-page-udlite--requirements > div > ul > li > div > div[class='udlite-block-list-item-content']")).map(topic => {
+                    return topic.innerHTML;
+                }),
+            })),
+            onSuccess: (result => {
+                parent = result.result.parent;
+                children = result.result.children;
+                desc = result.result.desc;
+                var jsonArg = new Object();
+                jsonArg.parent = parent;
+                jsonArg.children = children;
+                pyParentsChildrenContainer.push(jsonArg);
+                var jsonArg1 = new Object();
+                jsonArg1.title = parent;
+                jsonArg1.description = desc;
+                jsonArg1.link = courseLink;
+                jsonArg1.type = 'Online Course';
+                newFoundCourses.push(jsonArg1);
+                console.log("Done 3");
             }),
-        })),
-        onSuccess: (result => {
-            parent = result.result.parent;
-            children = result.result.children;
-            desc = result.result.desc;
-            var jsonArg = new Object();
-            jsonArg.parent = parent;
-            jsonArg.children = children;
-            pyParentsChildrenContainer.push(jsonArg);
-            var jsonArg1 = new Object();
-            jsonArg1.title = parent;
-            jsonArg1.description = desc;
-            jsonArg1.link = courseLink;
-            jsonArg1.type = 'Online Course';
-            newFoundCourses.push(jsonArg1);
-            console.log("Done 3");
-        }),
-    });
-    await crawler.queue({
-        url: courseLink,
-        waitUntil: 'networkidle0',
-        delay: 1500,
-        device: 'Nexus 7',
-    });
-    await crawler.onIdle(); // Resolved when no queue is left
-    await crawler.close(); // Close the crawler
+        });
+        await crawler.queue({
+            url: courseLink,
+            waitUntil: 'networkidle0',
+            delay: 1500,
+            device: 'Nexus 7',
+        });
+        await crawler.onIdle(); // Resolved when no queue is left
+        await crawler.close(); // Close the crawler
+    } catch (e) {
+        console.log(e);
+    }
 }
 
-exports.buildTree = async function(req, res, next){
+exports.buildTree = async function (req, res, next) {
+    console.log("buildTree");
     const pShell = require('python-shell').PythonShell;
     let options = {
         mode: 'json',
@@ -216,7 +225,7 @@ exports.buildTree = async function(req, res, next){
         pShell.run('cleaningSkillTree.py', options, function (err, results) {
             if (err) throw err;
             console.log("results cleaningSkillTree = " + results);
-            // res.status(201).send();
+            if (res) res.status(201).send();
         });
         // res.status(201).send();
     });

@@ -8,9 +8,7 @@ let quickInjectFailed = false;
 
 exports.inject = async function (req, res) {
     if (!req.user) {
-        console.log("holy");
         return res.status(500).send();
-        // return;
     } else {
         try {
             var enteredURL = JSON.stringify(req.body).split("\"")[1];
@@ -117,7 +115,9 @@ async function injectLink(learningLink, res, lrId) {
         supportedType = "udemy";
     } else if (learningLink.includes("www.coursera.org")) {
         supportedType = "coursera";
-    }
+    } else if (learningLink.includes("www.udacity.com")) {
+        supportedType = "udacity";
+    } 
 
     let courseTitle = "";
     let courseDesc = "";
@@ -143,130 +143,175 @@ async function injectLink(learningLink, res, lrId) {
     }
     console.log("desiredLink = " + desiredLink);
     console.log("Processing...\n");
+    try {
+        const crawler = await HCCrawler.launch({
+            maxConcurrency: 1,
+            // userAgent:
+            //     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36",
+            evaluatePage: (() => ({
+                courseTitle: document.title,
+                //document.querySelectorAll("head > meta[name='description']")[0].content;
+                courseDesc: $("meta[name='description']").attr('content'),
+                htmlPage: document.documentElement.outerHTML,
 
-    const crawler = await HCCrawler.launch({
-        maxConcurrency: 1,
-        // userAgent:
-        //     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36",
-        evaluatePage: (() => ({
-            courseTitle: document.title,
-            //document.querySelectorAll("head > meta[name='description']")[0].content;
-            courseDesc: $("meta[name='description']").attr('content'),
-            htmlPage: document.documentElement.outerHTML,
+                childrenUdemy: Array.from(document.querySelectorAll("div.ud-component--course-landing-page-udlite--requirements > div > ul > li > div > div[class='udlite-block-list-item-content']")).map(topic => {
+                    return topic.innerHTML;
+                }),
+                childrenCoursera: Array.from(document.querySelectorAll("._1q9sh65")).map(topic => {
+                    return topic.innerHTML;
+                }),
+                childrenUdacity: Array.from(document.querySelectorAll(".degree-info-columns_columnList__D-UoB")).map(topic => { //go down in levels
+                    return topic.innerHTML;
+                }),
+            })),
+            // Function to be called with evaluated desiredLinks from browsers
+            onSuccess: (result => {
+                courseTitle = result.result.courseTitle;
+                courseDesc = result.result.courseDesc;
 
-            childrenUdemy: Array.from(document.querySelectorAll("div.ud-component--course-landing-page-udlite--requirements > div > ul > li > div > div[class='udlite-block-list-item-content']")).map(topic => {
-                return topic.innerHTML;
-            }),
-            childrenCoursera: Array.from(document.querySelectorAll("._1q9sh65")).map(topic => {
-                return topic.innerHTML;
-            }),
-        })),
-        // Function to be called with evaluated desiredLinks from browsers
-        onSuccess: (result => {
-            courseTitle = result.result.courseTitle;
-            courseDesc = result.result.courseDesc;
+                let linkHtml = result.result.htmlPage;
+                let skillElement;
+                switch (supportedType) {
+                    case "":
+                        break;
+                    case "udemy":
+                        skillElement = { "parent": courseTitle, "children": result.result.childrenUdemy };
+                        break;
+                    case "coursera":
+                        skillElement = { "parent": String(result.result.childrenCoursera), "children": courseTitle };
+                        break;
+                    case "udacity":
+                        var children = String(result.result.childrenUdacity);
+                        children = children.substr(children.indexOf("Prerequisites</h6><h5>") + "Prerequisites</h6><h5>".length);
+                        children = children.substr(0, children.indexOf("</h5><button class="));
+                        skillElement = { "parent": courseTitle, "children": children };
+                        break;
+                    default:
+                        break;
+                }
 
-            courseHtml = result.result.htmlPage;
-            let skillElement;
-            switch (supportedType) {
-                case "":
-                    break;
-                case "udemy":
-                    skillElement = { "parent": courseTitle, "children": result.result.childrenUdemy };
-                    break;
-                case "coursera":
-                    skillElement = { "parent": String(result.result.childrenCoursera), "children": courseTitle };
-                    break;
-                default:
-                    break;
-            }
+                websiteType = "Article";
 
-            websiteType = "Article";
+                var courseCount = (linkHtml.match(/course/g) || []).length + (linkHtml.match(/courses/g) || []).length + (linkHtml.match(/online course/g) || []).length;
+                var articleCount = (linkHtml.match(/article/g) || []).length + (linkHtml.match(/articles/g) || []).length + (linkHtml.match(/document/g) || []).length + (linkHtml.match(/documents/g) || []).length;
+                var podcastCount = (linkHtml.match(/podcast/g) || []).length + (linkHtml.match(/podcasts/g) || []).length;
+                var questionCount = (linkHtml.match(/question/g) || []).length + (linkHtml.match(/answer/g) || []).length + (linkHtml.match(/answers/g) || []).length + (linkHtml.match(/questions/g) || []).length;
+                var videoCount = (linkHtml.match(/video/g) || []).length + (linkHtml.match(/videos/g) || []).length;
+                var bookCount = (linkHtml.match(/book/g) || []).length + (linkHtml.match(/books/g) || []).length + (linkHtml.match(/pdf/g) || []).length;
 
-            var courseCount = (courseHtml.match(/course/g) || []).length + (courseHtml.match(/courses/g) || []).length + (courseHtml.match(/online course/g) || []).length;
-            var articleCount = (courseHtml.match(/article/g) || []).length + (courseHtml.match(/articles/g) || []).length + (courseHtml.match(/document/g) || []).length + (courseHtml.match(/documents/g) || []).length;
-            var podcastCount = (courseHtml.match(/podcast/g) || []).length + (courseHtml.match(/podcasts/g) || []).length;
-            var questionCount = (courseHtml.match(/question/g) || []).length + (courseHtml.match(/answer/g) || []).length + (courseHtml.match(/answers/g) || []).length + (courseHtml.match(/questions/g) || []).length;
-            var videoCount = (courseHtml.match(/video/g) || []).length + (courseHtml.match(/videos/g) || []).length;
-            var bookCount = (courseHtml.match(/book/g) || []).length + (courseHtml.match(/books/g) || []).length + (courseHtml.match(/pdf/g) || []).length;
+                var siteType = Math.max(courseCount, articleCount, podcastCount, questionCount, videoCount, bookCount);
+                switch (siteType) {
+                    case courseCount:
+                        websiteType = "Online Course";
+                        break;
+                    case articleCount:
+                        websiteType = "Article";
+                        break;
+                    case podcastCount:
+                        websiteType = "Podcast";
+                        break;
+                    case questionCount:
+                        websiteType = "Questions & Answers";
+                        break;
+                    case videoCount:
+                        websiteType = "Video";
+                        break;
+                    case bookCount:
+                        websiteType = "Book";
+                        break;
+                    default:
+                        websiteType = "Article";
+                        break;
+                }
+                console.log("websiteType: " + websiteType);
 
-            var siteType = Math.max(courseCount, articleCount, podcastCount, questionCount, videoCount, bookCount);
-            switch (siteType) {
-                case courseCount:
-                    websiteType = "Online Course";
-                    break;
-                case articleCount:
-                    websiteType = "Article";
-                    break;
-                case podcastCount:
-                    websiteType = "Podcast";
-                    break;
-                case questionCount:
-                    websiteType = "Questions & Answers";
-                    break;
-                case videoCount:
-                    websiteType = "Video";
-                    break;
-                case bookCount:
-                    websiteType = "Book";
-                    break;
-                default:
-                    websiteType = "Article";
-                    break;
-            }
-            console.log("websiteType: " + websiteType);
+                var beginnerCount = 5 + (linkHtml.match(/beginner/g) || []).length + (linkHtml.match(/beginners/g) || []).length +
+                    (linkHtml.match(/easy/g) || []).length + (linkHtml.match(/newbie/g) || []).length + (linkHtml.match(/novice/g) || []).length;
+                (linkHtml.match(/rookie/g) || []).length + (linkHtml.match(/basic/g) || []).length + (linkHtml.match(/newb/g) || []).length +
+                    (linkHtml.match(/fundamentals/g) || []).length + (linkHtml.match(/fundamental/g) || []).length;
+                console.log("beginnerCount: " + beginnerCount);
 
-            console.log("title: " + courseTitle);
-            console.log("desc: " + courseDesc);
+                var intermediateCount = (linkHtml.match(/intermediate/g) || []).length + (linkHtml.match(/intermediates/g) || []).length + (linkHtml.match(/mediocre/g) || []).length +
+                    (linkHtml.match(/experience/g) || []).length + (linkHtml.match(/excellent/g) || []).length + (linkHtml.match(/experienced/g) || []).length +
+                    (linkHtml.match(/latest/g) || []).length + (linkHtml.match(/understanding/g) || []).length;
+                console.log("intermediateCount: " + intermediateCount);
 
-            let links = `${result.links}`.split(",");
-            if (desiredLink != "") {
-                for (i = 0; i < links.length; i++) {
-                    if (links[i].includes(desiredLink) && links[i].length != desiredLink.length) {
-                        desiredLinks.push({ "link": links[i], "isChecked": false, "isVisited": false });
+                var advancedCount = (linkHtml.match(/advanced/g) || []).length + (linkHtml.match(/professional/g) || []).length + (linkHtml.match(/cutting-edge/g) || []).length +
+                    (linkHtml.match(/expert/g) || []).length + (linkHtml.match(/experienced/g) || []).length + (linkHtml.match(/exceptional/g) || []).length +
+                    (linkHtml.match(/extreme/g) || []).length + (linkHtml.match(/excellent/g) || []).length + (linkHtml.match(/experience/g) || []).length +
+                    (linkHtml.match(/latest/g) || []).length;
+                console.log("advancedCount: " + advancedCount);
+
+                var diffType = Math.max(beginnerCount, intermediateCount, advancedCount);
+                var difficultyType = "Beginner";
+                switch (diffType) {
+                    case beginnerCount:
+                        difficultyType = "Beginner";
+                        break;
+                    case intermediateCount:
+                        difficultyType = "Intermediate";
+                        break;
+                    case advancedCount:
+                        difficultyType = "Advanced";
+                        break;
+                    default:
+                        difficultyType = "Beginner";
+                        break;
+                }
+                console.log("difficultyType: " + difficultyType);
+
+                console.log("title: " + courseTitle);
+                console.log("desc: " + courseDesc);
+
+                let links = `${result.links}`.split(",");
+                if (desiredLink != "") {
+                    for (i = 0; i < links.length; i++) {
+                        if (links[i].includes(desiredLink) && links[i].length != desiredLink.length) {
+                            desiredLinks.push({ "link": links[i], "isChecked": false, "isVisited": false });
+                        }
                     }
                 }
-            }
-            result.result.urls = desiredLinks;
-            console.log(result.result.urls);
+                result.result.urls = desiredLinks;
+                console.log(result.result.urls);
 
-            //skilltree buider plan: check if link if udemy or coursera then add it to rawdata.json, then have a cin command 
-            //rst reload skilltree (or periodically), ist initialize skilltree
-            if (!courseDesc) courseDesc = "";
-            learningResource = { "title": courseTitle, "description": courseDesc, "link": learningLink, "type": websiteType, "lrId": lrId };
-            jsonController.appendResource(JSON.stringify(learningResource), desiredLink, JSON.stringify(desiredLinks));
+                if (!courseDesc) courseDesc = "";
+                learningResource = { "title": courseTitle, "description": courseDesc, "link": learningLink, "type": websiteType, "lrId": lrId, "difficulty": difficultyType };
+                jsonController.appendResource(JSON.stringify(learningResource), desiredLink, JSON.stringify(desiredLinks));
 
-            if (supportedType != "") jsonController.appendSkill(JSON.stringify(skillElement));
+                if (supportedType != "") jsonController.appendSkill(JSON.stringify(skillElement));
 
-            if (quickInjectFailed) {
-                quickInjectFailed = false;
-                let lrObj = { "title": courseTitle, "description": courseDesc, "link": learningLink, "rating": 2.5, "date": new Date(), "lrid": lrId };
-                predController.concludedSkill(courseTitle + "," + courseDesc, res, lrObj);
-            }
-        }),
-    });
-    await crawler.queue({
-        url: learningLink,
-        waitUntil: 'networkidle0',
-        delay: 1500,
-        device: 'Nexus 7',
-    });
-    await crawler.onIdle(); // Resolved when no queue is left
-    await crawler.close(); // Close the crawler
+                if (quickInjectFailed) {
+                    quickInjectFailed = false;
+                    let lrObj = { "title": courseTitle, "description": courseDesc, "link": learningLink, "rating": 2.5, "date": new Date(), "lrid": lrId };
+                    predController.concludedSkill(courseTitle + "," + courseDesc, res, lrObj);
+                }
+            }),
+        });
+        await crawler.queue({
+            url: learningLink,
+            waitUntil: 'networkidle0',
+            delay: 1500,
+            device: 'Nexus 7',
+        });
+        await crawler.onIdle(); // Resolved when no queue is left
+        await crawler.close(); // Close the crawler
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 exports.createLearningResoruces = async function (req, res) {
     var dl = await jsonController.getDiscoveredLinks();
     if (dl.length < 1) return;
-    if (dl.length > 50) dl.length = 50;
+    if (dl.length > 50) dl.length = 50; //backhere to inject tons
 
     var dlToBeDeleted = [];
     for (var i = 0; i < dl.length; i++) dlToBeDeleted.push(dl[i].link);
     const bl = await jsonController.getBlockedLinks();
     console.log("bl = " + bl);
     var dlTemp = [];
+
     //* Add each skill in a coursera parent as multiple parents to the same child or don't support coursera at all, instead do udacity, it has reqs
-    //or take from all four of them, Udemy, Coursera, Udacity, Lynda and SkillShare (U U S are best for now)
 
     for (var i = 0; i < dl.length; i++) {
         if (bl.includes(dl[i].link)) {
@@ -283,9 +328,9 @@ exports.createLearningResoruces = async function (req, res) {
         // for(var i = 0;i<5;i++){
         console.log(dl[i].link);
         if (!dl[i].isChecked) {
-            if (!(dl[i].link.includes("https://www.udemy.com/course/") || dl[i].link.includes("https://www.coursera.org/learn/") || dl[i].link.includes("https://www.coursera.org/specializations/"))) { //include whitelisted links
-                //check if the websites is blacklisted!!
-                //it's giving me an error anyway
+            //include whitelisted links
+            if (!(dl[i].link.includes("https://www.udemy.com/course/") || dl[i].link.includes("https://www.coursera.org/learn/") || 
+            dl[i].link.includes("https://www.coursera.org/specializations/") || dl[i].link.includes("https://www.udacity.com/course/"))) { 
                 switch (await quickCheck(dl[i].link)) {
                     case "passed":
                         dl[i].isChecked = true;
@@ -352,7 +397,7 @@ exports.createLearningResoruces = async function (req, res) {
     await jsonController.writeJSON(newDl, "discoveredLinks").then((d) => d)
         .catch((err) => console.error('writeJSON() failed', err));
     //clear blocked list from links longer than 50 characters
-    if(res) res.status(201).send();
+    if (res) res.status(201).send();
 }
 
 async function quickCheck(link) {
@@ -388,50 +433,55 @@ async function quickCheck(link) {
 async function hccCheck(link) {
     var title = "";
     var description = "";
-    const crawler = await HCCrawler.launch({
-        maxConcurrency: 1,
-        evaluatePage: (() => ({
-            title: document.title,
-            description: $("meta[name='description']").attr('content'),
-        })),
-        onSuccess: (result => {
-            title = String(result.result.title);
-            description = String(result.result.description);
-        }),
-    });
-    await crawler.queue({
-        url: link,
-        waitUntil: 'networkidle0',
-        delay: 500,
-        device: 'Nexus 7',
-    });
-    await crawler.onIdle(); // Resolved when no queue is left
-    await crawler.close(); // Close the crawler
+    try {
+        console.log("hccCheck");
+        const crawler = await HCCrawler.launch({
+            maxConcurrency: 1,
+            evaluatePage: (() => ({
+                title: document.title,
+                description: $("meta[name='description']").attr('content'),
+            })),
+            onSuccess: (result => {
+                title = String(result.result.title);
+                description = String(result.result.description);
+            }),
+        });
+        await crawler.queue({
+            url: link,
+            waitUntil: 'networkidle0',
+            delay: 500,
+            device: 'Nexus 7',
+        });
+        await crawler.onIdle(); // Resolved when no queue is left
+        await crawler.close(); // Close the crawler
 
-    const skillsData = await jsonController.getSkillsData();
-    var ti = title.split(" ");
-    var desc = description.split(" ");
-    for (var i = 0; i < skillsData.length; i++) {
-        if (title.includes(" " + skillsData[i] + " ") || description.includes(" " + skillsData[i] + " ")) {
-            console.log("title: " + title);
-            console.log("description: " + description);
-            console.log("skillsData[" + i + "] = " + skillsData[i]);
-            return "passed";
-        }
-        for (var j = 0; j < ti.length; j++) {
-            if (skillsData[i].includes(" " + ti[j] + " ") || skillsData[i] == ti[j]) {
-                console.log("title: " + ti[j]);
+        const skillsData = await jsonController.getSkillsData();
+        var ti = title.split(" ");
+        var desc = description.split(" ");
+        for (var i = 0; i < skillsData.length; i++) {
+            if (title.includes(" " + skillsData[i] + " ") || description.includes(" " + skillsData[i] + " ")) {
+                console.log("title: " + title);
+                console.log("description: " + description);
                 console.log("skillsData[" + i + "] = " + skillsData[i]);
                 return "passed";
             }
-        }
-        for (var k = 0; k < desc.length; k++) {
-            if (skillsData[i].includes(" " + desc[k] + " ") || skillsData[i] == desc[k]) {
-                console.log("description: " + desc[k]);
-                console.log("skillsData[" + i + "] = " + skillsData[i]);
-                return "passed";
+            for (var j = 0; j < ti.length; j++) {
+                if (skillsData[i].includes(" " + ti[j] + " ") || skillsData[i] == ti[j]) {
+                    console.log("title: " + ti[j]);
+                    console.log("skillsData[" + i + "] = " + skillsData[i]);
+                    return "passed";
+                }
+            }
+            for (var k = 0; k < desc.length; k++) {
+                if (skillsData[i].includes(" " + desc[k] + " ") || skillsData[i] == desc[k]) {
+                    console.log("description: " + desc[k]);
+                    console.log("skillsData[" + i + "] = " + skillsData[i]);
+                    return "passed";
+                }
             }
         }
+    } catch (e) {
+        console.log(e);
     }
     console.log("title: " + title);
     console.log("description: " + description);

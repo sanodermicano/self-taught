@@ -63,7 +63,8 @@
     <div class="topnav" id="topNav">
         <!--Is faulty, box is wrong place-->
         <div style="width:30%;right:1%;">
-            <img id="img1" title="Learning Resources History" class="collapsible" style="top: 3%;right:1%;position: absolute;" src="./img/skills.png" />
+            <img id="img1" title="Learning Resources History" class="collapsible"
+                style="top: 3%;right:1%;position: absolute;" src="./img/skills.png" />
             <div class="square-border"
                 style="position:absolute;right:1%;top: 14%;width: 25%;overflow-y: auto; max-height:200px;"
                 id="links-section">
@@ -97,14 +98,14 @@
         $("#dateSort").click(function () {
             event.preventDefault();
             $("#dateSort").children().show();
-            if($(this).children()[0].innerText=="△"){
+            if ($(this).children()[0].innerText == "△") {
                 $(this).children()[0].innerText = "▽";
-                lrList.sort(function(a, b){
+                lrList.sort(function (a, b) {
                     return a.date - b.date;
                 });
-            }else{
+            } else {
                 $(this).children()[0].innerText = "△";
-                lrList.sort(function(a, b){
+                lrList.sort(function (a, b) {
                     return b.date - a.date;
                 });
             }
@@ -114,14 +115,14 @@
         $("#ratingSort").click(function () {
             event.preventDefault();
             $("#ratingSort").children().show();
-            if($(this).children()[0].innerText=="△"){
+            if ($(this).children()[0].innerText == "△") {
                 $(this).children()[0].innerText = "▽";
-                lrList.sort(function(a, b){
+                lrList.sort(function (a, b) {
                     return a.rating - b.rating;
                 });
-            }else{
+            } else {
                 $(this).children()[0].innerText = "△";
-                lrList.sort(function(a, b){
+                lrList.sort(function (a, b) {
                     return b.rating - a.rating;
                 });
             }
@@ -166,7 +167,9 @@
                                         </select>
                                     </td>
                                     <td style="width:10%">
-                                        <img src="img/help.png" width="16" height="16" title="Can't find the Skill you're looking for? Insert learning resources' links related to that skill and wait a day, the Skill you're looking for will be automatically added to the Skills List." alt="Help"/>
+                                        <img src="img/help.png" width="16" height="16"
+                                            title="Learning Resources Difficulty: &#013;Level 1 & 2: Beginner&#013;Level 3: Intermediate&#013;Level 4: Advanced&#013;Level 5: Maxed (Won't appear in Search Results)&#013;&#013;Can't find the Skill you're looking for? Insert learning resources' links related to that skill and wait a day, the Skill you're looking for will be automatically added to the Skills List."
+                                            alt="Help" />
                                     </td>
                                 </tr>
                             </table>
@@ -209,17 +212,28 @@
                                     }
                                     $("#paginator").hide();
                                     $("#learningResources").hide();
-                                    $("#skills").append('<tr id="tr' + skillID + '"><th id="th' + skillID +
+                                    $("#skills").prepend('<tr id="tr' + skillID + '"><th id="th' + skillID +
                                         '" class="skills">' +
                                         predictedSkill +
                                         '</th><td class="level"><input type="range" min="1" max="5" value="' +
                                         skillRange + '" ' +
                                         'id="range' + skillID + '"></td><td>Level: <span id="level' +
-                                        skillID + '">' + skillRange + '</span></td>' +
+                                        skillID + '">' + skillRange + '</span></td><td><input type="checkbox" id="cb'+skillID+'" checked></td>' +
                                         '<td><img width="32" height="32" src="img/delete.png" id="del' +
                                         skillID + '"</td></tr>');
                                     $("#tr" + skillID).hide().fadeIn();
                                     skillRange = 1;
+                                    $("#cb" + skillID).change(function () {
+                                        var thisID = String($(this).attr('id')).substring('cb'
+                                            .length);
+                                        if($(this).is(':checked')){
+                                            $("#tr"+thisID).css('opacity', '1');
+                                            //put the skill and its range back in the list
+                                        }else{
+                                            $("#tr"+thisID).css('opacity', '0.4');
+                                            //take the skill and its range from the list
+                                        }
+                                    });
                                     $("#range" + skillID).change(function () {
                                         var thisID = String($(this).attr('id')).substring('level'
                                             .length);
@@ -245,7 +259,25 @@
                                                     console.log('Error predict: ' + error.message);
                                                 },
                                             });
-                                        }
+                                        } /*
+                                        else {
+                                            $.ajax({
+                                                url: 'http://localhost:8000/filterdifficulty',
+                                                data: {
+                                                    skillName: skillName,
+                                                    level: level
+                                                },
+                                                type: 'POST',
+                                                jsonpCallback: 'callback',
+                                                success: function (data) {
+                                                    console.log("filtered");
+                                                },
+                                                error: function (xhr, status, error) {
+                                                    console.log('Error filterdifficulty: ' + error
+                                                        .message);
+                                                },
+                                            });
+                                        }*/
                                         var position = Array.prototype.slice.call(document.getElementById(
                                             'skills').children).indexOf(document.getElementById('tr' +
                                             thisID)); //do this using vanilla js
@@ -282,7 +314,9 @@
                                         }
                                         console.log(skillsList);
 
-                                        $("#tr" + thisID).fadeOut(150, function() { $(this).remove(); });
+                                        $("#tr" + thisID).fadeOut(150, function () {
+                                            $(this).remove();
+                                        });
                                         $("#paginator").hide();
                                         $("#learningResources").hide();
                                         $("#learningResources").empty();
@@ -309,7 +343,7 @@
                                 var hideable = document.getElementById('nextSkill');
                                 // When the user clicks anywhere outside of the hideable, close it
                                 function showAll() {
-                                    hideable.style.display = "none"; 
+                                    hideable.style.display = "none";
                                     $("#allContent").show();
                                     $("#topNav").show();
                                     $("#userInfo").show();
@@ -327,8 +361,9 @@
                                     $("#randomBlock").show();
                                     $("#educational").show();
                                 }
+
                                 function hideAll() {
-                                    hideable.style.display = "none"; 
+                                    hideable.style.display = "none";
                                     $("#allContent").hide();
                                     $("#topNav").hide();
                                     $("#userInfo").hide();
@@ -465,9 +500,9 @@
                                     if (!('rating' in elem)) {
                                         elem = null;
                                     }
-                                    if(isInject){
-                                        for(var i = 0;i<lrList.length;i++){
-                                            if(lrList[i].id == elem.lrid) return;
+                                    if (isInject) {
+                                        for (var i = 0; i < lrList.length; i++) {
+                                            if (lrList[i].id == elem.lrid) return;
                                         }
                                     }
                                     console.log("Didn't pass through the if statement");
@@ -515,7 +550,7 @@
                                         'class="star star-0"></div><div class="star star-1"></div><div class="star star-2"></div><div class="star star-3">' +
                                         '</div><div class="star star-4"></div></div></div></div></div></div></td></tr>'
                                     );
-                                    $("#star"+linksPocketID).hide().fadeIn();
+                                    $("#star" + linksPocketID).hide().fadeIn();
                                     const lr = {
                                         id: lrId,
                                         title: lrTitle,
@@ -524,7 +559,7 @@
                                         rating: rating,
                                         date: d
                                     };
-                                    if(!isReloading){
+                                    if (!isReloading) {
                                         lrList.push(lr);
                                     }
                                     // (C)RUD SQL
@@ -546,11 +581,12 @@
                                         stars: starbox.attr('data-star-count') || 5
                                     }).bind('starbox-value-changed', function (event, value) {
                                         const starID = String($(this).attr('id')).substring('star'.length);
-                                        editRatingSQLLink(value*5, lrList[starID].id);
+                                        editRatingSQLLink(value * 5, lrList[starID].id);
                                     });
                                     $("#lp" + linksPocketID).click(function () {
                                         const lpID = String($(this).attr('id')).substring('lp'.length);
-                                        updateDateSQLLink(new Date().toISOString().slice(0, 19).replace('T', ' '), lrList[lpID].id);
+                                        updateDateSQLLink(new Date().toISOString().slice(0, 19).replace('T',
+                                            ' '), lrList[lpID].id);
                                     });
                                     linksPocketID++;
                                 }
@@ -646,6 +682,7 @@
                                         addRating(element, false, false);
                                     }
                                 }
+
                                 function reloadLinks() {
                                     if (!lrList) {
                                         console.log("NULL");
@@ -664,6 +701,7 @@
                                 //https://stackoverflow.com/questions/23327010/how-to-generate-unique-id-with-node-js
                                 const uuid = (new Date()).getTime().toString(36) + Math.random().toString(36).slice(2)
                                 console.log("uuid: " + uuid);
+
                                 function loadSkills() {
                                     var skillLen = 0;
                                     if (typeof (Storage) !== "undefined") {
@@ -696,7 +734,7 @@
                                     isLoading = false;
                                 }
 
-                                function loadLinks(){
+                                function loadLinks() {
                                     console.log("oops");
                                 }
 
@@ -725,6 +763,7 @@
                                 function delSQLSkill(removedItem) {
                                     console.log("nah dude delSQLSkill");
                                 }
+
                                 function addRating(elem = null, isReloading = false, isInject = false) {
                                     console.log("nah dude addRating");
                                 }
@@ -742,23 +781,26 @@
             </div>
         </div>
 
-        <img src="./img/self-taught.png" class="topnav" width="96px" height="96px" style="position:absolute;top: 1%;left:47%;right:50%"/>
+        <img src="./img/self-taught.png" class="topnav" width="96px" height="96px"
+            style="position:absolute;top: 1%;left:47%;right:50%" />
         <span class="square-border heading-text"
             style="position: absolute;font-family:helvatica,arial;background-color:white;text-align:center;top: 17%;left:37%;right:37%;color:#FF7F50;">Self-Taught</span>
-        
+
 
         <p id="siteName" class="center-top" style="text-align: center;">
             <div id="randomBlock" class="center">
                 <form id="linkSubmit">
                     <p id="plzWait" class="center">Please wait...</p>
                     <input type="url" name="url" id="url" placeholder="Insert/Paste a link that taught you something"
-                    pattern="((^|, )(https://.*|http://.*))+$" size="40" required> <!-- if we wanted to support http sites as well (not secure and will make us vulnerible)-->
-                        <!-- pattern="https://.*" size="40" required> -->
+                        pattern="((^|, )(https://.*|http://.*))+$" size="40" required>
+                    <!-- if we wanted to support http sites as well (not secure and will make us vulnerible)-->
+                    <!-- pattern="https://.*" size="40" required> -->
                     <button type="submit" form="linkSubmit" id="injectLink">Insert Link</button>
                 </form>
             </div>
             <br>
-            <input id="wdiln" type="submit" value="What Do I Learn Next?" style="z-index: 50;" class="center-bottom" role="button">
+            <input id="wdiln" type="submit" value="What Do I Learn Next?" style="z-index: 50;" class="center-bottom"
+                role="button">
         </p>
         <div>
 
@@ -767,21 +809,21 @@
         </div>
     </main>
     <% if (!user){ %>
-        <div class="topnav">
-            <img onclick=clickedLogin() src="img/icon-new.png" />
-        </div>
-        <script>
-            var uid = null;
-            var uEmail = null;
-        </script>
+    <div class="topnav">
+        <img onclick=clickedLogin() src="img/icon-new.png" />
+    </div>
+    <script>
+        var uid = null;
+        var uEmail = null;
+    </script>
     <% } %>
-    
+
     <%if (user) { %>
-            <script>
-                var uid = "<%- user.id; %>";
-                var uEmail = "<%- user.email; %>";
-                const uuid = null;
-            </script>
+    <script>
+        var uid = "<%- user.id; %>";
+        var uEmail = "<%- user.email; %>";
+        const uuid = null;
+    </script>
     <% } %>
     <!-- <div id="recommendation" style="display:none;"> -->
     <div id="recommendation">
@@ -802,7 +844,7 @@
     </div>
     </div>
     <script>
-        function cleanData(){
+        function cleanData() {
             $.ajax({
                 url: 'http://localhost:8000/clean',
                 data: {
@@ -813,10 +855,10 @@
                 type: 'POST',
                 jsonpCallback: 'callback',
                 success: function (data) {
-                    
+
                 },
                 error: function (xhr, status, error) {
-                    
+
                     console.log('Error login: ' + error.message);
                 },
             });
@@ -855,10 +897,12 @@
                     console.log(error);
                     showAll();
                     var userAj = "<%- user; %>";
-                    if(userAj){
-                        $("#plzWait").text("Error: Please retry or insert another link").delay(5000).fadeOut(150);
-                    }else{
-                        $("#plzWait").text("Error: Must be logged in to Insert Links").delay(5000).fadeOut(150);
+                    if (userAj) {
+                        $("#plzWait").text("Error: Please retry or insert another link").delay(5000)
+                            .fadeOut(150);
+                    } else {
+                        $("#plzWait").text("Error: Must be logged in to Insert Links").delay(5000)
+                            .fadeOut(150);
                     }
                     $("#plzWait").show();
                     // window.location.href = "/login";
@@ -866,7 +910,7 @@
                 },
             });
         });
-        
+
         //predict
         function foundNewSkills(newSkills) {
 
@@ -903,7 +947,8 @@
         function recommend() {
             event.preventDefault();
             if (skillsListBackup.length < 1) {
-                $("#plzWait").text("Cannot recommend Learning Resources, please add a skill to the skills section").delay(5000).fadeOut(150);
+                $("#plzWait").text("Cannot recommend Learning Resources, please add a skill to the skills section")
+                    .delay(5000).fadeOut(150);
                 $("#plzWait").show();
                 return;
             } else {
@@ -917,15 +962,17 @@
                 currPage = parseInt(String($(this).attr('id')).substring('pg'.length));
             }
             console.log("currPage = " + currPage);
-            console.log(skillsListBackup); 
+            console.log(skillsListBackup);
             //backhere skills filtering can be done here in front-end, just reduce the skills in skillsListBackup to a new variable named concludedSkillsList
             //but levels and LR type should be done in the backend
             $("#learningResources").empty();
-            
+            const LRType = "Any";
             $.ajax({
                 url: 'http://localhost:8000/recommend?page=' + currPage + '&limit=' + limit,
                 data: {
                     skillsListBackup,
+                    rangesList,
+                    learningResourceType: LRType,
                     uniqueID: uuid,
                     userid: uid,
                     email: uEmail
@@ -981,8 +1028,9 @@
                             '</button>');
                         $("#pg" + (pgNum + 1)).click(recommend);
                     }
-                    $("#paginator").append('<button id="pg' + (resources['allPages']+1) + '">Last</button>');
-                    $("#pg" + (resources['allPages']+1)).click(recommend);
+                    $("#paginator").append('<button id="pg' + (resources['allPages'] + 1) +
+                        '">Last</button>');
+                    $("#pg" + (resources['allPages'] + 1)).click(recommend);
 
                 },
                 error: function (xhr, status, error) {
@@ -1008,9 +1056,9 @@
             coll[i].addEventListener("click", function () {
                 this.classList.toggle("active");
                 var content = this.nextElementSibling;
-                if($(content).is(":visible")){
+                if ($(content).is(":visible")) {
                     $(content).fadeOut(150);
-                }else{
+                } else {
                     $(content).fadeIn();
                 }
             });
@@ -1020,11 +1068,11 @@
 
 </body>
 <footer class="py-5" style="z-index: 0;">
-        <br><br><br><br>
-        <br><br>
-        <div id="userInfo">
+    <br><br><br><br>
+    <br><br>
+    <div id="userInfo">
         <%if (user) { %>
-            <br><br><br><br>
+        <br><br><br><br>
         <h2>
             Welcome <%= user.name %>
         </h2>

@@ -73,7 +73,7 @@ exports.getBlockedLinks =  async function() {
     }
 };
 
-exports.deleteBlockedLinks =  async function() {
+exports.deleteBlockedLinks =  async function(req, res) {
     console.log("deleteBlockedLinks");
     const readfs = require('fs');
     let data = [];
@@ -98,6 +98,7 @@ exports.deleteBlockedLinks =  async function() {
     }
     await writeJson(data, "blockedLinks").then((d) => d)
         .catch((err) => console.error('writeJson() failed', err));
+    if(res) res.status(201).send();
 };
 
 exports.setBlockedLinks =  async function(links) {

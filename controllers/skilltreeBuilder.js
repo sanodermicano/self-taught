@@ -7,7 +7,7 @@ const router = express.Router();
 // router.get('/initializeSkillTree', async function(req, res){
 //     await buildController.buildTestSkillTree();
 // });
-// router.get('/buildSkills', buildController.buildTree);
+router.get('/buildSkills', buildController.buildTree); //demo purposes
 // router.get('/updateSkills', buildController.cleanSkillTree);
 
 module.exports = router;
