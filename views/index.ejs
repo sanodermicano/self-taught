@@ -181,11 +181,13 @@
 
                                     var data = "<%- skills; %>".split(",");
                                     $.each(data, function (key, entry) {
-                                        skillSearch.append($('<option></option>').attr(
+                                        skillSearch.prepend($('<option></option>').attr(
                                             'value', entry).text(entry));
                                     });
                                     loadLinks();
                                     loadSkills();
+                                    fadeBack();
+                                    $("#filterall").fadeTo(150, 1);
                                     $("#ratingSort").children().hide();
                                     $("#select-skill").selectize({});
                                 });
@@ -194,11 +196,16 @@
                                 var isLoading = true;
                                 var predictedSkill = "";
                                 var skillRange = 1;
+                                var skillIsOn = true;
                                 var skillID = 0;
                                 var skillsList = [];
                                 var skillsListBackup = [];
+                                var rangesListBackup = [];
                                 var positionsList = [];
                                 var rangesList = [];
+
+                                var skillsListFiltered = [];
+                                var rangesListFiltered = [];
 
                                 function addSkills() {
                                     if (predictedSkill == "" && !isLoading) {
@@ -212,27 +219,50 @@
                                     }
                                     $("#paginator").hide();
                                     $("#learningResources").hide();
-                                    $("#skills").prepend('<tr id="tr' + skillID + '"><th id="th' + skillID +
+
+                                    //use prepend and instead but remember to mirror all skills list operations; unshift CRUD instead of pushing
+                                    $("#skills").append('<tr id="tr' + skillID + '"><th id="th' + skillID +
                                         '" class="skills">' +
                                         predictedSkill +
                                         '</th><td class="level"><input type="range" min="1" max="5" value="' +
                                         skillRange + '" ' +
                                         'id="range' + skillID + '"></td><td>Level: <span id="level' +
-                                        skillID + '">' + skillRange + '</span></td><td><input type="checkbox" id="cb'+skillID+'" checked></td>' +
+                                        skillID + '">' + skillRange +
+                                        '</span></td><td><input type="checkbox" id="cb' + skillID +
+                                        '" checked></td>' +
                                         '<td><img width="32" height="32" src="img/delete.png" id="del' +
                                         skillID + '"</td></tr>');
                                     $("#tr" + skillID).hide().fadeIn();
                                     skillRange = 1;
-                                    $("#cb" + skillID).change(function () {
+                                    $("#cb" + skillID).click(function () {
                                         var thisID = String($(this).attr('id')).substring('cb'
                                             .length);
-                                        if($(this).is(':checked')){
-                                            $("#tr"+thisID).css('opacity', '1');
-                                            //put the skill and its range back in the list
-                                        }else{
-                                            $("#tr"+thisID).css('opacity', '0.4');
-                                            //take the skill and its range from the list
+                                        var position = Array.prototype.slice.call(document.getElementById(
+                                            'skills').children).indexOf(document.getElementById('tr' +
+                                            thisID));
+                                        //backhere
+                                        if ($(this).is(':checked')) {
+                                            $("#tr" + thisID).fadeTo(150, 1)
+                                            skillsListFiltered[position] = skillsListBackup[position];
+                                            rangesListFiltered[position] = rangesListBackup[position];
+                                            if (!isLoading) {
+                                                switchSkillSQL(skillsListBackup[position], 1);
+                                            }
+                                        } else {
+                                            $("#tr" + thisID).fadeTo(150, 0.4);
+                                            skillsListFiltered[position] = "-1";
+                                            rangesListFiltered[position] = -1;
+                                            if (!isLoading) {
+                                                switchSkillSQL(skillsListBackup[position], 0);
+                                            }
                                         }
+                                        saveSkills();
+                                        console.log("skillsListFiltered[" + position + "] = " +
+                                            skillsListFiltered[position]);
+                                        console.log("rangesListFiltered[" + position + "] = " +
+                                            rangesListFiltered[position]);
+                                        console.log("skillsListFiltered: " + skillsListFiltered);
+                                        console.log("rangesListFiltered: " + rangesListFiltered);
                                     });
                                     $("#range" + skillID).change(function () {
                                         var thisID = String($(this).attr('id')).substring('level'
@@ -259,25 +289,7 @@
                                                     console.log('Error predict: ' + error.message);
                                                 },
                                             });
-                                        } /*
-                                        else {
-                                            $.ajax({
-                                                url: 'http://localhost:8000/filterdifficulty',
-                                                data: {
-                                                    skillName: skillName,
-                                                    level: level
-                                                },
-                                                type: 'POST',
-                                                jsonpCallback: 'callback',
-                                                success: function (data) {
-                                                    console.log("filtered");
-                                                },
-                                                error: function (xhr, status, error) {
-                                                    console.log('Error filterdifficulty: ' + error
-                                                        .message);
-                                                },
-                                            });
-                                        }*/
+                                        }
                                         var position = Array.prototype.slice.call(document.getElementById(
                                             'skills').children).indexOf(document.getElementById('tr' +
                                             thisID)); //do this using vanilla js
@@ -285,6 +297,15 @@
                                         rangesList.splice(position, 1, {
                                             value: level
                                         }.value);
+
+                                        rangesListBackup.splice(position, 1, {
+                                            value: level
+                                        }.value);
+
+                                        rangesListFiltered.splice(position, 1, {
+                                            value: level
+                                        }.value);
+
                                         console.log("rangesList[position] = " + rangesList[position]);
                                         console.log("rangesList = " + rangesList);
                                         editSQLSkill(skillName, level);
@@ -307,7 +328,11 @@
                                             skillsList.splice(index, 1);
                                             skillsListBackup.splice(index, 1);
                                             rangesList.splice(index, 1);
+                                            rangesListBackup.splice(index, 1);
                                             positionsList.splice(index, 1);
+
+                                            skillsListFiltered.splice(index, 1);
+                                            rangesListFiltered.splice(index, 1);
                                             saveSkills();
                                         } else {
                                             console.log("could not delete");
@@ -323,7 +348,15 @@
                                     });
                                     skillID++;
                                     skillsListBackup.push(predictedSkill);
+                                    rangesListBackup.push(1);
+
+                                    skillsListFiltered.push(predictedSkill);
+                                    if (!uuid) {
+                                        rangesListFiltered.push(1);
+                                    }
+
                                     if (!isLoading) {
+                                        console.log("rangesListFiltered loading: " + rangesListFiltered);
                                         skillsList.push(
                                             predictedSkill); //make it into a dictionary {"skill":levelnum}
                                         rangesList.push(1);
@@ -337,6 +370,7 @@
                                     console.log(skillsList);
                                     console.log(rangesList);
                                     console.log(positionsList);
+                                    console.log(rangesListFiltered);
                                     predictedSkill = "";
                                 }
                                 // Get the hideable
@@ -412,9 +446,17 @@
                                         const element = loadedSkills[i];
                                         predictedSkill = element.name;
                                         skillRange = element.level;
+                                        skillIsOn = element.ison;
                                         console.log("predictedSkill = " + predictedSkill);
                                         addSkills();
+                                        if (element.ison == 0) {
+                                            console.log("isOn: " + element.ison);
+                                            $("#tr" + i).fadeTo(150, 0.4);
+                                            $("#cb" + i).trigger('click');
+                                        }
                                     }
+                                    console.log("skillsListFiltered: " + skillsListFiltered);
+                                    console.log("rangesListFiltered: " + rangesListFiltered);
                                     isLoading = false;
                                 }
 
@@ -483,6 +525,27 @@
                                             },
                                         });
                                     }
+                                }
+
+                                function switchSkillSQL(skill, isSwitchedOn) {
+                                    var switchedSkill = {
+                                        name: skill,
+                                        isOn: isSwitchedOn,
+                                        userid: "<%- user.id; %>",
+                                        email: "<%- user.email; %>"
+                                    };
+                                    $.ajax({
+                                        url: 'http://localhost:8000/switchSkill',
+                                        data: switchedSkill,
+                                        type: 'POST',
+                                        jsonpCallback: 'callback',
+                                        success: function (data) {
+                                            console.log("Swtiched Skill");
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.log('Error switchSkillSQL: ' + error.message);
+                                        },
+                                    });
                                 }
 
                                 function saveSkills() {
@@ -712,9 +775,11 @@
                                         skillsList = JSON.parse(localStorage.getItem("skillsList"));
                                         positionsList = JSON.parse(localStorage.getItem("positionsList"));
                                         rangesList = JSON.parse(localStorage.getItem("rangesList"));
+                                        rangesListFiltered = JSON.parse(localStorage.getItem("rangesListFiltered"));
                                         console.log("skillsList = " + skillsList);
                                         console.log("positionsList = " + positionsList);
                                         console.log("rangesList = " + rangesList);
+                                        console.log("rangesListFiltered localStorage = " + rangesListFiltered);
                                         skillLen = skillsList.length
                                         var skillOptions = document.getElementById("options-img");
                                         var so = skillOptions.nextElementSibling;
@@ -731,6 +796,17 @@
                                         console.log("predictedSkill = " + predictedSkill);
                                         addSkills();
                                     }
+                                    if (rangesListFiltered.length < 1) {
+                                        rangesListFiltered = rangesList.slice();
+                                    }
+                                    console.log("rangesListFiltered before for: " + rangesListFiltered);
+                                    console.log("rangesListFiltered before for: " + rangesListFiltered.length);
+                                    for (var i = 0; i < rangesListFiltered.length; i++) {
+                                        if (rangesListFiltered[i] < 0) {
+                                            $("#tr" + i).fadeTo(150, 0.4);
+                                            $("#cb" + i).trigger('click');
+                                        }
+                                    }
                                     isLoading = false;
                                 }
 
@@ -738,15 +814,25 @@
                                     console.log("oops");
                                 }
 
+                                function switchSkillSQL(skill, isSwitchedOn) {
+                                    console.log("nah dude");
+                                }
+
                                 function saveSkills() {
                                     //use to empty local session variables
                                     // skillsList.splice(0, skillsList.length);
                                     // positionsList.splice(0, positionsList.length);
                                     // rangesList.splice(0, rangesList.length);
+                                    // rangesListFiltered = []
                                     if (typeof (Storage) !== "undefined") {
                                         localStorage.setItem('skillsList', JSON.stringify(skillsListBackup));
                                         localStorage.setItem('positionsList', JSON.stringify(positionsList));
                                         localStorage.setItem('rangesList', JSON.stringify(rangesList));
+                                        localStorage.setItem('rangesListFiltered', JSON.stringify(rangesListFiltered));
+                                        console.log("while saving rangesListfiltered 1: " + localStorage.getItem(
+                                            "rangesListFiltered"));
+                                        console.log("while saving rangesListfiltered 2: " + JSON.parse(localStorage
+                                            .getItem("rangesListFiltered")));
                                     } else {
                                         console.log("No support for Web Storage");
                                     }
@@ -787,8 +873,8 @@
             style="position: absolute;font-family:helvatica,arial;background-color:white;text-align:center;top: 17%;left:37%;right:37%;color:#FF7F50;">Self-Taught</span>
 
 
-        <p id="siteName" class="center-top" style="text-align: center;">
-            <div id="randomBlock" class="center">
+        <p id="siteName" class="center-top" style="text-align: center; z-index: 0;">
+            <div id="randomBlock" class="center" style="z-index: 0;">
                 <form id="linkSubmit">
                     <p id="plzWait" class="center">Please wait...</p>
                     <input type="url" name="url" id="url" placeholder="Insert/Paste a link that taught you something"
@@ -831,8 +917,39 @@
             <button onclick=clickedLink()>Filter</button>
         -->
         <br><br><br><br>
+
+        <table>
+            <tr>
+                <td>
+                    <button id="filterall">All</button>
+                </td>
+                <td>
+                    <button id="filteroc">Online Course</button>
+                </td>
+                <td>
+                    <button id="filterarticle">Article</button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button id="filterbook">Book</button>
+                </td>
+                <td>
+                    <button id="filterqa">Questions & Answers</button>
+                </td>
+                <td>
+                    <button id="filtervid">Video</button>
+                </td>
+                <td>
+                    <button id="filterpodcast">Podcast</button>
+                </td>
+            </tr>
+        </table>
+        <br><br>
         <div id="pagTop">
-            <div id="paginator"></div>
+            <div id="paginator">
+                
+            </div>
         </div>
     </div>
 
@@ -944,6 +1061,63 @@
         //wdiln
         $("#wdiln").click(recommend);
 
+        var LRType = "Any";
+        $("#filterall").click(function () {
+            fadeBack();
+            $(this).fadeTo(150, 1);
+            LRType = "Any";
+            console.log(LRType);
+        });
+        $("#filteroc").click(function () {
+            fadeBack();
+            $(this).fadeTo(150, 1);
+            LRType = "Online Course";
+            console.log(LRType);
+        });
+        $("#filterarticle").click(function () {
+            fadeBack();
+            $(this).fadeTo(150, 1);
+            LRType = "Article";
+            console.log(LRType);
+        });
+        $("#filterbook").click(function () {
+            fadeBack();
+            $(this).fadeTo(150, 1);
+            LRType = "Book";
+            console.log(LRType);
+        });
+        $("#filterqa").click(function () {
+            fadeBack();
+            $(this).fadeTo(150, 1);
+            LRType = "Questions & Answers";
+            console.log(LRType);
+        });
+        $("#filtervid").click(function () {
+            fadeBack();
+            $(this).fadeTo(150, 1);
+            LRType = "Video";
+            console.log(LRType);
+        });
+        $("#filterpodcast").click(function () {
+            fadeBack();
+            $(this).fadeTo(150, 1);
+            LRType = "Podcast";
+            console.log(LRType);
+        });
+
+        function fadeBack(){
+            $("#paginator").hide();
+            $("#learningResources").hide();
+            $("#learningResources").empty();
+            $("#filterall").fadeTo(150, 0.4);
+            $("#filterpodcast").fadeTo(150, 0.4);
+            $("#filtervid").fadeTo(150, 0.4);
+            $("#filterqa").fadeTo(150, 0.4);
+            $("#filterbook").fadeTo(150, 0.4);
+            $("#filterarticle").fadeTo(150, 0.4);
+            $("#filteroc").fadeTo(150, 0.4);
+        }
+
         function recommend() {
             event.preventDefault();
             if (skillsListBackup.length < 1) {
@@ -963,15 +1137,15 @@
             }
             console.log("currPage = " + currPage);
             console.log(skillsListBackup);
-            //backhere skills filtering can be done here in front-end, just reduce the skills in skillsListBackup to a new variable named concludedSkillsList
-            //but levels and LR type should be done in the backend
+
             $("#learningResources").empty();
-            const LRType = "Any";
+            //if website is udacity lr type is course
+
             $.ajax({
                 url: 'http://localhost:8000/recommend?page=' + currPage + '&limit=' + limit,
                 data: {
-                    skillsListBackup,
-                    rangesList,
+                    skillsListFiltered,
+                    rangesListFiltered,
                     learningResourceType: LRType,
                     uniqueID: uuid,
                     userid: uid,
@@ -982,10 +1156,11 @@
                 success: function (data) {
                     // var resources = JSON.stringify(data.message);
                     var resources = data.message;
-                    console.log("resources: " + JSON.stringify(resources));
+                    // console.log("resources: " + JSON.stringify(resources));
 
                     $.each(resources['results'], function (i, value) {
-                        $("#learningResources").append('<tr><td><div><h3><a id="lr' + i +
+                        //test the learning resources if they're in the right order using prepend or append
+                        $("#learningResources").prepend('<tr><td><div><h3><a id="lr' + i +
                             '" href="' + resources['results'][i].link + '" target="_blank">' +
                             resources[
                                 'results'][i].title + '</a>&nbsp;<span>(' +

@@ -16,18 +16,44 @@ with open('tmp/learningResources.json', 'r', encoding='utf8') as file:
     data = json.load(file)
     # newResources = ["Photoshop", "C#"]
     # newResources = ["Photoshop"]
-    newResources = sys.argv[1].split(",")
-    # print(newResources)
+    # newResources = sys.argv[1].split(",")
+
+    # newResources = json.loads(sys.argv[1])
+    # rawData = json.loads('{"skills": ["Unity", "Java"], "ranges": ["-1", "1"]}')
+    # rawData = json.loads('{"skills": "PHP", "ranges": "4", "lrtype": "Questions & Answers"}')
+    rawData = json.loads(sys.argv[1])
+    newResources = None
+    nrLen = 0
+    if isinstance(rawData['skills'], str):
+        newResources = {"skills": [rawData['skills']], "ranges": [rawData['ranges']], "lrtype": [rawData['lrtype']]}
+        nrLen = 1
+    else:
+        newResources = rawData
+        nrLen = len(newResources['skills'])
+    
+    lrtype = newResources['lrtype']
+    # {'skills': 'Unity', 'ranges': '1'}
+    # {'skills': ['Unity', 'C#'], 'ranges': ['1', '1']}
+
+    print(nrLen)
     resources = []
     for dataElement in data:
-        for newResource in newResources:
-            # print(newResource)
-            if 'title' in dataElement:
-                if newResource.lower() in dataElement['title'].lower():
-                    resources.append(dataElement)
+        if 'title' in dataElement:
+            for i in range(0, nrLen):
+                if int(newResources['ranges'][i]) > -1 and newResources['skills'][i] != "-1":
+                    if newResources['ranges'][i] == '1' or newResources['ranges'][i] == '2':
+                        if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Beginner" and (dataElement['type'] == lrtype or lrtype == "Any"):
+                            resources.append(dataElement)
+                    elif newResources['ranges'][i] == '3':
+                        if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Intermediate" and (dataElement['type'] == lrtype or lrtype == "Any"):
+                            resources.append(dataElement)
+                    elif newResources['ranges'][i] == '4':
+                        if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Advanced" and (dataElement['type'] == lrtype or lrtype == "Any"):
+                            resources.append(dataElement)
+                    
             #         continue
             # if 'description' in dataElement:
-            #     if newResource.lower() in dataElement['description'].lower():
+            #     if newResources.lower() in dataElement['description'].lower():
             #         resources.append(dataElement)
 
     resources = list(removeDuplicates(resources))

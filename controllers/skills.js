@@ -7,5 +7,6 @@ const router = express.Router();
 router.post('/skills', skillsController.addSkill);
 router.post('/delSkill', skillsController.deleteSkill);
 router.post('/editSkill', skillsController.editSkill);
+router.post('/switchSkill', skillsController.switchSkill);
 
 module.exports = router;

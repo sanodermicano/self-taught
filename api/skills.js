@@ -25,7 +25,7 @@ exports.addSkill = async function (req, res) {
                             return res.status(500).send();
                         }
                     }
-                    db.util.query('INSERT INTO skill SET ?', { name: name, level: level, position: position, userid: SQLID }, function (error, results) {
+                    db.util.query('INSERT INTO skill SET ?', { name: name, level: level, position: position, ison: true, userid: SQLID }, function (error, results) {
                         if (error) {
                             console.log(error);
                         } else {
@@ -125,5 +125,31 @@ exports.deleteSkill = async function (req, res) {
     } catch (e) {
         res.status(500).send();
         console.log("failed del: " + e);
+    }
+}
+
+exports.switchSkill = async function (req, res) {
+    try {
+        const { name, isOn, userid, email } = req.body;
+        let SQLID = 0;
+        db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
+            console.log("userid: " + userid);
+            SQLID = results[0].id;
+            console.log("SQLID: " + SQLID);
+            if (!await bcrypt.compare(SQLID.toString(), userid)) {
+                return res.status(500).send();
+            } else {
+                console.log("SQLID: " + SQLID + "\nisOn: " + isOn + "\nname: " + name);
+                db.util.query('UPDATE skill SET ison = ? WHERE userid = ? AND name = ?', [isOn, SQLID, name], async function (error, results) {
+                    if (error) {
+                        console.log(error);
+                    }
+                    res.status(201).send();
+                });
+            }
+        });
+    } catch (e) {
+        res.status(500).send();
+        console.log("failed switch: " + e);
     }
 }

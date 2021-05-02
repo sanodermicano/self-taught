@@ -15,6 +15,8 @@ exports.cleanUser = function(req, res){
         if(uniqueID){
             console.log("cleaned not logged in");
             usersMap.delete(uniqueID + "prevSkills");
+            usersMap.delete(uniqueID + "prevRanges");
+            usersMap.delete(uniqueID + "prevLRType");
             usersMap.delete(uniqueID + "orig");
             usersMap.delete(uniqueID + "temp");
         }else{
@@ -27,6 +29,8 @@ exports.cleanUser = function(req, res){
                 } else {
                     console.log("cleaned logged in");
                     usersMap.delete(SQLID + "prevSkills");
+                    usersMap.delete(SQLID + "prevRanges");
+                    usersMap.delete(SQLID + "prevLRType");
                     usersMap.delete(SQLID + "orig");
                     usersMap.delete(SQLID + "temp");
                 }
@@ -51,7 +55,10 @@ exports.recommend = function (req, res) {
         console.log("page = " + page + ", limit = " + limit);
         console.log("startIndex = " + startIndex + ", endIndex = " + endIndex);
 
-        let skills = req.body['skillsListBackup[]'];
+        let skills = req.body['skillsListFiltered[]'];
+        let ranges = req.body['rangesListFiltered[]'];
+        let LRType = req.body['learningResourceType']; //might make prevLRType and do filteration on Python
+        console.log("LRType: " + LRType);
 
         if (email != null && userid != null && email!='' && userid!='') {
             db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
@@ -62,17 +69,24 @@ exports.recommend = function (req, res) {
                     return res.status(500).send();
                 } else {
                     let prevSkills = usersMap.get(SQLID + "prevSkills");
+                    let prevRanges = usersMap.get(SQLID + "prevRanges");
+                    let prevLRType = usersMap.get(SQLID + "prevLRType");
 
                     console.log("prevSkills 1: " + String(prevSkills));
+                    console.log("prevRanges 1: " + String(prevRanges));
+                    console.log("prevLRType 1: " + String(prevLRType));
                     console.log("skills: " + String(skills));
+                    console.log("ranges: " + String(ranges));
                     const hashKey = String(SQLID);
-                    if (String(prevSkills) != String(skills)) {
+                    if (String(prevSkills) != String(skills) || String(prevRanges) != String(ranges) || String(prevLRType) != String(LRType)) {
                         console.log("prevSkills != skills");
                         if (SQLID > -1 && usersMap.get(SQLID + "orig") != null) {
                             usersMap.set(SQLID + "prevSkills", skills);
-                            recommendSkill(skills, SQLID, res, result, page, limit);
+                            usersMap.set(SQLID + "prevRanges", ranges);
+                            usersMap.set(SQLID + "prevLRType", LRType);
+                            recommendSkill(skills, ranges, LRType, SQLID, res, result, page, limit);
                         } else {
-                            searchSkill(skills, hashKey, res, result, page, limit);
+                            searchSkill(skills, ranges, LRType, hashKey, res, result, page, limit);
                         }
                     } else {
                         pagination(res, result, page, limit, hashKey, startIndex, endIndex);
@@ -84,18 +98,25 @@ exports.recommend = function (req, res) {
             if(!uniqueID) return;
             const hashKey = String(uniqueID);
             let prevSkills = usersMap.get(uniqueID + "prevSkills");
+            let prevRanges = usersMap.get(uniqueID + "prevRanges");
+            let prevLRType = usersMap.get(uniqueID + "prevLRType");
             console.log("prevSkills 2: " + String(prevSkills));
+            console.log("prevRanges 2: " + String(prevRanges));
+            console.log("prevLRType 2: " + String(prevLRType));
             console.log("skills: " + String(skills));
 
-            if (String(prevSkills) != String(skills)) {
+            if (String(prevSkills) != String(skills) || String(prevRanges) != String(ranges) || String(prevLRType) != String(LRType)) {
                 usersMap.set(uniqueID + "prevSkills", skills);
-                searchSkill(skills, hashKey, res, result, page, limit);
+                usersMap.set(uniqueID + "prevRanges", ranges);
+                usersMap.set(uniqueID + "prevLRType", LRType);
+                searchSkill(skills, ranges, LRType, hashKey, res, result, page, limit);
             } else {
                 pagination(res, result, page, limit, hashKey, startIndex, endIndex);
             }
         }  
         //______________________________________________________
     } catch (e) {
+        res.status(500).send();
         console.log(e);
     }
 };
@@ -120,19 +141,21 @@ function pagination(res, result, page, limit, hashKey, startIndex, endIndex) {
     res.send({ success: true, message: result });
 }
 
-async function searchSkill(skills, hashKey, res, result, page, limit) {
+async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, limit) {
+    console.log("searchSkill");
     const pShell = require('python-shell').PythonShell;
     let options = {
         mode: 'json',
         pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         scriptPath: process.env.PY_PROJ,
-        args: [skills]
+        args: [JSON.stringify({"skills": skills, "ranges": ranges, "lrtype": LRType})]
     };
     try {
         pShell.run('searchSkill.py', options, function (err, results) {
             if (err) throw err;
-            usersMap.set(hashKey + "temp", results[0]);
+            usersMap.set(hashKey + "temp", results[1]);
+            console.log("results: " + usersMap.get(hashKey + "temp"));
             result.results = usersMap.get(hashKey + "temp").slice(0, limit); //uncomment
             const startIndex = (page - 1) * limit;
             const endIndex = page * limit;
@@ -202,6 +225,8 @@ exports.collaborativeBasedFiltering = function (req, res, next, uEmail = null) {
                     }
                     userObj = JSON.stringify(result);
                     usersMap.set(SQLID + "prevSkills", null);
+                    usersMap.set(SQLID + "prevRanges", null);
+                    usersMap.set(SQLID + "prevLRType", null);
                     // usersMap.set(SQLID + "orig", []);
                     // usersMap.set(SQLID + "temp", []);
                     console.log("userObj 2: " + userObj.length);
@@ -232,7 +257,7 @@ exports.collaborativeBasedFiltering = function (req, res, next, uEmail = null) {
     }
 }
 
-async function recommendSkill(skills, SQLID, res, result, page, limit) {
+async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, limit) {
     const pShell = require('python-shell').PythonShell;
     // console.log("recommendSkill hashmap: " + usersMap.get(SQLID + "orig").length);
     //await save usersMap.get(userObj.userid + "orig") in a json file
@@ -244,7 +269,7 @@ async function recommendSkill(skills, SQLID, res, result, page, limit) {
         pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         scriptPath: process.env.PY_PROJ,
-        args: [JSON.stringify({ "skills": skills, "id": SQLID })]
+        args: [JSON.stringify({ "skills": skills, "ranges": ranges, "id": SQLID, "lrtype": LRType })]
     };
     try {
         pShell.run('recommendSkill.py', options, function (err, results) {
