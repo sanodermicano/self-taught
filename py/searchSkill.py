@@ -47,7 +47,7 @@ with open('tmp/learningResources.json', 'r', encoding='utf8') as file:
                     elif newResources['ranges'][i] == '3':
                         if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Intermediate" and (dataElement['type'] == lrtype or lrtype == "Any"):
                             resources.append(dataElement)
-                    elif newResources['ranges'][i] == '4':
+                    elif newResources['ranges'][i] == '4' or newResources['ranges'][i] == '5':
                         if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Advanced" and (dataElement['type'] == lrtype or lrtype == "Any"):
                             resources.append(dataElement)
                     
