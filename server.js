@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config({ path: './.env' });
 
-const db = require('./models/db');
+const db = require('./models/mysql');
 db.util.connect(function (error) {
     if (error) {
         console.log(error);

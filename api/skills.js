@@ -1,4 +1,4 @@
-const db = require('../models/db');
+const db = require('../models/mysql');
 const bcrypt = require('bcrypt');
 
 exports.addSkill = async function (req, res) {

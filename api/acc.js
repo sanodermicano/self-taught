@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const db = require('../models/db');
+const db = require('../models/mysql');
 const bcrypt = require('bcrypt');
 const { promisify } = require('util');
 

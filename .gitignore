@@ -1,6 +1,7 @@
-# .env
+.env
 node_modules
 desktop.ini
 .vscode
 .VSCodeCounter
 todo.txt
+tmp

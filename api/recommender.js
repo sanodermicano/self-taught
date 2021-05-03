@@ -1,5 +1,5 @@
 require("dotenv").config();
-const db = require('../models/db');
+const db = require('../models/mysql');
 const jsonController = require('./jsonOps');
 const bcrypt = require('bcrypt');
 var HashMap = require('hashmap');
@@ -144,16 +144,20 @@ function pagination(res, result, page, limit, hashKey, startIndex, endIndex) {
 async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, limit) {
     console.log("searchSkill");
     const pShell = require('python-shell').PythonShell;
+    const skillsList = Array.isArray(skills) ? skills : [skills];
+    const rangesList = Array.isArray(ranges) ? ranges : [ranges];
     let options = {
         mode: 'json',
         pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         scriptPath: process.env.PY_PROJ,
-        args: [JSON.stringify({"skills": skills, "ranges": ranges, "lrtype": LRType})]
+        args: [JSON.stringify({"skills": skillsList, "ranges": rangesList, "lrtype": LRType})]
     };
     try {
         pShell.run('searchSkill.py', options, function (err, results) {
             if (err) throw err;
+            // console.log(JSON.stringify({"skills": skillsList, "ranges": rangesList, "lrtype": LRType}));
+            // console.log("results: " + results);
             usersMap.set(hashKey + "temp", results[1]);
             console.log("results: " + usersMap.get(hashKey + "temp"));
             result.results = usersMap.get(hashKey + "temp").slice(0, limit); //uncomment
@@ -175,7 +179,7 @@ async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, l
                     limit: limit
                 };
             }
-            console.log("last res.send");
+            console.log("last res.send 1");
             res.send({ success: true, message: result });
         });
     } catch (e) {
@@ -261,6 +265,8 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
     const pShell = require('python-shell').PythonShell;
     // console.log("recommendSkill hashmap: " + usersMap.get(SQLID + "orig").length);
     //await save usersMap.get(userObj.userid + "orig") in a json file
+    const skillsList = Array.isArray(skills) ? skills : [skills];
+    const rangesList = Array.isArray(ranges) ? ranges : [ranges];
     console.log("SQLID mhm? " + SQLID);
     await jsonController.writeJSON(usersMap.get(SQLID + "orig"), "users/rec" + SQLID).then((d) => d)
         .catch((err) => console.error('writeJSON() failed', err));
@@ -269,7 +275,7 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
         pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         scriptPath: process.env.PY_PROJ,
-        args: [JSON.stringify({ "skills": skills, "ranges": ranges, "id": SQLID, "lrtype": LRType })]
+        args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "id": SQLID, "lrtype": LRType })]
     };
     try {
         pShell.run('recommendSkill.py', options, function (err, results) {
@@ -294,7 +300,7 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
                     limit: limit
                 };
             }
-            console.log("last res.send");
+            console.log("last res.send 2");
             res.send({ success: true, message: result });
         });
     } catch (e) {
