@@ -63,7 +63,7 @@ for name, group in userSubsetGroup:
     Syy = sum([i**2 for i in tempGroupList]) - pow(sum(tempGroupList),2)/float(nRatings)
     Sxy = sum( i*j for i, j in zip(tempRatingList, tempGroupList)) - sum(tempRatingList)*sum(tempGroupList)/float(nRatings)
     #If the denominator is different than zero, then divide, else, 0 correlation.
-    if Sxx != 0 and Syy != 0:
+    if Sxx != 0 and Syy != 0 and not (Sxx > 0 and Syy < 0) and not (Sxx < 0 and Syy > 0):
         pearsonCorrelationDict[name] = Sxy/sqrt(Sxx*Syy)
     else:
         pearsonCorrelationDict[name] = 0

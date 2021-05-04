@@ -73,6 +73,25 @@ exports.getBlockedLinks =  async function() {
     }
 };
 
+exports.getVisitedLinks =  async function() {
+    console.log("getVisitedLinks");
+    const readfs = require('fs');
+    try {
+        const fData = readfs.readFileSync('./tmp/' + 'learningResources' + '.json');
+        let data = JSON.parse(fData);
+        let sData = []
+        for(var i = 0; i<data.length;i++){
+            sData.push(data[i].link);
+        }
+        // console.log(sData.length);
+        // console.log(sData);
+        return sData;
+    } catch (err) {
+        console.error("err: " + err);
+        return null;
+    }
+};
+
 exports.deleteBlockedLinks =  async function(req, res) {
     console.log("deleteBlockedLinks");
     const readfs = require('fs');

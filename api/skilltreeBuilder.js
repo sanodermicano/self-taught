@@ -225,7 +225,11 @@ exports.buildTree = async function (req, res, next) {
         pShell.run('cleaningSkillTree.py', options, function (err, results) {
             if (err) throw err;
             console.log("results cleaningSkillTree = " + results);
-            if (res) res.status(201).send();
+            if (res) {
+                var beep = require('beepbeep');
+                beep(2, 1000);
+                res.status(201).send();
+            }
         });
         // res.status(201).send();
     });

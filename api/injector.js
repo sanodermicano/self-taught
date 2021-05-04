@@ -117,7 +117,10 @@ async function injectLink(learningLink, res, lrId) {
         supportedType = "coursera";
     } else if (learningLink.includes("www.udacity.com")) {
         supportedType = "udacity";
+    } else if (learningLink.includes("stackoverflow.com")) {
+        supportedType = "stackoverflow";
     } 
+    
 
     let courseTitle = "";
     let courseDesc = "";
@@ -141,6 +144,7 @@ async function injectLink(learningLink, res, lrId) {
             desiredLink = learningLink.slice(0, learningLink.lastIndexOf("/", slashIndices[slashIndices.length - 2]) + 1);
         }
     }
+    console.log("learningLink = " + learningLink);
     console.log("desiredLink = " + desiredLink);
     console.log("Processing...\n");
     try {
@@ -163,13 +167,22 @@ async function injectLink(learningLink, res, lrId) {
                 childrenUdacity: Array.from(document.querySelectorAll(".degree-info-columns_columnList__D-UoB")).map(topic => { //go down in levels
                     return topic.innerHTML;
                 }),
+                childrenStackOverFlow: $("meta[name='twitter:description']").attr('content'),
             })),
+            //check if title or desc are null and change that to ""
+            //support stack overflow using:
+            //<meta name="twitter:description" property="og:description" itemprop="description" content="In NLP, stop-words removal is a typical pre-processing step. And it is typically done in an empirical way based on what we think stop-words should be.
+            //But in my opinion, we should generalize the c..."> //remove the 3 dots if they exist
+
             // Function to be called with evaluated desiredLinks from browsers
             onSuccess: (result => {
                 courseTitle = result.result.courseTitle;
                 courseDesc = result.result.courseDesc;
-
                 let linkHtml = result.result.htmlPage;
+                if (!courseTitle) courseTitle = "";
+                if (!courseDesc) courseDesc = "";
+                if (!linkHtml) linkHtml = "";
+
                 let skillElement;
                 switch (supportedType) {
                     case "":
@@ -184,21 +197,30 @@ async function injectLink(learningLink, res, lrId) {
                         var children = String(result.result.childrenUdacity);
                         children = children.substr(children.indexOf("Prerequisites</h6><h5>") + "Prerequisites</h6><h5>".length);
                         children = children.substr(0, children.indexOf("</h5><button class="));
-                        skillElement = { "parent": courseTitle, "children": children };
+                        skillElement = { "parent": courseTitle, "children": [children] };
+                        break;
+                    case "stackoverflow":
+                        var children = String(result.result.childrenStackOverFlow);
+                        if(children.length>197) children = children.slice(0, 197);
+                        courseDesc = children;
+                        console.log("sof: " + children);
+                        skillElement = { "parent": courseTitle, "children": [children] };
                         break;
                     default:
                         break;
                 }
+                console.log("skillElement: " + skillElement);
 
                 websiteType = "Article";
 
                 var courseCount = (linkHtml.match(/course/g) || []).length + (linkHtml.match(/courses/g) || []).length + (linkHtml.match(/online course/g) || []).length;
-                var articleCount = (linkHtml.match(/article/g) || []).length + (linkHtml.match(/articles/g) || []).length + (linkHtml.match(/document/g) || []).length + (linkHtml.match(/documents/g) || []).length;
-                var podcastCount = (linkHtml.match(/podcast/g) || []).length + (linkHtml.match(/podcasts/g) || []).length;
+                var articleCount = (linkHtml.match(/article/g) || []).length + (linkHtml.match(/articles/g) || []).length + (linkHtml.match(/paper/g) || []).length + (linkHtml.match(/essay/g) || []).length + (linkHtml.match(/report/g) || []).length + (linkHtml.match(/story/g) || []).length;
+                var podcastCount = (linkHtml.match(/podcast/g) || []).length + (linkHtml.match(/podcasts/g) || []).length + (linkHtml.match(/story/g) || []).length + (linkHtml.match(/commentary/g) || []).length;
                 var questionCount = (linkHtml.match(/question/g) || []).length + (linkHtml.match(/answer/g) || []).length + (linkHtml.match(/answers/g) || []).length + (linkHtml.match(/questions/g) || []).length;
                 var videoCount = (linkHtml.match(/video/g) || []).length + (linkHtml.match(/videos/g) || []).length;
                 var bookCount = (linkHtml.match(/book/g) || []).length + (linkHtml.match(/books/g) || []).length + (linkHtml.match(/pdf/g) || []).length;
 
+                console.log("finished counting website type");
                 var siteType = Math.max(courseCount, articleCount, podcastCount, questionCount, videoCount, bookCount);
                 switch (siteType) {
                     case courseCount:
@@ -264,7 +286,7 @@ async function injectLink(learningLink, res, lrId) {
                 console.log("desc: " + courseDesc);
 
                 let links = `${result.links}`.split(",");
-                if (desiredLink != "") {
+                if (desiredLink != "" && links != null) {
                     for (i = 0; i < links.length; i++) {
                         if (links[i].includes(desiredLink) && links[i].length != desiredLink.length) {
                             desiredLinks.push({ "link": links[i], "isChecked": false, "isVisited": false });
@@ -274,7 +296,8 @@ async function injectLink(learningLink, res, lrId) {
                 result.result.urls = desiredLinks;
                 console.log(result.result.urls);
 
-                if (!courseDesc) courseDesc = "";
+                if(desiredLinks.length > 150) desiredLinks.length = 150;
+
                 learningResource = { "title": courseTitle, "description": courseDesc, "link": learningLink, "type": websiteType, "lrId": lrId, "difficulty": difficultyType };
                 jsonController.appendResource(JSON.stringify(learningResource), desiredLink, JSON.stringify(desiredLinks));
 
@@ -303,18 +326,26 @@ async function injectLink(learningLink, res, lrId) {
 exports.createLearningResoruces = async function (req, res) {
     var dl = await jsonController.getDiscoveredLinks();
     if (dl.length < 1) return;
-    if (dl.length > 50) dl.length = 50; //backhere to inject tons
+    if (dl.length > 150) dl.length = 150; //backhere to inject tons
 
     var dlToBeDeleted = [];
     for (var i = 0; i < dl.length; i++) dlToBeDeleted.push(dl[i].link);
     const bl = await jsonController.getBlockedLinks();
-    console.log("bl = " + bl);
+    console.log("bl = " + bl.length);
+    const vl = await jsonController.getVisitedLinks();
+    // console.log("vl = " + vl.length);
     var dlTemp = [];
 
     //* Add each skill in a coursera parent as multiple parents to the same child or don't support coursera at all, instead do udacity, it has reqs
 
     for (var i = 0; i < dl.length; i++) {
         if (bl.includes(dl[i].link)) {
+            dlTemp.push(dl[i].link);
+        }
+    }
+    
+    for (var i = 0; i < dl.length; i++) {
+        if (vl.includes(dl[i].link)) {
             dlTemp.push(dl[i].link);
         }
     }
@@ -397,7 +428,11 @@ exports.createLearningResoruces = async function (req, res) {
     await jsonController.writeJSON(newDl, "discoveredLinks").then((d) => d)
         .catch((err) => console.error('writeJSON() failed', err));
     //clear blocked list from links longer than 50 characters
-    if (res) res.status(201).send();
+    if (res) {
+        var beep = require('beepbeep');
+        beep(4, 1000);
+        res.status(201).send();
+    }
 }
 
 async function quickCheck(link) {

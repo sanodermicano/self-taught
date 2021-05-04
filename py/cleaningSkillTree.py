@@ -7,6 +7,7 @@ from difflib import SequenceMatcher
 import itertools
 import os
 from nltk.tokenize import WhitespaceTokenizer
+import random
 
 if not os.path.exists('tmp/learningResources.json'):
     f = open('tmp/learningResources.json', "w")
@@ -122,7 +123,7 @@ with open('tmp/skilltree.json', encoding="utf8") as json_file:
                 continue
             index = singleWords.index(s)
             similarity = similar(s, b)
-            if similarity > 0.75:
+            if similarity > 0.8:
             # if similarity > 0.75 or s.lower() in b.lower():
                 # print("removed " + singleWords[index])
                 singleWords.pop(index)
@@ -159,7 +160,7 @@ with open('tmp/skilltree.json', encoding="utf8") as json_file:
                 continue
             index = singleWords.index(s)
             similarity = similar(s, b)
-            if(similarity > 0.85 or s.lower() in b.lower()):
+            if(similarity > 0.88 or s.lower() in b.lower()):
                 # print("removed " + singleWords[index])
                 singleWords.pop(index)
                 break
@@ -183,10 +184,26 @@ with open('tmp/skilltree.json', encoding="utf8") as json_file:
     # print(biSentence)
     # singleWords = singleWords[int(len(singleWords)*0.01):]
     # singleWords = singleWords[4:]
-    
-    singleWords.remove("Stack") #Full Stack is keeping Stack alone, might as well remove it to support stack overflow
-    singleWords.remove("flow")
+    singleWords.insert(0, "Java")
+    singleWords.insert(0, "JavaScript")
+    if "Stack" in singleWords:
+        singleWords.remove("Stack") #Full Stack is keeping Stack alone, might as well remove it to support stack overflow
+    if "flow" in singleWords:
+        singleWords.remove("flow")
+    if "Learning" in singleWords:
+        singleWords.remove("Learning")
+    if "learning" in singleWords:
+        singleWords.remove("learning")
+    if "Software" in singleWords:
+        singleWords.remove("Software")
+    if "software" in singleWords:
+        singleWords.remove("software")
+    if "Data" in singleWords:
+        singleWords.remove("Data")
+    if "data" in singleWords:
+        singleWords.remove("data")
     listOfSkills = singleWords + biSentence + triSentence
+    random.shuffle(listOfSkills)
     with open('tmp/skills.json', 'w') as outfile:
         json.dump(listOfSkills, outfile)
 

@@ -242,14 +242,18 @@ exports.collaborativeBasedFiltering = function (req, res, next, uEmail = null) {
                         scriptPath: process.env.PY_PROJ,
                         args: [userObj]
                     };
-                    pShell.run('collaborativeBasedFiltering.py', options, function (err, results) {
-                        if (err) throw err;
-                        // console.log(results);
-                        console.log("SQLID collaborativeBasedFiltering: " + SQLID);
-                        usersMap.set(SQLID + "orig", results[0]);
-                        console.log("saved in hashmap (use the saved json file, if it doesn\'t exist use collaborativeBasedFiltering): "
-                            + usersMap.get(SQLID + "orig").length);
-                    });
+                    try{
+                        pShell.run('collaborativeBasedFiltering.py', options, function (err, results) {
+                            if (err) throw err;
+                            // console.log(results);
+                            console.log("SQLID collaborativeBasedFiltering: " + SQLID);
+                            usersMap.set(SQLID + "orig", results[0]);
+                            console.log("saved in hashmap (use the saved json file, if it doesn\'t exist use collaborativeBasedFiltering): "
+                                + usersMap.get(SQLID + "orig").length);
+                        });
+                    }catch(e) {
+                        console.log("collaborativeBasedFiltering: " + e);
+                    }
                 }
                 if (next) next();
             });
