@@ -2,6 +2,13 @@ import sys
 import json
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+import os
+import pymongo
+from dotenv import load_dotenv
+
+dotenv_path = './.env' #init .env
+load_dotenv(dotenv_path)
+
 
 link = sys.argv[1]
 # link = "https://www.healthline.com/nutrition/foods/tomatoes"
@@ -15,34 +22,27 @@ try:
         title = soup.title.string
     description = soup.find('meta', attrs={'name': 'description'})['content']
 
-    skillsFile = open('tmp/skills.json', encoding="utf8")
-    skills = json.load(skillsFile)
 
-    # print("title: " + title)
-    # print("description: " + description)
+    mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
+    mongoDb = mongoClient.get_database('self-taught-stb').skills
+    skills = mongoDb.find_one()['skills']
+
     failed = True
     for skill in skills:
         if (" " + skill.lower() + " ") in title.lower() or (" " + skill.lower() + " ") in description.lower():
             failed = False
-            # print("title: " + title)
-            # print("description: " + description)
-            # print("skill: " + skill)
             print(json.dumps("passed"))
             break
     if failed:
         for ti in title.split():
             if (" " + ti.lower() + " ") in skill.lower() or ti.lower() == skill.lower():
                 failed = False
-                # print("ti: " + ti)
-                # print("skill: " + skill)
                 print(json.dumps("passed"))
                 break
     if failed:
         for desc in description.split():
             if (" " + desc.lower() + " ") in skill.lower() or desc.lower() == skill.lower():
                 failed = False
-                # print("desc: " + desc)
-                # print("skill: " + skill)
                 print(json.dumps("passed"))
                 break
     if failed:

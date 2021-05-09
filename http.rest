@@ -16,3 +16,6 @@ GET http://localhost:8000/createLearningResoruces
 
 ###
 GET http://localhost:8000/deleteBlockedLinks
+
+### backhere use dotenv instead of hard coded mongodb string https://stackoverflow.com/questions/41546883/what-is-the-use-of-python-dotenv
+### backhere to revert back from mongoDB m10 to m0 https://stackoverflow.com/questions/62156731/how-to-downgrade-from-m2-to-m0-mongodb-cluster-tier since m10 costs 64.8$ a month

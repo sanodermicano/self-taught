@@ -58,6 +58,16 @@
 </head>
 
 <body onbeforeunload="cleanData()">
+    <pre id="output"></pre>
+    <script src="./scripts/detectDevTools.js"></script>
+    <script>
+        window.addEventListener('devtoolschange', function (e) {
+            if(e.detail.open){
+                //uncomment on release AHAHAHAHAHA
+                // window.location.href = "https://youtu.be/dQw4w9WgXcQ";
+            }
+        });
+    </script>
     <% var user; %>
     <%if (user) { %>
     <div class="topnav" id="topNav">
@@ -134,6 +144,7 @@
     <!-- source: loading source http://www.ajaxload.info/ -->
     <div id="loading" class="heading-text hideable-content container" style="display: none;width: 100%;height: 100%;">
         <h2 style="font-family:helvatica,arial;text-align:center;color:#FF7F50;">Please Wait...</h2>
+        <h6 id="msg">Searching</h6>
         <br>
         <img src="./img/loading.gif" alt="Loading..." width="30%" style="max-width: 100%;max-height: 100%;">
     </div>
@@ -271,6 +282,7 @@
                                         var skillName = $("#th" + thisID).html()
                                         $("#level" + thisID).html(level);
                                         if (level == 5) {
+                                            hideAll("Predicting the Next Skills you can Improve at");
                                             $.ajax({
                                                 url: 'http://localhost:8000/predict',
                                                 data: skillName,
@@ -283,9 +295,11 @@
                                                             .substring(3, newSkills.length -
                                                                 3)).replace(/['"]+/g, '')
                                                         .replace(/\\|\//g, '');
+                                                    showAll();
                                                     foundNewSkills(newSkills);
                                                 },
                                                 error: function (xhr, status, error) {
+                                                    showAll();
                                                     console.log('Error predict: ' + error.message);
                                                 },
                                             });
@@ -399,7 +413,7 @@
                                     $("#educational").show();
                                 }
 
-                                function hideAll() {
+                                function hideAll(msg="") {
                                     hideable.style.display = "none";
                                     $("#allContent").hide();
                                     $("#topNav").hide();
@@ -419,6 +433,7 @@
                                     $("#educational").hide();
                                     $("#loading").css('display', 'block')
                                     $("#loading").show();
+                                    $("#msg").text(msg);
                                 }
                                 window.onclick = function (event) {
                                     if (event.target == hideable) {
@@ -990,12 +1005,13 @@
             event.preventDefault();
             const injectedLink = $("#url").val();
             // if(injectedLink.length < 10) return;
+            console.log("injectedLink: " + injectedLink);
             $("#plzWait").text("Please wait...");
             $("#plzWait").show();
-            hideAll();
+            hideAll("Guessing what you're trying to Learn");
             $.ajax({
                 url: 'http://localhost:8000/link',
-                data: injectedLink,
+                data: {url: injectedLink},
                 type: 'POST',
                 jsonpCallback: 'callback',
                 success: function (data) {
@@ -1149,8 +1165,9 @@
             console.log(skillsListBackup);
 
             $("#learningResources").empty();
-            //if website is udacity lr type is course
-
+            if(!$(this).attr('id').includes("pg")){
+                hideAll("Searching");
+            }
             $.ajax({
                 url: 'http://localhost:8000/recommend?page=' + currPage + '&limit=' + limit,
                 data: {
@@ -1164,6 +1181,7 @@
                 type: 'POST',
                 jsonpCallback: 'callback',
                 success: function (data) {
+                    showAll();
                     // var resources = JSON.stringify(data.message);
                     var resources = data.message;
                     // console.log("resources: " + JSON.stringify(resources));
@@ -1230,7 +1248,7 @@
                 } else {
                     $("#paginator").prependTo("#pagTop");
                 }
-            })
+            });
         }
 
         //skills collapse

@@ -1,6 +1,14 @@
 import json
 import sys
 import random
+import os
+import pymongo
+from dotenv import load_dotenv
+from bson import json_util
+
+# https://stackoverflow.com/questions/41546883/what-is-the-use-of-python-dotenv
+dotenv_path = './.env' #init .env
+load_dotenv(dotenv_path)
 
 def removeDuplicates(it):
     seen = []
@@ -9,10 +17,6 @@ def removeDuplicates(it):
             yield x
             seen.append(x)
 
-# print(json.dumps(sys.argv[1]))
-# sys.exit()
-
-# {"skills":["HTML","React","Java"],"id":1}
 
 rawData = json.loads(sys.argv[1])
 newResources = None
@@ -24,28 +28,29 @@ if isinstance(rawData['skills'], str):
 else:
     newResources = rawData
     nrLen = len(newResources['skills'])
+
 userId = rawData['id']
 lrtype = newResources['lrtype']
-# alreadyVisited = ['alreadyVisited']
 
-# with open('tmp/users/rec1.json', 'r', encoding='utf8') as file:
-with open('tmp/users/rec'+str(userId)+'.json', 'r', encoding='utf8') as file:
-    data = json.load(file)
-    resources = []
-    for dataElement in data:
-        if 'title' in dataElement:
-            for i in range(0, nrLen):
-                if int(newResources['ranges'][i]) > -1 and newResources['skills'][i] != "-1":
-                    if newResources['ranges'][i] == '1' or newResources['ranges'][i] == '2':
-                        if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Beginner" and (dataElement['type'] == lrtype or lrtype == "Any"):
-                            resources.append(dataElement)
-                    elif newResources['ranges'][i] == '3':
-                        if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Intermediate" and (dataElement['type'] == lrtype or lrtype == "Any"):
-                            resources.append(dataElement)
-                    elif newResources['ranges'][i] == '4' or newResources['ranges'][i] == '5':
-                        if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Advanced" and (dataElement['type'] == lrtype or lrtype == "Any"):
-                            resources.append(dataElement)
 
-    resources = list(removeDuplicates(resources))
-    file.close()
-    print(json.dumps(resources))
+mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
+mongoDb = mongoClient.get_database('self-taught-lr')
+
+data = list(mongoDb['learning-resources'].find({}, {'_id': False}))
+resources = []
+for dataElement in data:
+    if 'title' in dataElement:
+        for i in range(0, nrLen):
+            if int(newResources['ranges'][i]) > -1 and newResources['skills'][i] != "-1":
+                if newResources['ranges'][i] == '1' or newResources['ranges'][i] == '2':
+                    if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Beginner" and (dataElement['type'] == lrtype or lrtype == "Any"):
+                        resources.append(json_util.loads(json_util.dumps(dataElement)))
+                elif newResources['ranges'][i] == '3':
+                    if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Intermediate" and (dataElement['type'] == lrtype or lrtype == "Any"):
+                        resources.append(json_util.loads(json_util.dumps(dataElement)))
+                elif newResources['ranges'][i] == '4' or newResources['ranges'][i] == '5':
+                    if newResources['skills'][i].lower() in dataElement['title'].lower() and dataElement['difficulty'] == "Advanced" and (dataElement['type'] == lrtype or lrtype == "Any"):
+                        resources.append(json_util.loads(json_util.dumps(dataElement)))
+
+resources = list(removeDuplicates(resources))
+print(json.dumps(resources))

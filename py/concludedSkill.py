@@ -1,5 +1,11 @@
 import json
 import sys
+import os
+import pymongo
+from dotenv import load_dotenv
+
+dotenv_path = './.env' #init .env
+load_dotenv(dotenv_path)
 
 def removeDuplicates(it):
     seen = []
@@ -8,21 +14,23 @@ def removeDuplicates(it):
             yield x
             seen.append(x)
 
-with open('tmp/skills.json', 'r', encoding='utf8') as file:
-    data = json.load(file)
-    newResources = sys.argv[1].split(",")
-    # print(newResources)
-    concludedSkills = []
-    for dataElement in data:
-        for newResource in newResources:
-            if dataElement.lower() in newResource.lower().split():
-                concludedSkills.append(dataElement)
-            if (" " + dataElement.lower() + " ") in newResource.lower():
-                concludedSkills.append(dataElement)
+mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
+mongoDb = mongoClient.get_database('self-taught-stb').skills
 
-    concludedSkills = list(removeDuplicates(concludedSkills))
-    concludedSkills = concludedSkills[::-1] #reverse array
-    if len(concludedSkills) > 16:
-        concludedSkills = concludedSkills[:16]
-    print(json.dumps(concludedSkills))
-    file.close()
+# print(mongoDb.find_one()['skills'])
+data = mongoDb.find_one()['skills']
+
+newResources = sys.argv[1].split(",")
+concludedSkills = []
+for dataElement in data:
+    for newResource in newResources:
+        if dataElement.lower() in newResource.lower().split():
+            concludedSkills.append(dataElement)
+        if (" " + dataElement.lower() + " ") in newResource.lower():
+            concludedSkills.append(dataElement)
+
+concludedSkills = list(removeDuplicates(concludedSkills))
+concludedSkills = concludedSkills[::-1] #reverse array
+if len(concludedSkills) > 16:
+    concludedSkills = concludedSkills[:16]
+print(json.dumps(concludedSkills))

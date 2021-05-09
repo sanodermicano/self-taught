@@ -1,8 +1,9 @@
-
 require("dotenv").config();
 const HCCrawler = require('headless-chrome-crawler');
 const predController = require('./predictor');
 const jsonController = require('./jsonOps');
+//https://nodejs.org/api/url.html
+const url = require('url');
 
 let quickInjectFailed = false;
 
@@ -11,7 +12,9 @@ exports.inject = async function (req, res) {
         return res.status(500).send();
     } else {
         try {
-            var enteredURL = JSON.stringify(req.body).split("\"")[1];
+            // var enteredURL = JSON.stringify(req.body).split("\"")[1];
+            var enteredURL = url.format(req.body['url']);
+            console.log(JSON.stringify(req.body));
             console.log("enteredURL: " + enteredURL);
 
             const expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
@@ -26,44 +29,49 @@ exports.inject = async function (req, res) {
                     return;
                 }
                 if (enteredURL.length > 10) {
-                    const bl = await jsonController.getBlockedLinks();
-                    if (bl.includes(enteredURL)) {
-                        console.log("in the blacklist");
-                        res.status(500).send();
-                        return;
-                    }
-                    switch (await quickCheck(enteredURL)) {
-                        case "passed":
-                            quickInject(enteredURL, res);
-                            break;
-                        case "failed":
-                            console.log("quickCheck failed inject"); //send error message to user
-                            await jsonController.setBlockedLinks(JSON.stringify([enteredURL]));
+                    if (enteredURL.includes("www.udemy.com") || enteredURL.includes("www.coursera.org") ||
+                        enteredURL.includes("www.udacity.com") || enteredURL.includes("stackoverflow.com")) {
+                        quickInject(enteredURL, res);
+                    } else {
+                        const bl = await jsonController.getBlockedLinks();
+                        if (bl.includes(enteredURL)) {
+                            console.log("in the blacklist");
                             res.status(500).send();
-                            break;
-                        case "error":
-                            switch (await hccCheck(enteredURL)) {
-                                case "passed":
-                                    console.log("hcc passed inject 2");
-                                    let lrId = await jsonController.getLrId(enteredURL);
-                                    quickInjectFailed = true;
-                                    injectLink(enteredURL, res, lrId);
-                                    break;
-                                case "failed":
-                                    console.log("hcc failed inject 2"); //send error message to user
-                                    await jsonController.setBlockedLinks(JSON.stringify([enteredURL]));
-                                    res.status(500).send();
-                                    break;
-                                default:
-                                    console.log("hcc error inject 2"); //send error message to user
-                                    res.status(500).send();
-                                    break;
-                            }
-                            break;
-                        default:
-                            console.log("should not be here 2");
-                            res.status(500).send();
-                            break;
+                            return;
+                        }
+                        switch (await quickCheck(enteredURL)) {
+                            case "passed":
+                                quickInject(enteredURL, res);
+                                break;
+                            case "failed":
+                                console.log("quickCheck failed inject"); //send error message to user
+                                await jsonController.setBlockedLinks(JSON.stringify([enteredURL]));
+                                res.status(500).send();
+                                break;
+                            case "error":
+                                switch (await hccCheck(enteredURL)) {
+                                    case "passed":
+                                        console.log("hcc passed inject 2");
+                                        let lrId = await jsonController.getLrId(enteredURL);
+                                        quickInjectFailed = true;
+                                        injectLink(enteredURL, res, lrId);
+                                        break;
+                                    case "failed":
+                                        console.log("hcc failed inject 2"); //send error message to user
+                                        await jsonController.setBlockedLinks(JSON.stringify([enteredURL]));
+                                        res.status(500).send();
+                                        break;
+                                    default:
+                                        console.log("hcc error inject 2"); //send error message to user
+                                        res.status(500).send();
+                                        break;
+                                }
+                                break;
+                            default:
+                                console.log("should not be here 2");
+                                res.status(500).send();
+                                break;
+                        }
                     }
                 } else res.status(500).send();
             } else res.status(500).send();
@@ -119,8 +127,8 @@ async function injectLink(learningLink, res, lrId) {
         supportedType = "udacity";
     } else if (learningLink.includes("stackoverflow.com")) {
         supportedType = "stackoverflow";
-    } 
-    
+    }
+
 
     let courseTitle = "";
     let courseDesc = "";
@@ -178,6 +186,18 @@ async function injectLink(learningLink, res, lrId) {
             onSuccess: (result => {
                 courseTitle = result.result.courseTitle;
                 courseDesc = result.result.courseDesc;
+                console.log("courseDesc:____________________________________________________");
+                console.log("courseDesc: " + courseDesc);
+                courseDesc = courseDesc.replace(/[^a-z0-9 ]/gi, "");
+                const expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+                const expressionHTTP = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+                courseTitle = courseTitle.replace(/\s+/g, ' ').trim();
+                courseTitle = courseTitle.replace(expressionHTTP, "");
+                courseTitle = courseTitle.replace(expression, "");
+                courseDesc = courseDesc.replace(/\s+/g, ' ').trim();
+                courseDesc = courseDesc.replace(expressionHTTP, "");
+                courseDesc = courseDesc.replace(expression, "");
+                console.log("courseDesc: " + courseDesc);
                 let linkHtml = result.result.htmlPage;
                 if (!courseTitle) courseTitle = "";
                 if (!courseDesc) courseDesc = "";
@@ -201,7 +221,7 @@ async function injectLink(learningLink, res, lrId) {
                         break;
                     case "stackoverflow":
                         var children = String(result.result.childrenStackOverFlow);
-                        if(children.length>197) children = children.slice(0, 197);
+                        if (children.length > 197) children = children.slice(0, 197);
                         courseDesc = children;
                         console.log("sof: " + children);
                         skillElement = { "parent": courseTitle, "children": [children] };
@@ -213,6 +233,7 @@ async function injectLink(learningLink, res, lrId) {
 
                 websiteType = "Article";
 
+                //What needs to be done is compare frequency in the html file to decide the website's type, then we append the title, description, link and type into the existing learningResources.json
                 var courseCount = (linkHtml.match(/course/g) || []).length + (linkHtml.match(/courses/g) || []).length + (linkHtml.match(/online course/g) || []).length;
                 var articleCount = (linkHtml.match(/article/g) || []).length + (linkHtml.match(/articles/g) || []).length + (linkHtml.match(/paper/g) || []).length + (linkHtml.match(/essay/g) || []).length + (linkHtml.match(/report/g) || []).length + (linkHtml.match(/story/g) || []).length;
                 var podcastCount = (linkHtml.match(/podcast/g) || []).length + (linkHtml.match(/podcasts/g) || []).length + (linkHtml.match(/story/g) || []).length + (linkHtml.match(/commentary/g) || []).length;
@@ -250,7 +271,7 @@ async function injectLink(learningLink, res, lrId) {
                 var beginnerCount = 5 + (linkHtml.match(/beginner/g) || []).length + (linkHtml.match(/beginners/g) || []).length +
                     (linkHtml.match(/easy/g) || []).length + (linkHtml.match(/newbie/g) || []).length + (linkHtml.match(/novice/g) || []).length;
                 (linkHtml.match(/rookie/g) || []).length + (linkHtml.match(/basic/g) || []).length + (linkHtml.match(/newb/g) || []).length +
-                    (linkHtml.match(/fundamentals/g) || []).length + (linkHtml.match(/fundamental/g) || []).length;
+                    (linkHtml.match(/fundamentals/g) || []).length + (linkHtml.match(/fundamental/g) || []).length + (linkHtml.match(/introduction/g) || []).length;
                 console.log("beginnerCount: " + beginnerCount);
 
                 var intermediateCount = (linkHtml.match(/intermediate/g) || []).length + (linkHtml.match(/intermediates/g) || []).length + (linkHtml.match(/mediocre/g) || []).length +
@@ -296,7 +317,7 @@ async function injectLink(learningLink, res, lrId) {
                 result.result.urls = desiredLinks;
                 console.log(result.result.urls);
 
-                if(desiredLinks.length > 150) desiredLinks.length = 150;
+                if (desiredLinks.length > 150) desiredLinks.length = 150;
 
                 learningResource = { "title": courseTitle, "description": courseDesc, "link": learningLink, "type": websiteType, "lrId": lrId, "difficulty": difficultyType };
                 jsonController.appendResource(JSON.stringify(learningResource), desiredLink, JSON.stringify(desiredLinks));
@@ -326,11 +347,17 @@ async function injectLink(learningLink, res, lrId) {
 exports.createLearningResoruces = async function (req, res) {
     var dl = await jsonController.getDiscoveredLinks();
     if (dl.length < 1) return;
-    if (dl.length > 150) dl.length = 150; //backhere to inject tons
+    //shuffle to make discovered links less biased towards a single website https://flaviocopes.com/how-to-shuffle-array-javascript/
+    dl = dl.sort(() => Math.random() - 0.5);
+    console.log("dl = " + dl.length);
+    if (dl.length > 50) dl.length = 50; //backhere to inject tons
+    console.log("dl = " + dl.length);
 
     var dlToBeDeleted = [];
+    console.log("dl = " + dl.length);
     for (var i = 0; i < dl.length; i++) dlToBeDeleted.push(dl[i].link);
     const bl = await jsonController.getBlockedLinks();
+    console.log("dl = " + dl.length);
     console.log("bl = " + bl.length);
     const vl = await jsonController.getVisitedLinks();
     // console.log("vl = " + vl.length);
@@ -343,7 +370,7 @@ exports.createLearningResoruces = async function (req, res) {
             dlTemp.push(dl[i].link);
         }
     }
-    
+
     for (var i = 0; i < dl.length; i++) {
         if (vl.includes(dl[i].link)) {
             dlTemp.push(dl[i].link);
@@ -351,6 +378,9 @@ exports.createLearningResoruces = async function (req, res) {
     }
 
     console.log("dl before = " + dl.length);
+    if (dl.length < 1) {
+        return res.status(201).send();
+    }
     dl = dl.filter(function (el) {
         return dlTemp.indexOf(el.link) < 0;
     });
@@ -360,8 +390,8 @@ exports.createLearningResoruces = async function (req, res) {
         console.log(dl[i].link);
         if (!dl[i].isChecked) {
             //include whitelisted links
-            if (!(dl[i].link.includes("https://www.udemy.com/course/") || dl[i].link.includes("https://www.coursera.org/learn/") || 
-            dl[i].link.includes("https://www.coursera.org/specializations/") || dl[i].link.includes("https://www.udacity.com/course/"))) { 
+            if (!(dl[i].link.includes("https://www.udemy.com/course/") || dl[i].link.includes("https://www.coursera.org/learn/") ||
+                dl[i].link.includes("https://www.coursera.org/specializations/") || dl[i].link.includes("https://www.udacity.com/course/"))) {
                 switch (await quickCheck(dl[i].link)) {
                     case "passed":
                         dl[i].isChecked = true;
@@ -400,6 +430,9 @@ exports.createLearningResoruces = async function (req, res) {
     console.log("dlTemp = " + dlTemp);
 
     console.log("dl before = " + dl.length);
+    if (dl.length < 1) {
+        return res.status(201).send();
+    }
     dl = dl.filter(function (el) {
         return dlTemp.indexOf(el.link) < 0;
     });

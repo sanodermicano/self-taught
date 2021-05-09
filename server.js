@@ -13,6 +13,12 @@ db.util.connect(function (error) {
         console.log("MySQL is Connected");
     }
 });
+const mongodb = require('./models/mongo');
+
+mongodb.init(function(){
+    console.log("MongoDB is Connected");
+});
+
 
 const http = require('http');
 const bodyParser = require('body-parser');
@@ -60,7 +66,7 @@ server.listen(8000, function () {
     const jsonController = require('./api/jsonOps');
     setInterval(async function() {
         console.log("every 1.6 hours visit 50 discovered links 5760000");
-        await injectController.createLearningResoruces(null, null);
+        // await injectController.createLearningResoruces(null, null);
     }, 5760000);
     setInterval(async function() {
         console.log("every 24 hours update the skills list 86400000");
@@ -71,3 +77,20 @@ server.listen(8000, function () {
         await jsonController.deleteBlockedLinks();
     }, 600000000);
 });
+
+const process = require('process');
+process.stdin.resume();
+
+//to close connection with with mongodb once the session is over
+async function exitHandler(options, exitCode) {
+    await mongodb.close();
+    if (options.cleanup) console.log('clean');
+    if (exitCode || exitCode === 0) console.log(exitCode);
+    if (options.exit) process.exit();
+}
+
+process.on('exit', exitHandler.bind(null,{cleanup:true}));
+process.on('SIGINT', exitHandler.bind(null, {exit:true}));//ctrl+c event
+process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
+process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
+process.on('uncaughtException', exitHandler.bind(null, {exit:true}));

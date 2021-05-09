@@ -2,24 +2,36 @@ import json
 import pandas as pd
 from math import sqrt
 import sys
+import os
+import pymongo
+from dotenv import load_dotenv
+from bson import json_util
+
+
+dotenv_path = './.env' #init .env
+load_dotenv(dotenv_path)
 
 #storing info to pandas dataframe
-lr_df = pd.read_json('tmp/learningResources.json')
-rating_df=pd.read_json('tmp/ratings.json')
+mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
+mongoDbLr = mongoClient.get_database('self-taught-lr')
+mongoDbRec = mongoClient.get_database('self-taught-recommender')
+lr_df = pd.read_json(json_util.dumps(mongoDbLr['learning-resources'].find()))
+rating_df = pd.read_json(json_util.dumps(mongoDbRec['ratings'].find()))
 
 
 #Only run this script when the user visits new links but first the link must be added to the ratings json file or else the program will crash
 
 #simulate is a user's account
 
-userInput = json.loads(sys.argv[1])
-# userInput = [
-# {'title':'Demystifying Parallax: Learn to Create Interactive Web Pages | Udemy','description':'With JavaScript, HTML & CSS','link':'https://www.udemy.com/course/demystifying-parallax-learn-to-create-interactive-web-pages/','type':'Online Course','rating':5},
-# {'title':'Create An Online Poll Maker From Scratch: PHP and MySQLI | Udemy','description':'Use HTML, CSS, Javascript, PHP and MySQL To Create Your Own Online Poll Maker','link':'https://www.udemy.com/course/create-an-online-poll-maker-from-scratch-php-and-mysqli/','type':'Online Course', 'rating':3.5},
-# {'title':'Android Development Working With Databases Using Mysql & PHP | Udemy', 'description':'In this complete course students will learn android development by working with databases using Mysql and PHP','link':'https://www.udemy.com/course/android-development-course/','type':'Online Course','rating':2},
-# {'title':"Advanced Corporate Level WordPress Training for 2020 | Udemy",'description':'WordPress Web Design - Beginners to advanced level WordPress training course','link':'https://www.udemy.com/course/advance-wordpress-2020-lectures/','type':'Online Course', 'rating':5},
-# {'title':'Exploring SQL Server 2016: Intermediate | Udemy','description':'Exploring SQL Server 2016: Intermediate','link':'https://www.udemy.com/course/exploring-sql-server-2016-intermediate/','type':'Online Course', 'rating':4.5}
-# ]
+#title, link, type and rating
+# userInput = json.loads(sys.argv[1])
+userInput = [
+{'title':'Demystifying Parallax: Learn to Create Interactive Web Pages | Udemy','description':'With JavaScript, HTML & CSS','link':'https://www.udemy.com/course/demystifying-parallax-learn-to-create-interactive-web-pages/','type':'Online Course','rating':5},
+{'title':'Create An Online Poll Maker From Scratch: PHP and MySQLI | Udemy','description':'Use HTML, CSS, Javascript, PHP and MySQL To Create Your Own Online Poll Maker','link':'https://www.udemy.com/course/create-an-online-poll-maker-from-scratch-php-and-mysqli/','type':'Online Course', 'rating':3.5},
+{'title':'Android Development Working With Databases Using Mysql & PHP | Udemy', 'description':'In this complete course students will learn android development by working with databases using Mysql and PHP','link':'https://www.udemy.com/course/android-development-course/','type':'Online Course','rating':2},
+{'title':"Advanced Corporate Level WordPress Training for 2020 | Udemy",'description':'WordPress Web Design - Beginners to advanced level WordPress training course','link':'https://www.udemy.com/course/advance-wordpress-2020-lectures/','type':'Online Course', 'rating':5},
+{'title':'Exploring SQL Server 2016: Intermediate | Udemy','description':'Exploring SQL Server 2016: Intermediate','link':'https://www.udemy.com/course/exploring-sql-server-2016-intermediate/','type':'Online Course', 'rating':4.5}
+]
 input_lr = pd.DataFrame(userInput)
 
 #Filtering out the lr by title
@@ -80,7 +92,7 @@ topUsers=pearsonDF.sort_values(by='similarityIndex', ascending=False)[0:50]
 topUsersRating=topUsers.merge(rating_df, left_on='userId', right_on='userId', how='inner')
 
 #Multiplies the similarity by the user's ratings
-topUsersRating['weightedRating'] = topUsersRating['similarityIndex']*topUsersRating['rating']
+topUsersRating['weightedRating'] = topUsersRating['similarityIndex']*topUsersRating['rating'] #curesed
 
 #Applies a sum to the topUsers after grouping it up by userId
 tempTopUsersRating = topUsersRating.groupby('lrId').sum()[['similarityIndex','weightedRating']]
@@ -101,10 +113,8 @@ recommendation_df = recommendation_df.sort_values(by='weighted average recommend
 # print(recommendation_df.head(3))
 # print(lr_df.loc[lr_df['lrId'].isin(recommendation_df.head(int(recommendation_df.size*0.025))['lrId'].tolist())])
 
-
 #this is how we'll pass the results from python to node.js, kinda slow, we need to improve it - had hard times doing it myself
-lrJson = open('tmp/learningResources.json', "r+", encoding="utf8")
-lrData = json.load(lrJson)
+lrData = json_util.loads(json_util.dumps(mongoDbLr['learning-resources'].find({}, {'_id': False})))
 toBePrinted = []
 for rec in recommendation_df['lrId']:
     for lr in lrData:
@@ -123,7 +133,4 @@ for userin in userInput:
             toBePrinted.remove(tbp)
             break
 
-
-lrJson.close()
-# print(len(toBePrinted))
 print(json.dumps(toBePrinted))

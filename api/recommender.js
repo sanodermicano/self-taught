@@ -1,6 +1,6 @@
 require("dotenv").config();
 const db = require('../models/mysql');
-const jsonController = require('./jsonOps');
+const mdb = require('../models/mongo');
 const bcrypt = require('bcrypt');
 var HashMap = require('hashmap');
 
@@ -157,8 +157,7 @@ async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, l
         pShell.run('searchSkill.py', options, function (err, results) {
             if (err) throw err;
             // console.log(JSON.stringify({"skills": skillsList, "ranges": rangesList, "lrtype": LRType}));
-            // console.log("results: " + results);
-            usersMap.set(hashKey + "temp", results[1]);
+            usersMap.set(hashKey + "temp", results[0]);
             console.log("results: " + usersMap.get(hashKey + "temp"));
             result.results = usersMap.get(hashKey + "temp").slice(0, limit); //uncomment
             const startIndex = (page - 1) * limit;
@@ -218,7 +217,7 @@ exports.collaborativeBasedFiltering = function (req, res, next, uEmail = null) {
                     return res.status(500).send();
                 }
             }
-            db.util.query('SELECT * FROM visited WHERE userid = ?', [SQLID], async function (error, result) {
+            db.util.query('SELECT title, link, rating FROM visited WHERE userid = ?', [SQLID], async function (error, result) {
                 if (!result) {
                     console.log("not logged in");
                 } else {
@@ -227,6 +226,7 @@ exports.collaborativeBasedFiltering = function (req, res, next, uEmail = null) {
                         if (next) return next();
                         return;
                     }
+                    // title, link and rating
                     userObj = JSON.stringify(result);
                     usersMap.set(SQLID + "prevSkills", null);
                     usersMap.set(SQLID + "prevRanges", null);
@@ -271,9 +271,11 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
     //await save usersMap.get(userObj.userid + "orig") in a json file
     const skillsList = Array.isArray(skills) ? skills : [skills];
     const rangesList = Array.isArray(ranges) ? ranges : [ranges];
-    console.log("SQLID mhm? " + SQLID);
-    await jsonController.writeJSON(usersMap.get(SQLID + "orig"), "users/rec" + SQLID).then((d) => d)
-        .catch((err) => console.error('writeJSON() failed', err));
+    console.log("SQLID mhm? " + SQLID); //609784fee4c8ef50321b01d0
+    //figure out a way to update the data only when needed, it doesn't make sense to update the list if the list 
+    //of the links is the same as the one before
+    await mdb.destroy("self-taught-recommender", "priority", "rec" + SQLID);
+    await mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
     let options = {
         mode: 'json',
         pythonPath: process.env.PY_PATH,

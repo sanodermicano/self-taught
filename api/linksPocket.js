@@ -5,7 +5,7 @@ const jsonController = require('./jsonOps');
 exports.addLink = async function (req, res) {
     try {
         console.log(req.body);
-        const { title, desc, link, date, lrid, userid, email } = req.body;
+        var { title, desc, link, date, lrid, userid, email } = req.body;
         let SQLID = 0;
         db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
             console.log("userid: " + userid);
@@ -25,6 +25,15 @@ exports.addLink = async function (req, res) {
                             return res.status(500).send();
                         }
                     }
+                    console.log("desc:____________________________________________________");
+                    console.log("desc: " + desc);
+                    desc = desc.replace(/[^a-z0-9 ]/gi, "");
+                    const expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+                    const expressionHTTP = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+                    desc = desc.replace(/\s+/g, ' ').trim();
+                    desc = desc.replace(expressionHTTP, "");
+                    desc = desc.replace(expression, "");
+                    console.log("desc into visited: " + desc);
                     db.util.query('INSERT INTO visited SET ?', { title: title, description: desc, link: link, rating: 2.5, date: date, lrid: lrid, userid: SQLID }, function (error, results) {
                         if (error) {
                             console.log(error);
@@ -40,7 +49,7 @@ exports.addLink = async function (req, res) {
                         "rating": 3
                     }
                     */
-                    jsonController.appendRating(JSON.stringify({"userId": SQLID, "lrId": parseInt(lrid), "rating":2.5}), req, email);
+                    await jsonController.appendRating(JSON.stringify({"userId": SQLID, "lrId": parseInt(lrid), "rating":2.5}), req, email);
                 });
             }
         });
