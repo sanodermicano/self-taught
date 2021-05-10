@@ -1,5 +1,5 @@
 const express = require('express');
-const lpController = require('../api/linksPocket');
+const lpController = require('../api/LinksPocket').linksPocket;
 const router = express.Router();
 
 router.post('/clinkspocket', lpController.addLink);

@@ -1,5 +1,5 @@
 const express = require('express');
-const buildController = require('../api/skilltreeBuilder');
+const buildController = require('../api/SkillTreeBuilder').skillTreeBuilder;
 const router = express.Router();
 
 // router.get('/builder', buildController.buildSkillTree);

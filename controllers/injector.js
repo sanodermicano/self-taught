@@ -1,7 +1,7 @@
 const express = require('express');
-const accController = require('../api/acc');
-const injectController = require('../api/injector');
-const jsonController = require('../api/jsonOps');
+const accController = require('../api/Account').account;
+const injectController = require('../api/Injector').injector;
+const jsonController = require('../api/JsonOperations').jsonOperations;
 const router = express.Router();
 
 router.post('/link', accController.isLoggedIn, injectController.inject);

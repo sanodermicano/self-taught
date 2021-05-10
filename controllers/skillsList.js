@@ -1,6 +1,6 @@
 const express = require('express');
 // const accController = require('../api/acc');
-const skillsController = require('../api/skills');
+const skillsController = require('../api/SkillsList').skillsList;
 const router = express.Router();
 
 // router.post('/skills', accController.isLoggedIn, injectController.inject);

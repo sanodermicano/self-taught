@@ -1,108 +1,149 @@
 require("dotenv").config();
 const HCCrawler = require('headless-chrome-crawler');
-const jsonOps = require('./jsonOps');
+const jsonOps = require('./JsonOperations').jsonOperations;
 
-let topicLinks = [];
-let courseLinks = [];
-let pyParentsChildrenContainer = [];
-let newFoundCourses = [];
-
-//this won't be needed soon
-exports.buildSkillTree = async function () {
-    let topicsIT = ["https://www.udemy.com/topic/web-development/", "https://www.udemy.com/topic/game-design/",
-        "https://www.udemy.com/topic/xcode/", "https://www.udemy.com/topic/linux/", "https://www.udemy.com/topic/qt-framework/",
-        "https://www.udemy.com/topic/computer-hardware/", "https://www.udemy.com/topic/aws-certification/"];
-    // let topicsIT = ["https://www.udemy.com/topic/web-development/"];
-
-    topicLinks.concat(topicsIT);
-    for (const topicLink of topicLinks) {
-        await getMoreTopics(topicLink);
+class SkillTreeBuilder {
+    //attributes
+    constructor() {
+        this.topicLinks = [];
+        this.courseLinks = [];
+        this.pyParentsChildrenContainer = [];
+        this.newFoundCourses = [];
+        getMoreTopics.bind(this);
+        crawlIntoTopic.bind(this);
+        crawlIntoCourse.bind(this);
+        filterReqs.bind(this);
     }
-    //___________________________________________________________
-    //uncomment these when done
-    for (const topicLink of topicLinks) {
-        //will get as many related topics as possible
-        await getMoreTopics(topicLink);
-    }
-    //remove duplicates
-    topicLinks = topicLinks.filter(function (item, pos) {
-        return topicLinks.indexOf(item) == pos;
-    });
-    // console.log("topicLinks: " + topicLinks);
 
-    //2
-    for (const topicLink of topicLinks) {
-        await crawlIntoTopic(topicLink, "?instructional_level=expert&lang=en&sort=popularity");
-        await crawlIntoTopic(topicLink, "?instructional_level=intermediate&lang=en&sort=popularity");
-        await crawlIntoTopic(topicLink, "?instructional_level=intermediate&p=2&lang=en&sort=popularity");
+    //methods
+    //this won't be needed soon
+    buildSkillTree = async function () {
+        let topicsIT = ["https://www.udemy.com/topic/web-development/", "https://www.udemy.com/topic/game-design/",
+            "https://www.udemy.com/topic/xcode/", "https://www.udemy.com/topic/linux/", "https://www.udemy.com/topic/qt-framework/",
+            "https://www.udemy.com/topic/computer-hardware/", "https://www.udemy.com/topic/aws-certification/"];
+        // let topicsIT = ["https://www.udemy.com/topic/web-development/"];
+
+        topicLinks.concat(topicsIT);
+        for (const topicLink of topicLinks) {
+            await getMoreTopics(topicLink);
+        }
         //___________________________________________________________
-        //comment when done
-        // break;
-    }
-    // //remove duplicates
-    courseLinks = courseLinks.filter(function (item, pos) {
-        return courseLinks.indexOf(item) == pos;
-    });
-    // console.log("courseLinks: " + courseLinks);
+        //uncomment these when done
+        for (const topicLink of topicLinks) {
+            //will get as many related topics as possible
+            await getMoreTopics(topicLink);
+        }
+        //remove duplicates
+        topicLinks = topicLinks.filter(function (item, pos) {
+            return topicLinks.indexOf(item) == pos;
+        });
+        // console.log("topicLinks: " + topicLinks);
 
-    //3
-    // for (var i = 0; i < 2; i++) {
-    for (const courseLink of courseLinks) {
-        await crawlIntoCourse(courseLink);
-        // await crawlIntoCourse(courseLinks[i]);
-        //___________________________________________________________
-        //comment when done
-        // break;
-    }
+        //2
+        for (const topicLink of topicLinks) {
+            await crawlIntoTopic(topicLink, "?instructional_level=expert&lang=en&sort=popularity");
+            await crawlIntoTopic(topicLink, "?instructional_level=intermediate&lang=en&sort=popularity");
+            await crawlIntoTopic(topicLink, "?instructional_level=intermediate&p=2&lang=en&sort=popularity");
+            //___________________________________________________________
+            //comment when done
+            // break;
+        }
+        // //remove duplicates
+        courseLinks = courseLinks.filter(function (item, pos) {
+            return courseLinks.indexOf(item) == pos;
+        });
+        // console.log("courseLinks: " + courseLinks);
 
-    //4
-    // console.log("pyParentsChildrenContainer: " + JSON.stringify(pyParentsChildrenContainer));
-    await jsonOps.exportAllData(pyParentsChildrenContainer, newFoundCourses);
-    filterReqs();
-}
+        //3
+        // for (var i = 0; i < 2; i++) {
+        for (const courseLink of courseLinks) {
+            await crawlIntoCourse(courseLink);
+            // await crawlIntoCourse(courseLinks[i]);
+            //___________________________________________________________
+            //comment when done
+            // break;
+        }
 
-//for testing purposes
-exports.buildTestSkillTree = async function () {
-    let topicsIT = ["https://www.udemy.com/topic/web-development/", "https://www.udemy.com/topic/game-design/"];
-
-    // topicLinks.concat(topicsIT);
-    topicLinks = topicLinks.concat(topicsIT);
-    console.log(topicLinks);
-    for (const topicLink of topicLinks) {
-        await getMoreTopics(topicLink);
-        break;
-    }
-    for (const topicLink of topicLinks) {
-        await getMoreTopics(topicLink);
-        break;
-    }
-    topicLinks = topicLinks.filter(function (item, pos) {
-        return topicLinks.indexOf(item) == pos;
-    });
-    console.log("topicLinks: " + topicLinks);
-
-    //2
-    for (const topicLink of topicLinks) {
-        await crawlIntoTopic(topicLink, "?instructional_level=expert&lang=en&sort=popularity");
-        // await crawlIntoTopic(topicLink, "?instructional_level=intermediate&lang=en&sort=popularity");
-        // await crawlIntoTopic(topicLink, "?instructional_level=intermediate&p=2&lang=en&sort=popularity");
-        break;
-    }
-    courseLinks = courseLinks.filter(function (item, pos) {
-        return courseLinks.indexOf(item) == pos;
-    });
-    console.log("courseLinks: " + courseLinks);
-
-    //3
-    for (const courseLink of courseLinks) {
-        await crawlIntoCourse(courseLink);
-        break;
+        //4
+        // console.log("pyParentsChildrenContainer: " + JSON.stringify(pyParentsChildrenContainer));
+        await jsonOps.exportAllData(pyParentsChildrenContainer, newFoundCourses);
+        filterReqs();
     }
 
-    //4
-    console.log("pyParentsChildrenContainer: " + JSON.stringify(pyParentsChildrenContainer));
-    await jsonOps.exportAllData(pyParentsChildrenContainer, newFoundCourses);
-    filterReqs();
+    //for testing purposes
+    buildTestSkillTree = async function () {
+        let topicsIT = ["https://www.udemy.com/topic/web-development/", "https://www.udemy.com/topic/game-design/"];
+
+        // topicLinks.concat(topicsIT);
+        topicLinks = topicLinks.concat(topicsIT);
+        console.log(topicLinks);
+        for (const topicLink of topicLinks) {
+            await getMoreTopics(topicLink);
+            break;
+        }
+        for (const topicLink of topicLinks) {
+            await getMoreTopics(topicLink);
+            break;
+        }
+        topicLinks = topicLinks.filter(function (item, pos) {
+            return topicLinks.indexOf(item) == pos;
+        });
+        console.log("topicLinks: " + topicLinks);
+
+        //2
+        for (const topicLink of topicLinks) {
+            await crawlIntoTopic(topicLink, "?instructional_level=expert&lang=en&sort=popularity");
+            // await crawlIntoTopic(topicLink, "?instructional_level=intermediate&lang=en&sort=popularity");
+            // await crawlIntoTopic(topicLink, "?instructional_level=intermediate&p=2&lang=en&sort=popularity");
+            break;
+        }
+        courseLinks = courseLinks.filter(function (item, pos) {
+            return courseLinks.indexOf(item) == pos;
+        });
+        console.log("courseLinks: " + courseLinks);
+
+        //3
+        for (const courseLink of courseLinks) {
+            await crawlIntoCourse(courseLink);
+            break;
+        }
+
+        //4
+        console.log("pyParentsChildrenContainer: " + JSON.stringify(pyParentsChildrenContainer));
+        await jsonOps.exportAllData(pyParentsChildrenContainer, newFoundCourses);
+        filterReqs();
+    }
+
+    buildTree = async function (req, res, next) {
+        console.log("buildTree");
+        const pShell = require('python-shell').PythonShell;
+        let options = {
+            mode: 'json',
+            pythonPath: process.env.PY_PATH,
+            pythonOptions: ['-u'], // get print results in real-time
+            scriptPath: process.env.PY_PROJ,
+        };
+        // pShell.run('BuildTree.py', options, function (err, results) { //when in nodemon
+        try {
+            pShell.run('BuildTree.py', options, function (err, results) {
+                if (err) throw err;
+                console.log('Tree building is: ', results);
+                pShell.run('CleaningSkillTree.py', options, function (err, results) {
+                    if (err) throw err;
+                    console.log("results cleaningSkillTree = " + results);
+                    if (res) {
+                        var beep = require('beepbeep');
+                        beep(2, 1000);
+                        res.status(201).send();
+                    }
+                });
+                // res.status(201).send();
+            });
+        } catch (e) {
+            console.log("e: " + e);
+            res.status(500).send();
+        }
+    }
 }
 
 async function getMoreTopics(topicLink) {
@@ -209,52 +250,6 @@ async function crawlIntoCourse(courseLink) {
     }
 }
 
-exports.buildTree = async function (req, res, next) {
-    console.log("buildTree");
-    const pShell = require('python-shell').PythonShell;
-    let options = {
-        mode: 'json',
-        pythonPath: process.env.PY_PATH,
-        pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: process.env.PY_PROJ,
-    };
-    // pShell.run('buildTree.py', options, function (err, results) { //when in nodemon
-    try {
-        pShell.run('buildTree.py', options, function (err, results) {
-            if (err) throw err;
-            console.log('Tree building is: ', results);
-            pShell.run('cleaningSkillTree.py', options, function (err, results) {
-                if (err) throw err;
-                console.log("results cleaningSkillTree = " + results);
-                if (res) {
-                    var beep = require('beepbeep');
-                    beep(2, 1000);
-                    res.status(201).send();
-                }
-            });
-            // res.status(201).send();
-        });
-    } catch (e) {
-        console.log("e: " + e);
-        res.status(500).send();
-    }
-}
-
-// exports.cleanSkillTree = async function (req, res, next){
-//     const pShell = require('python-shell').PythonShell;
-//     let options = {
-//         mode: 'json',
-//         pythonPath: process.env.PY_PATH,
-//         pythonOptions: ['-u'], // get print results in real-time
-//         scriptPath: process.env.PY_PROJ,
-//     };
-//     pShell.run('cleaningSkillTree.py', options, function (err, results) {
-//         if (err) throw err;
-//         console.log("results cleaningSkillTree = " + results);
-//         res.status(201).send();
-//     });
-// }
-
 async function filterReqs() {
     const pShell = require('python-shell').PythonShell;
     let options = {
@@ -264,7 +259,7 @@ async function filterReqs() {
         scriptPath: process.env.PY_PROJ,
     };
     try {
-        pShell.run('buildTree.py', options, function (err, results) {
+        pShell.run('BuildTree.py', options, function (err, results) {
             if (err) throw err;
             console.log('Tree building is: ', results);
             // inputChoice();
@@ -274,3 +269,5 @@ async function filterReqs() {
         res.status(500).send();
     }
 }
+
+module.exports.skillTreeBuilder = new SkillTreeBuilder();

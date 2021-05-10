@@ -1,15 +1,14 @@
 const db = require('../models/MySQL').mySQL;
 const bcrypt = require('bcrypt');
-const jsonController = require('./JsonOperations').jsonOperations;
 
-class LinksPocket {
-    constructor() { }
+class SkillsList {
+    constructor(){ }
 
     //methods
-    addLink = async function (req, res) {
+    addSkill = async function (req, res) {
         try {
             console.log(req.body);
-            var { title, desc, link, date, lrid, userid, email } = req.body;
+            const { name, level, position, userid, email } = req.body;
             let SQLID = 0;
             db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
                 console.log("userid: " + userid);
@@ -18,27 +17,19 @@ class LinksPocket {
                 if (!await bcrypt.compare(SQLID.toString(), userid)) {
                     return res.status(500).send();
                 } else {
-                    db.util.query('SELECT title FROM visited WHERE lrid = ? AND userid = ?', [lrid, SQLID], async function (error, results) {
-                        console.log("title: " + title + "\ndesc: " + desc + "\nlink: " + link + "\ndate: " + date + "\nlrid: " + lrid + "\nemail: " + email + "\nSQLID: " + SQLID);
+                    db.util.query('SELECT name FROM skill WHERE name = ? AND userid = ?', [name, SQLID], async function (error, results) {
+                        console.log("name: " + name + "\nlevel: " + level + "\nposition: " + position + "\nSQLID: " + SQLID);
+
                         if (error) {
                             console.log(error);
                         }
-                        if (results) {
+                        if(results){
                             if (results.length > 0) {
-                                console.log("Removed Duplicate Learning Resources");
+                                console.log("Removed Duplicates");
                                 return res.status(500).send();
                             }
                         }
-                        console.log("desc:____________________________________________________");
-                        console.log("desc: " + desc);
-                        desc = desc.replace(/[^a-z0-9 ]/gi, "");
-                        const expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
-                        const expressionHTTP = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
-                        desc = desc.replace(/\s+/g, ' ').trim();
-                        desc = desc.replace(expressionHTTP, "");
-                        desc = desc.replace(expression, "");
-                        console.log("desc into visited: " + desc);
-                        db.util.query('INSERT INTO visited SET ?', { title: title, description: desc, link: link, rating: 2.5, date: date, lrid: lrid, userid: SQLID }, function (error, results) {
+                        db.util.query('INSERT INTO skill SET ?', { name: name, level: level, position: position, ison: true, userid: SQLID }, function (error, results) {
                             if (error) {
                                 console.log(error);
                             } else {
@@ -46,14 +37,6 @@ class LinksPocket {
                             }
                         });
                         res.status(201).send();
-                        /*
-                        {
-                            "userId": 610,
-                            "lrId": 170875,
-                            "rating": 3
-                        }
-                        */
-                        await jsonController.appendRating(JSON.stringify({ "userId": SQLID, "lrId": parseInt(lrid), "rating": 2.5 }), req, email);
                     });
                 }
             });
@@ -62,7 +45,7 @@ class LinksPocket {
         }
     }
 
-    loadLinks = async function (req, res, next) {
+    loadSkills = async function (req, res, next) {
         try {
             if (req.user) {
                 let id = req.user.id;
@@ -75,31 +58,32 @@ class LinksPocket {
                     if (!await bcrypt.compare(SQLID.toString(), id)) {
                         return res.status(500).send();
                     } else {
-                        db.util.query('SELECT * FROM visited WHERE userid = ? ORDER BY date ASC', [SQLID], function (error, results) {
-                            console.log("_____________________loadLinks_________________________");
+                        // db.util.query('SELECT * FROM skill WHERE userid = ? ORDER BY position DESC', [SQLID], async function (error, results) {
+                        db.util.query('SELECT * FROM skill WHERE userid = ?', [SQLID], function (error, results) {
+                            console.log("______________________________________________");
                             if (error) {
                                 console.log(error);
                             }
                             // console.log("results: " + JSON.stringify(results));
-                            req.userLinks = results;
+                            req.userSkills = results;
                             return next();
                         });
                     }
                 });
             } else {
-                console.log("account isn't logged in loadLinks");
+                console.log("account isn't logged in");
                 return next();
             }
         } catch (e) {
             res.status(500).send();
-            console.log("failed 2 loadLinks");
+            console.log("failed 2");
             next();
         }
     }
 
-    rateLink = async function (req, res) {
+    editSkill = async function (req, res) {
         try {
-            const { lrid, rating, userid, email } = req.body;
+            const { name, level, userid, email } = req.body;
             let SQLID = 0;
             db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
                 console.log("userid: " + userid);
@@ -108,25 +92,49 @@ class LinksPocket {
                 if (!await bcrypt.compare(SQLID.toString(), userid)) {
                     return res.status(500).send();
                 } else {
-                    console.log("SQLID: " + SQLID + "\nlrid: " + lrid + "\nrating: " + rating);
-                    db.util.query('UPDATE visited SET rating = ? WHERE userid = ? AND lrid = ?', [rating, SQLID, lrid], async function (error, results) {
+                    console.log("SQLID: " + SQLID + "\nlevel: " + level + "\nname: " + name);
+                    db.util.query('UPDATE skill SET level = ? WHERE userid = ? AND name = ?', [level, SQLID, name], async function (error, results) {
                         if (error) {
                             console.log(error);
                         }
                         res.status(201).send();
-                        jsonController.updateRating(JSON.stringify({ "userId": SQLID, "lrId": parseInt(lrid), "rating": rating }), req, email);
                     });
                 }
             });
         } catch (e) {
             res.status(500).send();
-            console.log("failed rateLink: " + e);
+            console.log("failed edit: " + e);
+        }
+    }
+    deleteSkill = async function (req, res) {
+        try {
+            const { name, userid, email } = req.body;
+            let SQLID = 0;
+            db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
+                console.log("userid: " + userid);
+                SQLID = results[0].id;
+                console.log("SQLID: " + SQLID);
+                if (!await bcrypt.compare(SQLID.toString(), userid)) {
+                    return res.status(500).send();
+                } else {
+                    console.log("SQLID: " + SQLID + "\nname: " + name);
+                    db.util.query('DELETE FROM skill WHERE userid = ? AND name = ?', [SQLID, name], async function (error, results) {
+                        if (error) {
+                            console.log(error);
+                        }
+                        res.status(201).send();
+                    });
+                }
+            });
+        } catch (e) {
+            res.status(500).send();
+            console.log("failed del: " + e);
         }
     }
 
-    updateLinkDate = async function (req, res) {
+    switchSkill = async function (req, res) {
         try {
-            const { lrid, date, userid, email } = req.body;
+            const { name, isOn, userid, email } = req.body;
             let SQLID = 0;
             db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
                 console.log("userid: " + userid);
@@ -135,8 +143,8 @@ class LinksPocket {
                 if (!await bcrypt.compare(SQLID.toString(), userid)) {
                     return res.status(500).send();
                 } else {
-                    console.log("SQLID: " + SQLID + "\nlrid: " + lrid + "\ndate: " + date);
-                    db.util.query('UPDATE visited SET date = ? WHERE userid = ? AND lrid = ?', [date, SQLID, lrid], async function (error, results) {
+                    console.log("SQLID: " + SQLID + "\nisOn: " + isOn + "\nname: " + name);
+                    db.util.query('UPDATE skill SET ison = ? WHERE userid = ? AND name = ?', [isOn, SQLID, name], async function (error, results) {
                         if (error) {
                             console.log(error);
                         }
@@ -146,9 +154,9 @@ class LinksPocket {
             });
         } catch (e) {
             res.status(500).send();
-            console.log("failed rateLink: " + e);
+            console.log("failed switch: " + e);
         }
     }
 }
 
-module.exports.linksPocket = new LinksPocket();
+module.exports.skillsList = new SkillsList();
