@@ -91,20 +91,26 @@ async function quickInject(link, res) {
         scriptPath: process.env.PY_PROJ, //might cause issues
         args: [link]
     };
-    pShell.run('quickScrape.py', options, function (err, results) {
-        if (err) throw err;
-        let titleDesc = results;
-        //accumulate an object until it's filled with all the elements needed
-        console.log("titleDesc = " + titleDesc);
-        if (titleDesc != "Failed") {
-            let lrObj = { "title": JSON.parse(JSON.stringify(titleDesc))[0][0], "description": JSON.parse(JSON.stringify(titleDesc))[0][1], "link": link, "rating": 2.5, "date": new Date(), "lrid": lrId };
-            predController.concludedSkill(titleDesc, res, lrObj);
-            injectLink(link, res, lrId);
-        } else {
-            quickInjectFailed = true;
-            injectLink(link, res, lrId);
-        }
-    });
+    try {
+        pShell.run('quickScrape.py', options, function (err, results) {
+            if (err) throw err;
+            let titleDesc = results;
+            //accumulate an object until it's filled with all the elements needed
+            console.log("titleDesc = " + titleDesc);
+            if (titleDesc != "Failed") {
+                let lrObj = { "title": JSON.parse(JSON.stringify(titleDesc))[0][0], "description": JSON.parse(JSON.stringify(titleDesc))[0][1], "link": link, "rating": 2.5, "date": new Date(), "lrid": lrId };
+                predController.concludedSkill(titleDesc, res, lrObj);
+                injectLink(link, res, lrId);
+            } else {
+                quickInjectFailed = true;
+                injectLink(link, res, lrId);
+            }
+        });
+    } catch (e) {
+        quickInjectFailed = true;
+        injectLink(link, res, lrId);
+        console.log(e);
+    }
 }
 //use input validation method before entering this method 
 //get the title and desc then compare it to skills.json then show the same "next thing you wanna learn" window
@@ -478,24 +484,26 @@ async function quickCheck(link) {
         scriptPath: process.env.PY_PROJ, //might cause issues
         args: [link]
     };
-
-    const { success, err = '', results } = await new Promise(
-        (resolve, reject) => {
-            PythonShell.run('quickCheck.py', options,
-                function (err, results) {
-                    if (err) {
-                        reject({ success: false, err });
+    try {
+        const { success, err = '', results } = await new Promise(
+            (resolve, reject) => {
+                PythonShell.run('quickCheck.py', options,
+                    function (err, results) {
+                        if (err) {
+                            reject({ success: false, err });
+                        }
+                        // console.log('PythonShell results: %j', results);
+                        resolve({ success: true, results });
                     }
-
-                    // console.log('PythonShell results: %j', results);
-
-                    resolve({ success: true, results });
-                }
-            );
-        }
-    );
-    console.log("quickCheck results: " + results);
-    return String(results);
+                );
+            }
+        );
+        console.log("quickCheck results: " + results);
+        return String(results);
+    } catch (e) {
+        console.log(e);
+        return "error";
+    }
 }
 
 async function hccCheck(link) {

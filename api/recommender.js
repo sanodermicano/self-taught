@@ -7,23 +7,23 @@ var HashMap = require('hashmap');
 // https://www.npmjs.com/package/hashmap
 var usersMap = new HashMap();
 
-exports.cleanUser = function(req, res){
-    try{
+exports.cleanUser = function (req, res) {
+    try {
         const { userid, email, uniqueID } = req.body;
         console.log("cleanUser");
         let SQLID = -1;
-        if(uniqueID){
+        if (uniqueID) {
             console.log("cleaned not logged in");
             usersMap.delete(uniqueID + "prevSkills");
             usersMap.delete(uniqueID + "prevRanges");
             usersMap.delete(uniqueID + "prevLRType");
             usersMap.delete(uniqueID + "orig");
             usersMap.delete(uniqueID + "temp");
-        }else{
+        } else {
             db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
                 console.log("userid: " + userid);
                 SQLID = results[0].id;
-                console.log("SQLID recommend: " + SQLID);
+                console.log("SQLID recommend CLEAN: " + SQLID);
                 if (!await bcrypt.compare(SQLID.toString(), userid)) {
                     return res.status(500).send();
                 } else {
@@ -36,7 +36,7 @@ exports.cleanUser = function(req, res){
                 }
             });
         }
-    }catch (e) {
+    } catch (e) {
         console.log(e);
     }
 }
@@ -50,7 +50,7 @@ exports.recommend = function (req, res) {
         const limit = parseInt(req.query.limit);
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
-        
+
         const result = {};
         console.log("page = " + page + ", limit = " + limit);
         console.log("startIndex = " + startIndex + ", endIndex = " + endIndex);
@@ -60,7 +60,7 @@ exports.recommend = function (req, res) {
         let LRType = req.body['learningResourceType']; //might make prevLRType and do filteration on Python
         console.log("LRType: " + LRType);
 
-        if (email != null && userid != null && email!='' && userid!='') {
+        if (email != null && userid != null && email != '' && userid != '') {
             db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
                 console.log("userid: " + userid);
                 SQLID = results[0].id;
@@ -78,6 +78,11 @@ exports.recommend = function (req, res) {
                     console.log("skills: " + String(skills));
                     console.log("ranges: " + String(ranges));
                     const hashKey = String(SQLID);
+
+                    if (await mdb.exists("self-taught-recommender", "priority", "rec" + SQLID)) {
+                        usersMap.set(SQLID + "orig", await mdb.read("self-taught-recommender", "priority", "rec" + SQLID));
+                    }
+
                     if (String(prevSkills) != String(skills) || String(prevRanges) != String(ranges) || String(prevLRType) != String(LRType)) {
                         console.log("prevSkills != skills");
                         if (SQLID > -1 && usersMap.get(SQLID + "orig") != null) {
@@ -95,7 +100,7 @@ exports.recommend = function (req, res) {
             });
         } else {
             console.log("both email and userid are null");
-            if(!uniqueID) return;
+            if (!uniqueID) return;
             const hashKey = String(uniqueID);
             let prevSkills = usersMap.get(uniqueID + "prevSkills");
             let prevRanges = usersMap.get(uniqueID + "prevRanges");
@@ -113,7 +118,7 @@ exports.recommend = function (req, res) {
             } else {
                 pagination(res, result, page, limit, hashKey, startIndex, endIndex);
             }
-        }  
+        }
         //______________________________________________________
     } catch (e) {
         res.status(500).send();
@@ -125,7 +130,7 @@ function pagination(res, result, page, limit, hashKey, startIndex, endIndex) {
     result.results = usersMap.get(hashKey + "temp").slice(startIndex, endIndex);
     result.allPages = Math.round(usersMap.get(hashKey + "temp").length / limit);
     if (endIndex < usersMap.get(hashKey + "temp").length) {
-        console.log("endIndex<usersMap.get("+hashKey+").length");
+        console.log("endIndex<usersMap.get(" + hashKey + ").length");
         result.next = {
             page: page + 1,
             limit: limit
@@ -151,7 +156,7 @@ async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, l
         pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         scriptPath: process.env.PY_PROJ,
-        args: [JSON.stringify({"skills": skillsList, "ranges": rangesList, "lrtype": LRType})]
+        args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "lrtype": LRType })]
     };
     try {
         pShell.run('searchSkill.py', options, function (err, results) {
@@ -183,6 +188,7 @@ async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, l
         });
     } catch (e) {
         console.log(e)
+        res.status(500).send();
     }
 }
 
@@ -217,11 +223,11 @@ exports.collaborativeBasedFiltering = function (req, res, next, uEmail = null) {
                     return res.status(500).send();
                 }
             }
-            db.util.query('SELECT title, link, rating FROM visited WHERE userid = ?', [SQLID], async function (error, result) {
+            db.util.query('SELECT title, description, link, rating FROM visited WHERE userid = ?', [SQLID], async function (error, result) {
                 if (!result) {
                     console.log("not logged in");
                 } else {
-                    if (result.length < 1) {
+                    if (result.length < 5) { //if less than five learning resources, don't allow running collaborativeBasedFiltering
                         console.log("result.length: " + result.length);
                         if (next) return next();
                         return;
@@ -231,8 +237,6 @@ exports.collaborativeBasedFiltering = function (req, res, next, uEmail = null) {
                     usersMap.set(SQLID + "prevSkills", null);
                     usersMap.set(SQLID + "prevRanges", null);
                     usersMap.set(SQLID + "prevLRType", null);
-                    // usersMap.set(SQLID + "orig", []);
-                    // usersMap.set(SQLID + "temp", []);
                     console.log("userObj 2: " + userObj.length);
                     console.log("userObj 2: " + userObj);
                     let options = {
@@ -242,16 +246,18 @@ exports.collaborativeBasedFiltering = function (req, res, next, uEmail = null) {
                         scriptPath: process.env.PY_PROJ,
                         args: [userObj]
                     };
-                    try{
+                    try {
                         pShell.run('collaborativeBasedFiltering.py', options, function (err, results) {
                             if (err) throw err;
                             // console.log(results);
                             console.log("SQLID collaborativeBasedFiltering: " + SQLID);
                             usersMap.set(SQLID + "orig", results[0]);
+                            mdb.destroy("self-taught-recommender", "priority", "rec" + SQLID);
+                            mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
                             console.log("saved in hashmap (use the saved json file, if it doesn\'t exist use collaborativeBasedFiltering): "
                                 + usersMap.get(SQLID + "orig").length);
                         });
-                    }catch(e) {
+                    } catch (e) {
                         console.log("collaborativeBasedFiltering: " + e);
                     }
                 }
@@ -310,6 +316,7 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
             res.send({ success: true, message: result });
         });
     } catch (e) {
-        console.log(e)
+        console.log(e);
+        res.status(500).send();
     }
 }

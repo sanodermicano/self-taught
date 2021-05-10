@@ -219,20 +219,25 @@ exports.buildTree = async function (req, res, next) {
         scriptPath: process.env.PY_PROJ,
     };
     // pShell.run('buildTree.py', options, function (err, results) { //when in nodemon
-    pShell.run('buildTree.py', options, function (err, results) {
-        if (err) throw err;
-        console.log('Tree building is: ', results);
-        pShell.run('cleaningSkillTree.py', options, function (err, results) {
+    try {
+        pShell.run('buildTree.py', options, function (err, results) {
             if (err) throw err;
-            console.log("results cleaningSkillTree = " + results);
-            if (res) {
-                var beep = require('beepbeep');
-                beep(2, 1000);
-                res.status(201).send();
-            }
+            console.log('Tree building is: ', results);
+            pShell.run('cleaningSkillTree.py', options, function (err, results) {
+                if (err) throw err;
+                console.log("results cleaningSkillTree = " + results);
+                if (res) {
+                    var beep = require('beepbeep');
+                    beep(2, 1000);
+                    res.status(201).send();
+                }
+            });
+            // res.status(201).send();
         });
-        // res.status(201).send();
-    });
+    } catch (e) {
+        console.log("e: " + e);
+        res.status(500).send();
+    }
 }
 
 // exports.cleanSkillTree = async function (req, res, next){
@@ -258,9 +263,14 @@ async function filterReqs() {
         pythonOptions: ['-u'], // get print results in real-time
         scriptPath: process.env.PY_PROJ,
     };
-    pShell.run('buildTree.py', options, function (err, results) {
-        if (err) throw err;
-        console.log('Tree building is: ', results);
-        // inputChoice();
-    });
+    try {
+        pShell.run('buildTree.py', options, function (err, results) {
+            if (err) throw err;
+            console.log('Tree building is: ', results);
+            // inputChoice();
+        });
+    } catch (e) {
+        console.log("e: " + e);
+        res.status(500).send();
+    }
 }

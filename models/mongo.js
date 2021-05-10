@@ -64,7 +64,7 @@ async function insertIfNotFound(dbName, colName, key, condition, value) {
 async function exists(dbName, colName, key, condition) {
     const { db, client } = await connectDB(dbName);
     const collection = db.collection(colName);
-    if (await collection.find({ [key]: condition }).count() > 0) {
+    if (await collection.find({ [key]: { $exists: true } }).count() > 0) {
         console.log("EXISTS");
         return true;
     } else {

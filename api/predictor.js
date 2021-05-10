@@ -10,18 +10,23 @@ exports.concludedSkill = async function (titleDesc, res, lrObj) {
         scriptPath: process.env.PY_PROJ, //might cause issues
         args: [titleDesc]
     };
-    pShell.run('concludedSkill.py', options, function (err, results) {
-        if (err) throw err;
-        let resultedConcludedSkills = results;
-        console.log("resultedConcludedSkills = [" + resultedConcludedSkills + "]");
-        if(res!=null){
-            if(resultedConcludedSkills != ""){
-                res.send({ success: true, message: resultedConcludedSkills, lrObj: JSON.stringify(lrObj) });
-            }else{
-                res.status(500).send();
+    try {
+        pShell.run('concludedSkill.py', options, function (err, results) {
+            if (err) throw err;
+            let resultedConcludedSkills = results;
+            console.log("resultedConcludedSkills = [" + resultedConcludedSkills + "]");
+            if (res != null) {
+                if (resultedConcludedSkills != "") {
+                    res.send({ success: true, message: resultedConcludedSkills, lrObj: JSON.stringify(lrObj) });
+                } else {
+                    res.status(500).send();
+                }
             }
-        }
-    });
+        });
+    } catch (e) {
+        console.log("e: " + e);
+        res.status(500).send();
+    }
 }
 
 exports.predict = async function (skill, res) {
@@ -33,10 +38,15 @@ exports.predict = async function (skill, res) {
         scriptPath: process.env.PY_PROJ, //might cause issues
         args: [skill]
     };
-    pShell.run('predict.py', options, function (err, results) {
-        if (err) throw err;
-        let prediction = JSON.stringify(results);
-        res.send({ success: true, message: prediction });
-        // inputChoice();
-    });
+    try {
+        pShell.run('predict.py', options, function (err, results) {
+            if (err) throw err;
+            let prediction = JSON.stringify(results);
+            res.send({ success: true, message: prediction });
+            // inputChoice();
+        });
+    } catch (e) {
+        console.log("e: " + e);
+        res.status(500).send();
+    }
 }
