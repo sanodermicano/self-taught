@@ -244,7 +244,6 @@
                                         '<td><img width="32" height="32" src="img/delete.png" id="del' +
                                         skillID + '"</td></tr>');
                                     $("#tr" + skillID).hide().fadeIn();
-                                    skillRange = 1;
                                     $("#cb" + skillID).click(function () {
                                         var thisID = String($(this).attr('id')).substring('cb'
                                             .length);
@@ -273,7 +272,7 @@
                                         console.log("rangesListFiltered[" + position + "] = " +
                                             rangesListFiltered[position]);
                                         console.log("skillsListFiltered: " + skillsListFiltered);
-                                        console.log("rangesListFiltered: " + rangesListFiltered);
+                                        console.log("rangesListFiltered addSkills: " + rangesListFiltered);
                                     });
                                     $("#range" + skillID).change(function () {
                                         var thisID = String($(this).attr('id')).substring('level'
@@ -368,7 +367,8 @@
 
                                     //backhere bug this is empty for non-registered users
                                     if (!uuid) {
-                                        rangesListFiltered.push(1);
+                                        console.log("AHAAAAAAAAAAAAAAAAAA");
+                                        rangesListFiltered.push(skillRange);
                                     }
 
                                     if (!isLoading) {
@@ -378,17 +378,16 @@
                                         rangesList.push(1);
                                         positionsList.push(skillsList.length - 1);
                                         rangesListFiltered.push(1);
-                                    }
-                                    //here add sql insert if user is logged in
-                                    if (!isLoading) {
+                                        //here add sql insert if user is logged in
                                         addNewSQLSkill();
                                     }
                                     saveSkills();
                                     console.log(skillsList);
                                     console.log(rangesList);
                                     console.log(positionsList);
-                                    console.log(rangesListFiltered);
+                                    console.log("rangesListFiltered SaveSkill: " + rangesListFiltered);
                                     predictedSkill = "";
+                                    skillRange = 1;
                                 }
                                 // Get the hideable
                                 var hideable = document.getElementById('nextSkill');
@@ -465,6 +464,7 @@
                                         predictedSkill = element.name;
                                         skillRange = element.level;
                                         skillIsOn = element.ison;
+                                        console.log("skillRange = " + skillRange);
                                         console.log("predictedSkill = " + predictedSkill);
                                         addSkills();
                                         if (element.ison == 0) {
@@ -474,7 +474,7 @@
                                         }
                                     }
                                     console.log("skillsListFiltered: " + skillsListFiltered);
-                                    console.log("rangesListFiltered: " + rangesListFiltered);
+                                    console.log("rangesListFiltered loadSkills: " + rangesListFiltered);
                                     isLoading = false;
                                 }
 
