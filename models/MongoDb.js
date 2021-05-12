@@ -79,7 +79,7 @@ class MongoDb {
     doubleUpdate = async function (dbName, colName, key1, condition1, key2, condition2, keyValue, value) {
         const { db, client } = await connectDB(dbName);
         const collection = db.collection(colName);
-        result = await collection.updateOne({ [key1]: condition1, [key2]: condition2 },
+        let result = await collection.updateOne({ [key1]: condition1, [key2]: condition2 },
             { $set: { [keyValue]: value } });
         console.log("doubleUpdate result: " + JSON.stringify(result));
         return result != null;

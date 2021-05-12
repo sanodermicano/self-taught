@@ -1,0 +1,426 @@
+body {
+    /* background-color:rgb(255,248,245); */
+    background-color: rgb(255, 248, 245);
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 1em;
+}
+
+button {
+    background-color: #FF7F50;
+    color: white;
+    padding: 5px 7px;
+    margin: 3px 0;
+    cursor: pointer;
+    opacity: 0.9;
+    font-size: medium;
+    padding: 3px;
+}
+
+button:hover {
+    opacity: 1;
+}
+
+.grid-wrap {
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ========== Skills List ========== */
+.skills {
+    padding: 7px;
+    text-align: left;
+}
+
+.skillscontent {
+    padding: 4px;
+    right: 0;
+}
+
+.skillsection {
+    border: 1 1 1 1;
+    padding: 15px;
+    border-radius: 5px;
+    border-style: ridge;
+    border-color: #272727;
+    background-color: #FFFFFF;
+}
+
+/* The container */
+.container {
+    display: block;
+    position: relative;
+    padding-left: 20px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin-bottom: 70%;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input~.checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked~.checkmark {
+    /* background-color: #1E90FF; */
+    background-color: #FF7F50;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked~.checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 5px;
+    background: #767676;
+    outline: none;
+    opacity: 0.85;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    /* border-color: #1E90FF; */
+    border-color: #FF7F50;
+    border: 1 1 1 1;
+    border-style: solid;
+    /* background: #1E90FF; */
+    background: #FF7F50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 10px;
+    height: 20px;
+    /* background: #1E90FF; */
+    background: #FF7F50;
+    cursor: pointer;
+}
+
+/* ========== Skills List ========== */
+
+.block {}
+
+/* ========== Links Pocket ========== */
+@media (min-width: 0) {
+    .linkspocket {
+        width: 100%;
+        min-width: fit-content;
+    }
+}
+
+@media (min-width: 600px) and (orientation:landscape) {
+    .linkspocket {
+        width: 25%;
+        min-width: min-content;
+    }
+}
+
+.linkspocket {
+    float: right;
+    margin-left: auto;
+    right: 0;
+    width: 25%;
+}
+
+.links {
+    border: 1 1 1 1;
+    border-radius: 5px;
+    border-style: ridge;
+    border-color: #272727;
+    background-color: #FFFFFF;
+}
+
+.learningresources {
+    padding: 1em;
+    text-align: left;
+}
+
+.buttonwrapper {
+    display: flex;
+    min-width: min-content;
+    background-color: transparent;
+    z-index: 0;
+    margin-left: 23%;
+}
+
+.injectbutton {
+    border: 1 1 1 1;
+    border-style: ridge;
+    padding: 1px;
+    border-radius: 50%;
+    margin-left: -7%;
+    background-color: #FFFFFF;
+    color: #FFFFFF;
+    z-index: 30;
+}
+
+/* ========== Links Pocket ========== */
+
+/* ========== Injector ========== */
+.injector {
+    text-align: center;
+    padding-top: 9%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@font-face {
+    font-family: Capriola;
+    src: url(fonts/Capriola.ttf);
+}
+
+.title {
+    font-size: 2.0em;
+    font-weight: lighter;
+    font-family: Capriola;
+    text-align: center;
+    color: #272727;
+}
+
+.fade {
+    opacity: 1;
+    transition: opacity .25s ease-in-out;
+    -moz-transition: opacity .25s ease-in-out;
+    -webkit-transition: opacity .25s ease-in-out;
+}
+
+.fade:hover {
+    opacity: 0.5;
+}
+
+.searchbtn {}
+
+/* ========== Injector ========== */
+
+/* ========== Loading ========== */
+
+.loading {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    position: fixed;
+    top: 35%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.loadingtext {
+    font-family: Capriola;
+    font-size: 250%;
+    color: #FF7F50;
+}
+
+.loadingdesc {
+    font-size: 150%;
+    color: #272727;
+}
+
+/* ========== Loading ========== */
+
+/* ========== Filtering ========== */
+
+.filters {
+    display: flex;
+    justify-content: space-around;
+}
+
+.filter {
+    color: #FFF8F5;
+    background-color: #FF7F50;
+}
+
+/* ========== Filtering ========== */
+
+/* ========== Pagination ========== */
+
+.pagebtn {
+    margin-left: 5px;
+    background-color: #1E90FF;
+    color: white;
+}
+
+/* ========== Pagination ========== */
+
+/* ========== Predict ========== */
+/* Float cancel and delete buttons and add an equal width */
+.cancelbtn,
+.deletebtn {
+    float: left;
+    width: 49%;
+    margin-left: 4px;
+    margin-right: 4px;
+}
+
+/* Add a color to the cancel button */
+.cancelbtn {
+    background-color: #1E90FF;
+    color: white;
+}
+
+/* Add a color to the delete button */
+.deletebtn {
+    background-color: #f44336;
+}
+
+/* Add padding and center-align text to the container */
+.hideablecontainer {
+    padding: 16px;
+    text-align: center;
+}
+
+/* The hideable (background) */
+.hideable {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 20;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: #474e5d;
+    padding-top: 50px;
+}
+
+/* hideable Content/Box */
+.hideable-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto;
+    /* 5% from the top, 15% from the bottom and centered */
+    border: 1px solid #888;
+    width: 80%;
+    /* Could be more or less, depending on screen size */
+}
+
+/* Style the horizontal ruler */
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+}
+
+/* The hideable Close Button (x) */
+.close {
+    position: absolute;
+    right: 35px;
+    top: 15px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+    color: #f44336;
+    cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* Change styles for cancel button and delete button on extra small screens */
+@media screen and (max-width: 300px) {
+
+    .cancelbtn,
+    .deletebtn {
+        width: 100%;
+    }
+}
+
+footer {
+    text-align: center;
+    margin-top: auto;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+a{
+    transition: all .15s ease-in-out;
+    -moz-transition: all .15s ease-in-out;
+    -webkit-transition: all .15s ease-in-out;
+}
+ /* unvisited link */
+a:link {
+    color: #1E90FF;
+}
+  
+  /* visited link */
+a:visited {
+    color: #767676;
+}
+  
+  /* mouse over link */
+a:hover {
+    color: blue;
+}
+  
+  /* selected link */
+a:active {
+    color: #FF7F50;
+} 

@@ -88,12 +88,12 @@ class Recommender {
                         console.log("ranges: " + String(ranges));
                         const hashKey = String(SQLID);
 
-                        if (await mdb.exists("self-taught-recommender", "priority", "rec" + SQLID)) {
-                            usersMap.set(SQLID + "orig", await mdb.read("self-taught-recommender", "priority", "rec" + SQLID));
-                        }
-
+                        
                         if (String(prevSkills) != String(skills) || String(prevRanges) != String(ranges) || String(prevLRType) != String(LRType)) {
                             console.log("prevSkills != skills");
+                            if (await mdb.exists("self-taught-recommender", "priority", "rec" + SQLID)) {
+                                usersMap.set(SQLID + "orig", await mdb.read("self-taught-recommender", "priority", "rec" + SQLID));
+                            }
                             if (SQLID > -1 && usersMap.get(SQLID + "orig") != null) {
                                 usersMap.set(SQLID + "prevSkills", skills);
                                 usersMap.set(SQLID + "prevRanges", ranges);
@@ -103,6 +103,7 @@ class Recommender {
                                 searchSkill(skills, ranges, LRType, hashKey, res, result, page, limit);
                             }
                         } else {
+                            console.log("uhm pagination?");
                             pagination(res, result, page, limit, hashKey, startIndex, endIndex);
                         }
                     }

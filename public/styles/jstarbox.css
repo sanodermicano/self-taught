@@ -42,7 +42,7 @@
 .starbox .rated .stars { background: #dcdcdc; }
 .starbox .rated.hover .stars { background: #cccccc; }
 .starbox .colorbar { background: #1e90ff; }
-.starbox .hover .colorbar { background: #ffcc1c; }
-.starbox .rated .colorbar { background: #ffcc1c; }
+.starbox .hover .colorbar { background: #ff7f50; }
+.starbox .rated .colorbar { background: #ff7f50; }
 .starbox .rated.hover .colorbar { background: #1e90ff; }
 .starbox .ghost { background: #a1a1a1; }

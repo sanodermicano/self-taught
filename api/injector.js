@@ -61,7 +61,7 @@ class Injector {
                                         case "passed":
                                             console.log("hcc passed inject 2");
                                             let lrId = await jsonController.getLrId(enteredURL);
-                                            this.quickInjectFailed = true;
+                                            quickInjectFailed = true;
                                             injectLink(enteredURL, res, lrId);
                                             break;
                                         case "failed":
@@ -377,12 +377,13 @@ async function injectLink(learningLink, res, lrId) {
                 var courseCount = (linkHtml.match(/course/g) || []).length + (linkHtml.match(/courses/g) || []).length + (linkHtml.match(/online course/g) || []).length;
                 var articleCount = (linkHtml.match(/article/g) || []).length + (linkHtml.match(/articles/g) || []).length + (linkHtml.match(/paper/g) || []).length + (linkHtml.match(/essay/g) || []).length + (linkHtml.match(/report/g) || []).length + (linkHtml.match(/story/g) || []).length;
                 var podcastCount = (linkHtml.match(/podcast/g) || []).length + (linkHtml.match(/podcasts/g) || []).length + (linkHtml.match(/story/g) || []).length + (linkHtml.match(/commentary/g) || []).length;
-                var questionCount = (linkHtml.match(/question/g) || []).length + (linkHtml.match(/answer/g) || []).length + (linkHtml.match(/answers/g) || []).length + (linkHtml.match(/questions/g) || []).length;
-                var videoCount = (linkHtml.match(/video/g) || []).length + (linkHtml.match(/videos/g) || []).length;
+                var questionCount = (linkHtml.match(/question/g) || []).length + (linkHtml.match(/answer/g) || []).length + (linkHtml.match(/answers/g) || []).length + (linkHtml.match(/questions/g) || []).length + (linkHtml.match(/help/g) || []).length;
+                var forumCount = (linkHtml.match(/forum/g) || []).length + (linkHtml.match(/forums/g) || []).length + (linkHtml.match(/discussion/g) || []).length + (linkHtml.match(/discussions/g) || []).length + (linkHtml.match(/thread/g) || []).length + (linkHtml.match(/threads/g) || []).length + (linkHtml.match(/question/g) || []).length + (linkHtml.match(/help/g) || []).length;
+                var videoCount = (linkHtml.match(/video/g) || []).length + (linkHtml.match(/videos/g) || []).length + (linkHtml.match(/watch/g) || []).length;
                 var bookCount = (linkHtml.match(/book/g) || []).length + (linkHtml.match(/books/g) || []).length + (linkHtml.match(/pdf/g) || []).length;
 
                 console.log("finished counting website type");
-                var siteType = Math.max(courseCount, articleCount, podcastCount, questionCount, videoCount, bookCount);
+                var siteType = Math.max(courseCount, articleCount, podcastCount, questionCount, videoCount, bookCount, forumCount);
                 switch (siteType) {
                     case courseCount:
                         websiteType = "Online Course";
@@ -395,6 +396,9 @@ async function injectLink(learningLink, res, lrId) {
                         break;
                     case questionCount:
                         websiteType = "Questions & Answers";
+                        break;
+                    case forumCount:
+                        websiteType = "Forum";
                         break;
                     case videoCount:
                         websiteType = "Video";
