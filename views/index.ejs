@@ -70,8 +70,8 @@
         <!-- <div class="grid-wrap"> -->
         <div class="pure-g">
             <div class="pure-u" style="width: 25%;min-width: fit-content;">
-                <img id="options-img" title="Skills List" class="collapsible fade" src="./img/myskillsimg2.png" width="64"
-                    height="64" />
+                <img id="options-img" title="Skills List" class="collapsible fade" src="./img/myskillsimg2.png"
+                    width="64" height="64" />
                 <div class="skillsection skills" id="skils-section">
                     <div>
                         <div>
@@ -1195,7 +1195,7 @@
 
                     $.each(resources['results'], function (i, value) {
                         var descrip = String(resources['results'][i].description);
-                        if(descrip.length > 150) {
+                        if (descrip.length > 150) {
                             descrip = descrip.slice(0, 150).concat("...");
                         }
                         //test the learning resources if they're in the right order using prepend or append
@@ -1204,7 +1204,8 @@
                             resources[
                                 'results'][i].title + '</a>&nbsp;<span>(' +
                             resources['results'][i].type + ')</span></h3><p id="lrId' +
-                            resources['results'][i].lrId + '">' + descrip + '</p></div></td></tr>'
+                            resources['results'][i].lrId + '">' + descrip +
+                            '</p></div></td></tr>'
                         );
                         $("#lr" + i).on('mouseup', addRating);
                         //not concerned with what's down there
@@ -1225,7 +1226,7 @@
                     }
 
                     $("#paginator").append(
-                    '<button id="pgf" class="pure-button pagebtn">First</button>'); //worked
+                        '<button id="pgf" class="pure-button pagebtn">First</button>'); //worked
                     $("#pgf").click(recommend);
 
                     if (resources['previous']) {
@@ -1288,11 +1289,13 @@
     <br><br><br>
 </body>
 <footer style="margin-right: 40px;">
+    <%if (user) { %>
     <div id="userInfo" style="min-width: max-content;">
         <span>
             Signed in as <%= user.name %> <a href="/acc/logout">[Logout]</a>
         </span>
     </div>
+    <% } %>
     <p id="educational" class="educational">All information used is for educational purposes</p>
 </footer>
 
