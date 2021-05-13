@@ -26,9 +26,13 @@ class BuildTree:
             data[i]['parent'] = ' '.join([word for word in re.split("[^A-Za-z0-9+#-]",data[i]['parent']) if word.lower() not in stopwords])
             data[i]['parent'] = re.sub(' +', ' ', data[i]['parent']).strip()
 
-            for j in range(len(data[i]['children'])):
-                data[i]['children'][j] = ' '.join([word for word in re.split("[^A-Za-z0-9+#-]",data[i]['children'][j]) if word.lower() not in stopwords])
-                data[i]['children'][j] = re.sub(' +', ' ', data[i]['children'][j]).strip()
+            if isinstance(data[i]['children'], str):
+                    data[i]['children'] = ' '.join([word for word in re.split("[^A-Za-z0-9+#-]",data[i]['children']) if word.lower() not in stopwords])
+                    data[i]['children'] = re.sub(' +', ' ', data[i]['children']).strip()
+            else:
+                for j in range(len(data[i]['children'])):
+                    data[i]['children'][j] = ' '.join([word for word in re.split("[^A-Za-z0-9+#-]",data[i]['children'][j]) if word.lower() not in stopwords])
+                    data[i]['children'][j] = re.sub(' +', ' ', data[i]['children'][j]).strip()
 
 
         # for index in range(0, len(data)//10):
@@ -49,8 +53,11 @@ class BuildTree:
 
 
             for dataElement in data:
-                for j in range(0, len(dataElement['children'])):
-                    data[data.index(dataElement)]['children'][j] = ' '.join(self.removeDuplicatesReverse(dataElement['children'][j].split(' ')))
+                if isinstance(dataElement['children'], str):
+                    data[data.index(dataElement)]['children'] = ' '.join(self.removeDuplicatesReverse(dataElement['children'].split(' ')))
+                else:
+                    for j in range(0, len(dataElement['children'])):
+                        data[data.index(dataElement)]['children'][j] = ' '.join(self.removeDuplicatesReverse(dataElement['children'][j].split(' ')))
             for dataElement in data:
                 data[data.index(dataElement)]['children'] = self.removeDuplicatesReverse(dataElement['children'])
 
@@ -69,10 +76,14 @@ class BuildTree:
                 
             #remove empty children
             for dataElement in data:
-                for j in range(0, len(dataElement['children'])):
-                    if not dataElement['children'][j]:
-                        data[data.index(dataElement)]['children'].remove(dataElement['children'][j])
-                        break
+                if isinstance(dataElement['children'], str):
+                    if not dataElement['children']:
+                        data[data.index(dataElement)]['children'].remove(dataElement['children'])
+                else:
+                    for j in range(0, len(dataElement['children'])):
+                        if not dataElement['children'][j]:
+                            data[data.index(dataElement)]['children'].remove(dataElement['children'][j])
+                            break
 
             # if the parent had one child and both had the same exact string, delete both
             for dataElement in data:

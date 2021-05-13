@@ -1,6 +1,7 @@
 body {
     /* background-color:rgb(255,248,245); */
     background-color: rgb(255, 248, 245);
+    color: #272727;
     font-family: Arial, Helvetica, sans-serif;
     padding: 1em;
 }
@@ -37,12 +38,13 @@ button:hover {
 }
 
 .skillsection {
-    border: 1 1 1 1;
-    padding: 15px;
+    /* border: 1 1 1 1;
     border-radius: 5px;
     border-style: ridge;
-    border-color: #272727;
+    border-color: #272727; */
+    padding: 15px;
     background-color: #FFFFFF;
+    box-shadow: 0 0px 0px 0 rgba(39, 39, 39, 0.3), 0 4px 14px 0 rgba(39, 39, 39, 0.29);
 }
 
 /* The container */
@@ -179,11 +181,12 @@ button:hover {
 }
 
 .links {
-    border: 1 1 1 1;
+    /* border: 1 1 1 1;
     border-radius: 5px;
     border-style: ridge;
-    border-color: #272727;
+    border-color: #272727; */
     background-color: #FFFFFF;
+    box-shadow: 0 0px 0px 0 rgba(39, 39, 39, 0.3), 0 4px 14px 0 rgba(39, 39, 39, 0.29);
 }
 
 .learningresources {
@@ -273,6 +276,13 @@ button:hover {
 }
 
 /* ========== Loading ========== */
+
+/* ========== Searching ========== */
+.searcharea {
+    margin-left: 2em;
+}
+/* ========== Searching ========== */
+
 
 /* ========== Filtering ========== */
 

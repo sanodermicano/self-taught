@@ -39,7 +39,7 @@ class CleaningSkillTree:
         from nltk.corpus import stopwords
 
         winSize = 3
-        colNum = int(len(data)*0.09)
+        colNum = int(len(data)*0.12) #
 
         #SingleTopWords________________________________
         allWordDist = nltk.FreqDist(tokens)
@@ -157,6 +157,10 @@ class CleaningSkillTree:
             singleWords.remove("Data")
         if "data" in singleWords:
             singleWords.remove("data")
+        if "core" in singleWords:
+            singleWords.remove("core")
+        if "Core" in singleWords:
+            singleWords.remove("Core")
         listOfSkills = singleWords + biSentence + triSentence
         random.shuffle(listOfSkills)
 

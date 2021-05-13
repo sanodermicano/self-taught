@@ -4,10 +4,11 @@ const predController = require('./Predictor').predictor;
 const jsonController = require('./JsonOperations').jsonOperations;
 //https://nodejs.org/api/url.html
 const url = require('url');
+let quickInjectFailed = false;
+
 
 class Injector {
     constructor() {
-        this.quickInjectFailed = false;
         injectLink.bind(this);
         quickInject.bind(this);
         quickCheck.bind(this);
@@ -202,7 +203,7 @@ class Injector {
 
         // destroy what's inside dlToBeDeleted from discoveredLinks
         await jsonController.deleteDiscoveredLinks(JSON.stringify(dlToBeDeleted));
-        
+
         //clear blocked list from links longer than 50 characters
         if (res) {
             var beep = require('beepbeep');
@@ -234,12 +235,12 @@ async function quickInject(link, res) {
                 predController.concludedSkill(titleDesc, res, lrObj);
                 injectLink(link, res, lrId);
             } else {
-                this.quickInjectFailed = true;
+                quickInjectFailed = true;
                 injectLink(link, res, lrId);
             }
         });
     } catch (e) {
-        this.quickInjectFailed = true;
+        quickInjectFailed = true;
         injectLink(link, res, lrId);
         console.log(e);
     }
@@ -331,7 +332,7 @@ async function injectLink(learningLink, res, lrId) {
                 courseTitle = courseTitle.replace(/\s+/g, ' ').trim();
                 courseTitle = courseTitle.replace(expressionHTTP, "");
                 courseTitle = courseTitle.replace(expression, "");
-                if(courseDesc){
+                if (courseDesc) {
                     courseDesc = courseDesc.replace(/[^a-z0-9 ]/gi, "");
                     courseDesc = courseDesc.replace(/\s+/g, ' ').trim();
                     courseDesc = courseDesc.replace(expressionHTTP, "");
@@ -379,11 +380,20 @@ async function injectLink(learningLink, res, lrId) {
                 var podcastCount = (linkHtml.match(/podcast/g) || []).length + (linkHtml.match(/podcasts/g) || []).length + (linkHtml.match(/story/g) || []).length + (linkHtml.match(/commentary/g) || []).length;
                 var questionCount = (linkHtml.match(/question/g) || []).length + (linkHtml.match(/answer/g) || []).length + (linkHtml.match(/answers/g) || []).length + (linkHtml.match(/questions/g) || []).length + (linkHtml.match(/help/g) || []).length;
                 var forumCount = (linkHtml.match(/forum/g) || []).length + (linkHtml.match(/forums/g) || []).length + (linkHtml.match(/discussion/g) || []).length + (linkHtml.match(/discussions/g) || []).length + (linkHtml.match(/thread/g) || []).length + (linkHtml.match(/threads/g) || []).length + (linkHtml.match(/question/g) || []).length + (linkHtml.match(/help/g) || []).length;
+                var quizCount = (linkHtml.match(/quiz/g) || []).length + (linkHtml.match(/quizzes/g) || []).length + (linkHtml.match(/exam/g) || []).length + (linkHtml.match(/exams/g) || []).length + (linkHtml.match(/examination/g) || []).length + (linkHtml.match(/examinations/g) || []).length + (linkHtml.match(/assessment/g) || []).length + (linkHtml.match(/assessments/g) || []).length + (linkHtml.match(/evaluation/g) || []).length + (linkHtml.match(/evaluations/g) || []).length;
                 var videoCount = (linkHtml.match(/video/g) || []).length + (linkHtml.match(/videos/g) || []).length + (linkHtml.match(/watch/g) || []).length;
                 var bookCount = (linkHtml.match(/book/g) || []).length + (linkHtml.match(/books/g) || []).length + (linkHtml.match(/pdf/g) || []).length;
+                console.log("courseCount: " + courseCount);
+                console.log("articleCount: " + articleCount);
+                console.log("podcastCount: " + podcastCount);
+                console.log("questionCount: " + questionCount);
+                console.log("forumCount: " + forumCount);
+                console.log("quizCount: " + quizCount);
+                console.log("videoCount: " + videoCount);
+                console.log("bookCount: " + bookCount);
 
                 console.log("finished counting website type");
-                var siteType = Math.max(courseCount, articleCount, podcastCount, questionCount, videoCount, bookCount, forumCount);
+                var siteType = Math.max(courseCount, articleCount, podcastCount, questionCount, videoCount, bookCount, forumCount, quizCount);
                 switch (siteType) {
                     case courseCount:
                         websiteType = "Online Course";
@@ -396,6 +406,9 @@ async function injectLink(learningLink, res, lrId) {
                         break;
                     case questionCount:
                         websiteType = "Questions & Answers";
+                        break;
+                    case quizCount:
+                        websiteType = "Quizzes & Exams";
                         break;
                     case forumCount:
                         websiteType = "Forum";
@@ -468,8 +481,8 @@ async function injectLink(learningLink, res, lrId) {
 
                 if (supportedType != "") jsonController.appendSkill(JSON.stringify(skillElement));
 
-                if (this.quickInjectFailed) {
-                    this.quickInjectFailed = false;
+                if (quickInjectFailed) {
+                    quickInjectFailed = false;
                     let lrObj = { "title": courseTitle, "description": courseDesc, "link": learningLink, "rating": 2.5, "date": new Date(), "lrid": lrId };
                     predController.concludedSkill(courseTitle + "," + courseDesc, res, lrObj);
                 }
