@@ -10,7 +10,6 @@
 ### To build the skilltree from rawdata, then build the skills list from the skilltree - TAKES A MINUTE
 GET http://localhost:8000/buildSkills
 
-
 ### Crawl into discovered links to generate new learning resources and filter DiscoveredLinks.json based on if the content exists in the skills list or not
 GET http://localhost:8000/createLearningResoruces
 
