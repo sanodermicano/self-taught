@@ -4,6 +4,7 @@ body {
     color: #272727;
     font-family: Arial, Helvetica, sans-serif;
     padding: 1em;
+    scroll-behavior: smooth;
 }
 
 button {
@@ -30,6 +31,8 @@ button:hover {
 .skills {
     padding: 7px;
     text-align: left;
+    border-collapse: separate;
+    border-spacing: 0 1em;
 }
 
 .skillscontent {
@@ -45,6 +48,7 @@ button:hover {
     padding: 15px;
     background-color: #FFFFFF;
     box-shadow: 0 0px 0px 0 rgba(39, 39, 39, 0.3), 0 4px 14px 0 rgba(39, 39, 39, 0.29);
+    
 }
 
 /* The container */

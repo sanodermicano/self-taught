@@ -78,14 +78,14 @@
                             <form>
                                 <!-- search skills & add skills -->
                                 <% var skills; %>
-                                <table style="width:90%">
+                                <table style="width:100%">
                                     <tr>
-                                        <td style="width:90%">
+                                        <td style="width:100%">
                                             <select id="select-skill" title="Select a Skill">
                                             </select>
                                         </td>
-                                        <td style="width:10%">
-                                            <img src="img/help.png" width="16" height="16" class="fade"
+                                        <td>
+                                            <img src="img/help.png" id="halp" width="16" height="16" class="fade"
                                                 title="Learning Resources Difficulty: &#013;Level 1 & 2: Beginner&#013;Level 3: Intermediate&#013;Level 4: Advanced&#013;Level 5: Advanced + You Recieve a list of More Advanced Next Skills to Choose from&#013;&#013;Can't find the Skill you're looking for? Insert learning resources' links related to that skill and wait a day, the Skill you're looking for will be automatically added to the Skills List."
                                                 alt="Help" />
                                         </td>
@@ -107,6 +107,7 @@
                                         filterFadeBack();
                                         $("#filterall").fadeTo(150, 1);
                                         $("#ratingSort").children().hide();
+                                        isFree();
                                         $("#select-skill").selectize({});
                                     });
                                     $("#select-skill").change(addSkills);
@@ -140,6 +141,8 @@
                                         $("#learningResources").hide();
 
                                         //use prepend and instead but remember to mirror all skills list operations; unshift CRUD instead of pushing
+                                        
+                                        // $("#skills").prepend('<tr id="tr' + skillID +
                                         $("#skills").append('<tr id="tr' + skillID +
                                             '"><td class="skillscontent"><label class="container"><input type="checkbox" id="cb' +
                                             skillID +
@@ -281,11 +284,12 @@
                                             $("#learningResources").empty();
                                             if (skillsListFiltered.length <= 0) $("#wdiln").fadeOut(150);
                                         });
-                                        skillID++;
                                         skillsListBackup.push(predictedSkill);
                                         rangesListBackup.push(1);
-
                                         skillsListFiltered.push(predictedSkill);
+                                        
+                                        // skillID = skillsListBackup.length;
+                                        skillID++;
 
                                         //backhere bug this is empty for non-registered users
                                         if (!uuid) {
@@ -317,6 +321,12 @@
                                     function showAll() {
                                         hideable.style.display = "none";
                                         $("#allContent").show();
+                                        $("#sResults").show().fadeTo(150, 1).delay(
+                                                10000)
+                                            .fadeTo(150, 0);
+                                        $("#sFilters").show().fadeTo(150, 1).delay(
+                                                10000)
+                                            .fadeTo(150, 0);
                                         $("#topNav").show();
                                         $("#userInfo").show();
                                         $("#plzWait").hide();
@@ -338,6 +348,8 @@
                                     function hideAll(msg = "") {
                                         hideable.style.display = "none";
                                         $("#allContent").hide();
+                                        $("#sResults").hide();
+                                        $("#sFilters").hide();
                                         $("#topNav").hide();
                                         $("#userInfo").hide();
                                         $("#plzWait").show();
@@ -714,15 +726,27 @@
                                             addRating(element, true, false);
                                         }
                                     }
+
+                                    function isFree() {
+                                        console.log("nah");
+                                    }
                                 </script>
                                 <% } %>
                                 <% if (!user){ %>
                                 <script>
+                                    function isFree() {
+                                        $("#options-img").hide();
+                                        $("#halp").attr("title",
+                                            "Learning Resources Difficulty: \nLevel 1 & 2: Beginner\nLevel 3: Intermediate\nLevel 4: Advanced\nLevel 5: Advanced + You Recieve a list of More Advanced Next Skills to Choose from"
+                                        )
+                                        $("#skils-section").prependTo("#siteName");
+                                    }
                                     //https://stackoverflow.com/questions/23327010/how-to-generate-unique-id-with-node-js
                                     const uuid = (new Date()).getTime().toString(36) + Math.random().toString(36)
                                         .slice(
                                             2)
                                     console.log("uuid: " + uuid);
+
 
                                     function loadSkills() {
                                         var skillLen = 0;
@@ -825,7 +849,7 @@
                         </div>
                     </div>
                     <table>
-                        <div id="skills" style="overflow-y: auto; max-height:200px;">
+                        <div id="skills" style="overflow-y: auto; max-height:258px;">
                         </div>
                     </table>
                 </div>
@@ -835,7 +859,8 @@
                 <img src="./img/self-taught.png" alt="Self-Taught" width="128" height="128" />
                 <h2 class="title">Self-Taught</h2>
                 <br>
-                <p id="siteName">
+                <div id="siteName">
+                <% if (user){ %>
                     <div id="randomBlock">
                         <form id="linkSubmit" class="pure-form">
                             <p id="plzWait">Please wait...</p>
@@ -850,16 +875,28 @@
                                     src="img/inject.png" width="32" height="27" form="linkSubmit" id="injectLink">
                             </div>
                         </form>
-                        <br>
-                        <input id="wdiln" style="display: none;" title="What Do I Learn Next?" src="img/search.png"
-                            width="64" height="66" type="image" class="searchbtn fade" value="?" role="button">
                     </div>
-                </p>
+                    <% } %>
+                    <br>
+                    <input id="wdiln" style="display: none;" title="What Do I Learn Next?" src="img/search.png"
+                        width="64" height="66" type="image" class="searchbtn fade" value="?" role="button">
+                </div>
             </div>
             <div class="pure-u linkspocket">
                 <% if (!user){ %>
-                <div style="text-align: right;">
-                    <img onclick=clickedLogin() src="img/icon-new.png" width="64" height="64" />
+                <div style="top: 0; right: 0;position: absolute;">
+                    <table>
+                        <tr>
+                            <td style="text-align:center">
+                                <img onclick=clickedLogin() src="img/icon-new.png" width="64" height="64" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">
+                                <h4>Sign in to Unlock <br> the Full Experience</h4>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 <script>
                     var uid = null;
@@ -877,10 +914,10 @@
                     <img id="img1" title="Learning Resources History" class="collapsible fade" src="./img/skills.png"
                         width="64" height="64" />
                     <div id="links-section" class="links learningresources"
-                        style="overflow-y: auto; max-height:200px;text-align: left;">
+                        style="overflow-y: auto; max-height:300px;text-align: left;">
                         <!-- <h3>Learning Resources</h3> -->
                         <!-- insert injected links here, example: -->
-                        <h3>Learning Resources:</h3>
+                        <h3>Learning History:</h3>
                         <!-- △ ▽  -->
                         <table>
                             <thead>
@@ -951,6 +988,7 @@
         <div id="recommendation">
             <div class="pure-g" id="filters" style="display: none;">
                 <div class="pure-u-1-3">
+                    <h4 id="sFilters">Filters:</h4>
                     <div style="width: 100%;" class="filters"></div>
                     <button id="filterall" title="" class="pure-button filter">All</button>
                     <button id="filteroc" class="pure-button filter">Online Course</button>
@@ -965,14 +1003,14 @@
                 </div>
             </div>
         </div>
-        <br><br><br><br>
+        <br><br>
         <div class="pure-g">
             <div class="pure-u-1-1">
                 <div id="pagTop">
                     <div id="paginator">
                     </div>
                 </div>
-                <br><br>
+                <h4 id="sResults" style="display: none;">Search Results:</h4>
                 <table id="learningResources">
                 </table>
                 <br><br>
@@ -1039,11 +1077,11 @@
                         var userAj = "<%- user; %>";
                         if (userAj) {
                             $("#plzWait").text("Error: Please retry or insert another link").delay(
-                                    5000)
+                                    10000)
                                 .fadeOut(150);
                         } else {
                             $("#plzWait").text("Error: Must be logged in to Insert Links").delay(
-                                    5000)
+                                    10000)
                                 .fadeOut(150);
                         }
                         $("#plzWait").show();
@@ -1155,7 +1193,7 @@
                 $("#filters").hide();
                 $("#paginator").hide();
                 $("#learningResources").hide();
-                $("#learningResources").empty();
+                // $("#learningResources").empty();
                 $("#filterall").fadeTo(150, 0.4);
                 $("#filterpodcast").fadeTo(150, 0.4);
                 $("#filtervid").fadeTo(150, 0.4);
@@ -1171,7 +1209,7 @@
                 event.preventDefault();
                 if (skillsListBackup.length < 1) {
                     $("#plzWait").text("Cannot recommend Learning Resources, please add a skill to the skills section")
-                        .delay(5000).fadeOut(150);
+                        .delay(10000).fadeOut(150);
                     $("#plzWait").show();
                     return;
                 } else {
@@ -1187,7 +1225,7 @@
                 console.log("currPage = " + currPage);
                 console.log(skillsListBackup);
 
-                $("#learningResources").empty();
+                // $("#learningResources").empty();
                 if (!$(this).attr('id').includes("pg")) {
                     hideAll("Searching");
                 }
@@ -1205,6 +1243,7 @@
                     jsonpCallback: 'callback',
                     success: function (data) {
                         showAll();
+
                         // var resources = JSON.stringify(data.message);
                         var resources = data.message;
                         // console.log("resources: " + JSON.stringify(resources));
@@ -1271,6 +1310,11 @@
                             '" class="pure-button pagebtn">Last</button>');
                         $("#pg" + (resources['allPages'] + 1)).click(recommend);
 
+                        document.getElementById('wdiln').scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                            inline: "nearest"
+                        });
                     },
                     error: function (xhr, status, error) {
                         console.log('Error recommend: ' + error.message);
@@ -1279,7 +1323,7 @@
 
                 //those are the opposite?
                 $(document).on('scroll', function () {
-                    if ($(this).scrollTop() >= $('#siteName').position().top) {
+                    if ($(this).scrollTop() >= $('#sResults').position().top) {
                         $("#paginator").prependTo("#pagBot");
                     } else {
                         $("#paginator").prependTo("#pagTop");
