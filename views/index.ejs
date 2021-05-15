@@ -214,6 +214,7 @@
                                                                     3)).replace(/['"]+/g, '')
                                                             .replace(/\\|\//g, '');
                                                         showAll();
+                                                        $("#sResults").hide();
                                                         foundNewSkills(newSkills);
                                                     },
                                                     error: function (xhr, status, error) {
@@ -248,11 +249,11 @@
                                             $("#filters").hide();
                                             $("#paginator").hide();
                                             $("#learningResources").hide();
+                                            $("#sResults").hide();
                                             $("#learningResources").empty();
                                         });
                                         $("#del" + skillID).click(function () {
                                             var thisID = String($(this).attr('id')).substring('del'.length);
-
                                             var removedItem = $("#th" + thisID).text();
                                             const index = skillsListBackup.indexOf(removedItem);
                                             console.log("attempting to delete: " + thisID);
@@ -304,6 +305,8 @@
                                             rangesList.push(1);
                                             positionsList.push(skillsList.length - 1);
                                             rangesListFiltered.push(1);
+                                            if(rangesListFiltered.length > rangesList.length) rangesListFiltered.length = rangesList.length;
+                                            // rangesListFiltered[rangesList.length-1] = 1;
                                             //here add sql insert if user is logged in
                                             addNewSQLSkill();
                                         }

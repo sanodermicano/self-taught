@@ -125,6 +125,7 @@ class JsonOperations {
 
     appendRating = async function (newRating, req = null, uEmail = "") {
         //appendRating.py
+        console.log("started append rating");
         const nr = JSON.parse(newRating);
         if (!await mdb.doubleExists("self-taught-recommender", "ratings", "userId", nr.userId, "lrId", nr.lrId)) {
             await mdb.createAtRoot("self-taught-recommender", "ratings", nr);

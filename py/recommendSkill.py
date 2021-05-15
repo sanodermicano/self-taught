@@ -5,6 +5,7 @@ import os
 import pymongo
 from dotenv import load_dotenv
 from bson import json_util
+import re
 
 # https://stackoverflow.com/questions/41546883/what-is-the-use-of-python-dotenv
 dotenv_path = './.env' #init .env
@@ -35,9 +36,11 @@ class RecommendSkill:
 
 
         mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
-        mongoDb = mongoClient.get_database('self-taught-lr')
+        mongoDb = mongoClient.get_database('self-taught-recommender')
 
-        data = list(mongoDb['learning-resources'].find({}, {'_id': False}))
+        data = []
+        data = mongoDb["priority"].find_one()['rec'+str(userId)] #retreive the data more efficiently
+        
         resources = []
         for dataElement in data:
             if 'title' in dataElement:

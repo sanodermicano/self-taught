@@ -66,6 +66,7 @@ class Recommender {
 
             let skills = req.body['skillsListFiltered[]'];
             let ranges = req.body['rangesListFiltered[]'];
+            ranges = ranges.slice(0, skills.length);
             let LRType = req.body['learningResourceType']; //might make prevLRType and do filteration on Python
             console.log("LRType: " + LRType);
 
@@ -200,7 +201,7 @@ class Recommender {
                                 usersMap.set(SQLID + "orig", results[0]);
                                 mdb.destroy("self-taught-recommender", "priority", "rec" + SQLID);
                                 mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
-                                console.log("saved in hashmap (use the saved json file, if it doesn\'t exist use collaborativeBasedFiltering): "
+                                console.log("saved in hashmap: "
                                     + usersMap.get(SQLID + "orig").length);
                             });
                         } catch (e) {
@@ -293,8 +294,8 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
     console.log("SQLID mhm? " + SQLID); //609784fee4c8ef50321b01d0
     //figure out a way to update the data only when needed, it doesn't make sense to update the list if the list 
     //of the links is the same as the one before
-    await mdb.destroy("self-taught-recommender", "priority", "rec" + SQLID);
-    await mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
+    // await mdb.destroy("self-taught-recommender", "priority", "rec" + SQLID);
+    // await mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
     let options = {
         mode: 'json',
         pythonPath: process.env.PY_PATH,

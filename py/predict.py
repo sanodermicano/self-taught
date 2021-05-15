@@ -4,6 +4,7 @@ import re
 import os
 import pymongo
 from dotenv import load_dotenv
+from bson import json_util
 
 dotenv_path = './.env' #init .env
 load_dotenv(dotenv_path)
@@ -15,14 +16,20 @@ class Predict:
         return [x for x in arr[::-1] if not (x in seen or seen_add(x))][::-1]
 
     def whatDoILearnNext(self):
+        skill = sys.argv[1]
+        if len(skill) <= 3:
+            skill = ' ' + skill + ' '
+
         mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
         mongoDb = mongoClient.get_database('self-taught-stb')
-        skills = mongoDb['skills'].find_one()['skills']
-        data = mongoDb['skilltree'].find()
+        skills = json_util.loads(json_util.dumps(mongoDb['skills'].find_one()['skills']))
+        # data = list(mongoDb['skilltree'].find({}))
+        data = []
+        data.extend(list(mongoDb['skilltree'].find({"parent": {"$in": [re.compile(re.escape(skill), re.IGNORECASE)]}})))
+        data.extend(list(mongoDb['skilltree'].find({"children": {"$in": [re.compile(re.escape(skill), re.IGNORECASE)]}})))
+        if len(data) < 1:
+            data = mongoDb['skilltree'].find()
 
-        skill = sys.argv[1]
-        if len(skill) <= 2:
-            skill = ' ' + skill + ' '
         nextSkills = []
         i = 0
         for dataElement in data:
