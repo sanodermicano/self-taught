@@ -147,19 +147,15 @@ class CollaborativeBasedFiltering:
             mongoDbLr['learning-resources'].find({}, {'_id': False})))
         toBePrinted = []
         for rec in recommendation_df['lrId']:
-            for lr in lrData:
-                if rec == lr['lrId']:
-                    toBePrinted.append(lr)
-                    break
-        # print(len(toBePrinted))
+            toBePrinted.append(rec)
+
         for lr in lrData:
             if lr['lrId'] not in recommendation_df['lrId']:
-                toBePrinted.append(lr)
-
+                toBePrinted.append(lr['lrId'])
         # remove visisted links
         for userin in userInput:
             for tbp in toBePrinted:
-                if userin['link'] == tbp['link']:
+                if userin['lrid'] == tbp:
                     toBePrinted.remove(tbp)
                     break
 

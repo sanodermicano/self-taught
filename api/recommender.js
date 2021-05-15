@@ -168,7 +168,7 @@ class Recommender {
                         return res.status(500).send();
                     }
                 }
-                db.util.query('SELECT title, description, link, rating FROM visited WHERE userid = ?', [SQLID], async function (error, result) {
+                db.util.query('SELECT title, description, link, rating, lrid FROM visited WHERE userid = ?', [SQLID], async function (error, result) {
                     if (!result) {
                         console.log("not logged in");
                     } else {

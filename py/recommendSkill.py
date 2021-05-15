@@ -36,10 +36,42 @@ class RecommendSkill:
 
 
         mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
-        mongoDb = mongoClient.get_database('self-taught-recommender')
+        mongoDbRec = mongoClient.get_database('self-taught-recommender')
 
+        lrSortings = mongoDbRec["priority"].find_one()['rec'+str(userId)] #retreive the data more efficiently
+
+        mongoDb = mongoClient.get_database('self-taught-lr')
+
+        rawData = []
+        if lrtype != "Any":
+            for i in range(0, len(newResources['skills'])):
+                if newResources['ranges'][i] == '1' or newResources['ranges'][i] == '2':
+                    rawData.extend(list(mongoDb['learning-resources'].find({"title": {"$in": [re.compile(
+                        re.escape(newResources['skills'][i]), re.IGNORECASE)]}, "type": lrtype, "difficulty": "Beginner"}, {'_id': False})))
+                elif newResources['ranges'][i] == '3':
+                    rawData.extend(list(mongoDb['learning-resources'].find({"title": {"$in": [re.compile(
+                        re.escape(newResources['skills'][i]), re.IGNORECASE)]}, "type": lrtype, "difficulty": "Intermediate"}, {'_id': False})))
+                elif newResources['ranges'][i] == '4' or newResources['ranges'][i] == '5':
+                    rawData.extend(list(mongoDb['learning-resources'].find({"title": {"$in": [re.compile(
+                        re.escape(newResources['skills'][i]), re.IGNORECASE)]}, "type": lrtype, "difficulty": "Advanced"}, {'_id': False})))
+        else:
+            for i in range(0, len(newResources['skills'])):
+                if newResources['ranges'][i] == '1' or newResources['ranges'][i] == '2':
+                    rawData.extend(list(mongoDb['learning-resources'].find({"title": {"$in": [re.compile(
+                        re.escape(newResources['skills'][i]), re.IGNORECASE)]}, "difficulty": "Beginner"}, {'_id': False})))
+                elif newResources['ranges'][i] == '3':
+                    rawData.extend(list(mongoDb['learning-resources'].find({"title": {"$in": [re.compile(
+                        re.escape(newResources['skills'][i]), re.IGNORECASE)]}, "difficulty": "Intermediate"}, {'_id': False})))
+                elif newResources['ranges'][i] == '4' or newResources['ranges'][i] == '5':
+                    rawData.extend(list(mongoDb['learning-resources'].find({"title": {"$in": [re.compile(
+                        re.escape(newResources['skills'][i]), re.IGNORECASE)]}, "difficulty": "Advanced"}, {'_id': False})))
+        
         data = []
-        data = mongoDb["priority"].find_one()['rec'+str(userId)] #retreive the data more efficiently
+        for lrSorting in lrSortings:
+            for lr in rawData:
+                if lrSorting == lr['lrId']:
+                    data.append(lr)
+                    break
         
         resources = []
         for dataElement in data:
