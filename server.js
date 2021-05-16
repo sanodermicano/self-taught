@@ -3,6 +3,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const process = require('process');
+const cors = require('cors');
 const port = process.env.PORT || 5000;
 
 
@@ -55,6 +56,12 @@ app.use(function (req, res, next) {
 }
 );
 app.use(cookieParser());
+var corsOptions = {
+    origin: 'http://127.0.0.1:5000',
+    optionsSuccessStatus: 200, // For legacy browser support
+    methods: "GET, POST"
+}
+app.use(cors(corsOptions))
 app.use(limiter);
 app.use(express.json());
 app.use('/acc', require('./controllers/account'));
