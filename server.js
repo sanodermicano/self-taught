@@ -60,7 +60,7 @@ app.use('/', require('./controllers/skillTreeBuilder'));
 app.use('/', require('./controllers/skillsList'));
 app.use('/', require('./controllers/linksPocket'));
 
-server.listen(port, function () {
+server.listen(process.env.PORT || 5000, function () {
     console.log("Server listening on port: " + port);
     
     //periodic non-nodemon functions to make the system self-reliant - needs to be tested on a real server
