@@ -126,10 +126,10 @@ class SkillTreeBuilder {
         };
         // pShell.run('BuildTree.py', options, function (err, results) { //when in nodemon
         try {
-            pShell.run('BuildTree.py', options, function (err, results) {
+            pShell.run('buildTree.py', options, function (err, results) {
                 if (err) throw err;
                 console.log('Tree building is: ', results);
-                pShell.run('CleaningSkillTree.py', options, function (err, results) {
+                pShell.run('cleaningSkillTree.py', options, function (err, results) {
                     if (err) throw err;
                     console.log("results cleaningSkillTree = " + results);
                     if (res) {
@@ -261,7 +261,7 @@ async function filterReqs() {
         scriptPath: '/app/py',
     };
     try {
-        pShell.run('BuildTree.py', options, function (err, results) {
+        pShell.run('buildTree.py', options, function (err, results) {
             if (err) throw err;
             console.log('Tree building is: ', results);
             // inputChoice();

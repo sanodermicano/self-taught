@@ -1,6 +1,6 @@
 const express = require('express');
 const accController = require('../api/Account').account;
-const predController = require('../api/Predictor').predictor;
+const predController = require('../api/predictor').predictor;
 const router = express.Router();
 
 router.post('/predict', function (req, res) {

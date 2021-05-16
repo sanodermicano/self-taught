@@ -1,5 +1,5 @@
 require("dotenv").config();
-const db = require('../models/MySQL').mySQL;
+const db = require('../models/mysql').mySQL;
 const bcrypt = require('bcrypt');
 
 class Predictor {
@@ -27,7 +27,7 @@ class Predictor {
                         args: [newSkill]
                     };
                     try {
-                        pShell.run('Predict.py', options, function (err, results) {
+                        pShell.run('predict.py', options, function (err, results) {
                             if (err) throw err;
                             let prediction = JSON.stringify(results);
                             res.send({ success: true, message: prediction });
@@ -56,7 +56,7 @@ class Predictor {
             args: [titleDesc]
         };
         try {
-            pShell.run('ConcludedSkill.py', options, function (err, results) {
+            pShell.run('concludedSkill.py', options, function (err, results) {
                 if (err) throw err;
                 let resultedConcludedSkills = results;
                 console.log("resultedConcludedSkills = [" + resultedConcludedSkills + "]");

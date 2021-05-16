@@ -2,7 +2,7 @@ const express = require('express');
 const accController = require('../api/Account').account;
 const jsonController = require('../api/JsonOperations').jsonOperations;
 const skillsController = require('../api/SkillsList').skillsList;
-const lpController = require('../api/LinksPocket').linksPocket;
+const lpController = require('../api/linksPocket').linksPocket;
 // const recController = require('../api/recommender');
 const router = express.Router();
 

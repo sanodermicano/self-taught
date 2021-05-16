@@ -1,5 +1,5 @@
 require("dotenv").config();
-const recController = require('./Recommender').recommender;
+const recController = require('./recommender').recommender;
 const mdb = require('../models/MongoDb').mongoDb;
 
 class JsonOperations {

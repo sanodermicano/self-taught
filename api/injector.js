@@ -1,6 +1,6 @@
 require("dotenv").config();
 const HCCrawler = require('headless-chrome-crawler');
-const predController = require('./Predictor').predictor;
+const predController = require('./predictor').predictor;
 const jsonController = require('./JsonOperations').jsonOperations;
 //https://nodejs.org/api/url.html
 const url = require('url');
@@ -226,7 +226,7 @@ async function quickInject(link, res) {
         args: [link]
     };
     try {
-        pShell.run('QuickScrape.py', options, function (err, results) {
+        pShell.run('quickScrape.py', options, function (err, results) {
             if (err) throw err;
             let titleDesc = results;
             //accumulate an object until it's filled with all the elements needed
@@ -519,7 +519,7 @@ async function quickCheck(link) {
     try {
         const { success, err = '', results } = await new Promise(
             (resolve, reject) => {
-                PythonShell.run('QuickCheck.py', options,
+                PythonShell.run('quickCheck.py', options,
                     function (err, results) {
                         if (err) {
                             reject({ success: false, err });

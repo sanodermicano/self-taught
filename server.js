@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 
 dotenv.config({ path: './.env' });
 
-const db = require('./models/MySQL').mySQL;
+const db = require('./models/mysql').mySQL;
 db.util.connect(function (error) {
     if (error) {
         console.log(error);
@@ -64,8 +64,8 @@ server.listen(process.env.PORT || 5000, function () {
     console.log("Server listening on port: " + port);
     
     //periodic non-nodemon functions to make the system self-reliant - needs to be tested on a real server
-    const injectController = require('./api/Injector').injector;
-    const buildController = require('./api/SkillTreeBuilder').skillTreeBuilder;
+    const injectController = require('./api/injector').injector;
+    const buildController = require('./api/skilltreeBuilder').skillTreeBuilder;
     const jsonController = require('./api/JsonOperations').jsonOperations;
     setInterval(async function() {
         console.log("every 1.6 hours visit 50 discovered links 5760000");

@@ -1,4 +1,4 @@
-const db = require('../models/MySQL').mySQL;
+const db = require('../models/mysql').mySQL;
 const bcrypt = require('bcrypt');
 const jsonController = require('./JsonOperations').jsonOperations;
 

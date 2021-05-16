@@ -1,5 +1,5 @@
 const express = require('express');
-const recController = require('../api/Recommender').recommender;
+const recController = require('../api/recommender').recommender;
 const router = express.Router();
 
 router.post('/recommend', function (req, res) {

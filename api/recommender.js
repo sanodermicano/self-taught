@@ -1,5 +1,5 @@
 require("dotenv").config();
-const db = require('../models/MySQL').mySQL;
+const db = require('../models/mysql').mySQL;
 const mdb = require('../models/MongoDb').mongoDb;
 const bcrypt = require('bcrypt');
 const HashMap = require('hashmap');
@@ -200,7 +200,7 @@ class Recommender {
                             args: [userObj]
                         };
                         try {
-                            pShell.run('CollaborativeBasedFiltering.py', options, function (err, results) {
+                            pShell.run('collaborativeBasedFiltering.py', options, function (err, results) {
                                 if (err) throw err;
                                 // console.log(results);
                                 console.log("SQLID collaborativeBasedFiltering: " + SQLID);
@@ -265,7 +265,7 @@ async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, l
         args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "lrtype": LRType })]
     };
     try {
-        pShell.run('SearchSkill.py', options, function (err, results) {
+        pShell.run('searchSkill.py', options, function (err, results) {
             if (err) throw err;
             // console.log(JSON.stringify({"skills": skillsList, "ranges": rangesList, "lrtype": LRType}));
             usersMap.set(hashKey + "temp", results[0]);
@@ -318,7 +318,7 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
         args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "id": SQLID, "lrtype": LRType })]
     };
     try {
-        pShell.run('RecommendSkill.py', options, function (err, results) {
+        pShell.run('recommendSkill.py', options, function (err, results) {
             if (err) throw err;
             usersMap.set(SQLID + "temp", results[0]);
             result.results = usersMap.get(SQLID + "temp").slice(0, limit); //uncomment

@@ -1,6 +1,6 @@
 const express = require('express');
 const accController = require('../api/Account').account;
-const injectController = require('../api/Injector').injector;
+const injectController = require('../api/injector').injector;
 const jsonController = require('../api/JsonOperations').jsonOperations;
 const router = express.Router();
 
