@@ -18,7 +18,7 @@ db.util.connect(function (error) {
 });
 const mongodb = require('./models/MongoDb');
 
-mongodb.init(function(){
+mongodb.init(function () {
     console.log("MongoDB is Connected");
 });
 
@@ -44,9 +44,13 @@ app.use(function (req, res, next) {
     res.setHeader(
         'Content-Security-Policy',
         "default-src *; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; script-src 'self' https://cdnjs.cloudflare.com https://ajax.googleapis.com 'unsafe-inline' 'unsafe-eval' http://www.google.com"
-        );
-        next();
-    }
+    );
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+}
 );
 app.use(cookieParser());
 app.use(limiter);
@@ -62,20 +66,20 @@ app.use('/', require('./controllers/linksPocket'));
 
 server.listen(port, function () {
     console.log("Server listening on port: " + port);
-    
+
     //periodic non-nodemon functions to make the system self-reliant - needs to be tested on a real server
     const injectController = require('./api/injector').injector;
     const buildController = require('./api/skilltreeBuilder').skillTreeBuilder;
     const jsonController = require('./api/JsonOperations').jsonOperations;
-    setInterval(async function() {
+    setInterval(async function () {
         console.log("every 1.6 hours visit 50 discovered links 5760000");
         await injectController.createLearningResoruces(null, null);
     }, 5760000);
-    setInterval(async function() {
+    setInterval(async function () {
         console.log("every 24 hours update the skills list 86400000");
         await buildController.buildTree(null, null, null);
     }, 86400000);
-    setInterval(async function() {
+    setInterval(async function () {
         console.log("every around a week, clean blocked links 600000000");
         await jsonController.deleteBlockedLinks();
     }, 600000000);
@@ -90,8 +94,8 @@ async function exitHandler(options, exitCode) {
     if (options.exit) process.exit();
 }
 
-process.on('exit', exitHandler.bind(null,{cleanup:true}));
-process.on('SIGINT', exitHandler.bind(null, {exit:true}));//ctrl+c event
-process.on('SIGUSR1', exitHandler.bind(null, {exit:true}));
-process.on('SIGUSR2', exitHandler.bind(null, {exit:true}));
-process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
+process.on('exit', exitHandler.bind(null, { cleanup: true }));
+process.on('SIGINT', exitHandler.bind(null, { exit: true }));//ctrl+c event
+process.on('SIGUSR1', exitHandler.bind(null, { exit: true }));
+process.on('SIGUSR2', exitHandler.bind(null, { exit: true }));
+process.on('uncaughtException', exitHandler.bind(null, { exit: true }));
