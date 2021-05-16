@@ -31,6 +31,9 @@
     "mysql": "^2.18.1",
     "node-dev": "^7.0.0",
     "sqlite3": "^5.0.2",
+    "dotenv": "^8.2.0",
+    "headless-chrome-crawler": "^1.8.0",
+    "python-shell": "^3.0.0",
     "starrr": "^2.0.4"
   },
   "devDependencies": {
