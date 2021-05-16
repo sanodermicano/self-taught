@@ -196,7 +196,7 @@ class Recommender {
                             // pythonPath: process.env.PY_PATH,
                             pythonOptions: ['-u'], // get print results in real-time
                             // scriptPath: process.env.PY_PROJ,
-                            scriptPath: '/app/py',
+                            scriptPath: '/py',
                             args: [userObj]
                         };
                         try {
@@ -261,7 +261,7 @@ async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, l
         // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         // scriptPath: process.env.PY_PROJ,
-        scriptPath: '/app/py',
+        scriptPath: '/py',
         args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "lrtype": LRType })]
     };
     try {
@@ -314,7 +314,7 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
         // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         // scriptPath: process.env.PY_PROJ,
-        scriptPath: '/app/py',
+        scriptPath: '/py',
         args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "id": SQLID, "lrtype": LRType })]
     };
     try {
