@@ -139,9 +139,10 @@
                                         $("#filters").hide();
                                         $("#paginator").hide();
                                         $("#learningResources").hide();
+                                        $("#sResultsDiv").hide();
 
                                         //use prepend and instead but remember to mirror all skills list operations; unshift CRUD instead of pushing
-                                        
+
                                         // $("#skills").prepend('<tr id="tr' + skillID +
                                         $("#skills").append('<tr id="tr' + skillID +
                                             '"><td class="skillscontent"><label class="container"><input type="checkbox" id="cb' +
@@ -199,11 +200,16 @@
                                             var level = $(this).val();
                                             var skillName = $("#th" + thisID).html()
                                             $("#level" + thisID).html(level);
-                                            if (level == 5) {
+                                            if (level == 5 && !uuid) {
+                                                // backhere
                                                 hideAll("Predicting the Next Skills you can Improve at");
                                                 $.ajax({
                                                     url: 'http://localhost:8000/predict',
-                                                    data: skillName,
+                                                    data: {
+                                                        skill: skillName,
+                                                        userid: uid,
+                                                        email: uEmail
+                                                    },
                                                     type: 'POST',
                                                     jsonpCallback: 'callback',
                                                     success: function (data) {
@@ -214,11 +220,12 @@
                                                                     3)).replace(/['"]+/g, '')
                                                             .replace(/\\|\//g, '');
                                                         showAll();
-                                                        $("#sResults").hide();
                                                         foundNewSkills(newSkills);
+                                                        $("#sResults").css("display", "none");
                                                     },
                                                     error: function (xhr, status, error) {
                                                         showAll();
+                                                        $("#sResults").css("display", "none");
                                                         console.log('Error predict: ' + error
                                                             .message);
                                                     },
@@ -249,8 +256,8 @@
                                             $("#filters").hide();
                                             $("#paginator").hide();
                                             $("#learningResources").hide();
-                                            $("#sResults").hide();
                                             $("#learningResources").empty();
+                                            $("#sResultsDiv").hide();
                                         });
                                         $("#del" + skillID).click(function () {
                                             var thisID = String($(this).attr('id')).substring('del'.length);
@@ -281,6 +288,7 @@
                                             });
                                             $("#paginator").hide();
                                             $("#filters").hide();
+                                            $("#sResultsDiv").hide();
                                             $("#learningResources").hide();
                                             $("#learningResources").empty();
                                             if (skillsListFiltered.length <= 0) $("#wdiln").fadeOut(150);
@@ -288,7 +296,7 @@
                                         skillsListBackup.push(predictedSkill);
                                         rangesListBackup.push(1);
                                         skillsListFiltered.push(predictedSkill);
-                                        
+
                                         // skillID = skillsListBackup.length;
                                         skillID++;
 
@@ -305,7 +313,8 @@
                                             rangesList.push(1);
                                             positionsList.push(skillsList.length - 1);
                                             rangesListFiltered.push(1);
-                                            if(rangesListFiltered.length > rangesList.length) rangesListFiltered.length = rangesList.length;
+                                            if (rangesListFiltered.length > rangesList.length) rangesListFiltered
+                                                .length = rangesList.length;
                                             // rangesListFiltered[rangesList.length-1] = 1;
                                             //here add sql insert if user is logged in
                                             addNewSQLSkill();
@@ -322,11 +331,9 @@
                                     var hideable = document.getElementById('nextSkill');
                                     // When the user clicks anywhere outside of the hideable, close it
                                     function showAll() {
+                                        $("#sResultsDiv").show();
                                         hideable.style.display = "none";
                                         $("#allContent").show();
-                                        $("#sResults").show().fadeTo(150, 1).delay(
-                                                10000)
-                                            .fadeTo(150, 0);
                                         $("#sFilters").show().fadeTo(150, 1).delay(
                                                 10000)
                                             .fadeTo(150, 0);
@@ -344,14 +351,13 @@
                                         $("#injectLink").show();
                                         $("#wdiln").show();
                                         $("#url").show();
-                                        $("#randomBlock").show();
+                                        $("#linkInjectorContainer").show();
                                         $("#educational").show();
                                     }
 
                                     function hideAll(msg = "") {
                                         hideable.style.display = "none";
                                         $("#allContent").hide();
-                                        $("#sResults").hide();
                                         $("#sFilters").hide();
                                         $("#topNav").hide();
                                         $("#userInfo").hide();
@@ -367,10 +373,11 @@
                                         $("#injectLink").hide();
                                         $("#wdiln").hide();
                                         $("#url").hide();
-                                        $("#randomBlock").hide();
+                                        $("#linkInjectorContainer").hide();
                                         $("#educational").hide();
                                         $("#loading").css('display', 'block');
                                         $("#loading").show();
+                                        $("#sResultsDiv").hide();
                                         $("#msg").text(msg);
                                     }
                                     window.onclick = function (event) {
@@ -740,7 +747,7 @@
                                     function isFree() {
                                         $("#options-img").hide();
                                         $("#halp").attr("title",
-                                            "Learning Resources Difficulty: \nLevel 1 & 2: Beginner\nLevel 3: Intermediate\nLevel 4: Advanced\nLevel 5: Advanced + You Recieve a list of More Advanced Next Skills to Choose from"
+                                            "Learning Resources Difficulty: \nLevel 1 & 2: Beginner\nLevel 3: Intermediate\nLevel 4: Advanced\nLevel 5: Advanced (Sign in to Unlock the Next Skill Prediction)"
                                         )
                                         $("#skils-section").prependTo("#siteName");
                                     }
@@ -859,12 +866,12 @@
             </div>
 
             <div class="pure-u-2-5 injector">
-                <img src="./img/self-taught.png" alt="Self-Taught" width="128" height="128" />
+                <img src="./img/self-taught.png" alt="Self-Taught" width="148" height="148" />
                 <h2 class="title">Self-Taught</h2>
                 <br>
                 <div id="siteName">
-                <% if (user){ %>
-                    <div id="randomBlock">
+                    <% if (user){ %>
+                    <div id="linkInjectorContainer">
                         <form id="linkSubmit" class="pure-form">
                             <p id="plzWait">Please wait...</p>
                             <div class="buttonwrapper">
@@ -896,7 +903,7 @@
                         </tr>
                         <tr>
                             <td style="text-align:center">
-                                <h4>Sign in to Unlock <br> the Full Experience</h4>
+                                <h5 style="color: #767676;">Sign in to Unlock <br> the Full Experience</h5>
                             </td>
                         </tr>
                     </table>
@@ -1013,7 +1020,9 @@
                     <div id="paginator">
                     </div>
                 </div>
-                <h4 id="sResults" style="display: none;">Search Results:</h4>
+                <div id="sResultsDiv">
+                    <h4 id="sResults" style="display: none;">Search Results:</h4>
+                </div>
                 <table id="learningResources">
                 </table>
                 <br><br>
@@ -1120,7 +1129,7 @@
                 $("#siteName").hide();
                 $("#injectLink").hide();
                 $("#wdiln").hide();
-                $("#randomBlock").hide();
+                $("#linkInjectorContainer").hide();
                 $("#url").hide();
                 $("#skils-section").hide();
             }
@@ -1196,6 +1205,7 @@
                 $("#filters").hide();
                 $("#paginator").hide();
                 $("#learningResources").hide();
+                $("#sResultsDiv").hide();
                 // $("#learningResources").empty();
                 $("#filterall").fadeTo(150, 0.4);
                 $("#filterpodcast").fadeTo(150, 0.4);
@@ -1245,6 +1255,9 @@
                     type: 'POST',
                     jsonpCallback: 'callback',
                     success: function (data) {
+                        $("#sResults").show().fadeTo(150, 1).delay(
+                                10000)
+                            .fadeTo(150, 0);
                         showAll();
 
                         // var resources = JSON.stringify(data.message);

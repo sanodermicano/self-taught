@@ -48,7 +48,7 @@ button:hover {
     padding: 15px;
     background-color: #FFFFFF;
     box-shadow: 0 0px 0px 0 rgba(39, 39, 39, 0.3), 0 4px 14px 0 rgba(39, 39, 39, 0.29);
-    
+
 }
 
 /* The container */
@@ -168,12 +168,36 @@ button:hover {
         width: 100%;
         min-width: fit-content;
     }
+
+    .injectbutton {
+        margin-left: 0%;
+    }
+
+    .buttonwrapper {
+        /* margin: auto; */
+        margin-top: -25px;
+        left: -22%;
+        right: 100%;
+        position: absolute;
+    }
 }
 
 @media (min-width: 600px) and (orientation:landscape) {
     .linkspocket {
         width: 25%;
         min-width: min-content;
+    }
+
+    .buttonwrapper {
+        position: relative;
+        margin-left: 23%;
+        top: 0%;
+        left: 0%;
+        right: 0%
+    }
+
+    .injectbutton {
+        margin-left: -7%;
     }
 }
 
@@ -285,6 +309,7 @@ button:hover {
 .searcharea {
     margin-left: 2em;
 }
+
 /* ========== Searching ========== */
 
 
@@ -414,27 +439,28 @@ footer {
     margin-left: auto;
 }
 
-a{
+a {
     transition: all .15s ease-in-out;
     -moz-transition: all .15s ease-in-out;
     -webkit-transition: all .15s ease-in-out;
 }
- /* unvisited link */
+
+/* unvisited link */
 a:link {
     color: #1E90FF;
 }
-  
-  /* visited link */
+
+/* visited link */
 a:visited {
     color: #767676;
 }
-  
-  /* mouse over link */
+
+/* mouse over link */
 a:hover {
     color: blue;
 }
-  
-  /* selected link */
+
+/* selected link */
 a:active {
     color: #FF7F50;
-} 
+}

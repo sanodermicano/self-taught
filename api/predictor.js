@@ -1,32 +1,49 @@
 require("dotenv").config();
+const db = require('../models/MySQL').mySQL;
+const bcrypt = require('bcrypt');
 
 class Predictor {
-    constructor(){ }
+    constructor() { }
 
     //methods
-    predict = async function(skill, res) {
-        const pShell = require('python-shell').PythonShell;
-        let options = {
-            mode: 'json',
-            pythonPath: process.env.PY_PATH,
-            pythonOptions: ['-u'], // get print results in real-time
-            scriptPath: process.env.PY_PROJ, //might cause issues
-            args: [skill]
-        };
-        try {
-            pShell.run('Predict.py', options, function (err, results) {
-                if (err) throw err;
-                let prediction = JSON.stringify(results);
-                res.send({ success: true, message: prediction });
-                // inputChoice();
-            });
-        } catch (e) {
-            console.log("e: " + e);
-            res.status(500).send();
-        }
+    predict = async function (newSkill, userid, email, res) {
+        let SQLID = 0;
+        db.util.query('SELECT id FROM user WHERE email = ?', [email], async function (error, results) {
+            try{
+                console.log("userid: " + userid);
+                SQLID = results[0].id;
+                console.log("SQLID: " + SQLID);
+                if (!await bcrypt.compare(SQLID.toString(), userid)) {
+                    return res.status(500).send();
+                } else {
+                    console.log("SQLID: " + SQLID + "\nemail: " + email + "\nnewSkill: " + newSkill);
+                    const pShell = require('python-shell').PythonShell;
+                    let options = {
+                        mode: 'json',
+                        pythonPath: process.env.PY_PATH,
+                        pythonOptions: ['-u'], // get print results in real-time
+                        scriptPath: process.env.PY_PROJ, //might cause issues
+                        args: [newSkill]
+                    };
+                    try {
+                        pShell.run('Predict.py', options, function (err, results) {
+                            if (err) throw err;
+                            let prediction = JSON.stringify(results);
+                            res.send({ success: true, message: prediction });
+                        });
+                    } catch (e) {
+                        console.log("e: " + e);
+                        res.status(500).send();
+                    }
+                }
+            } catch (e) {
+                console.log("e error in login: " + e);
+                res.status(500).send();
+            }
+        });
     }
 
-    concludedSkill = async function(titleDesc, res, lrObj) {
+    concludedSkill = async function (titleDesc, res, lrObj) {
         console.log("concluded skill");
         const pShell = require('python-shell').PythonShell;
         let options = {
