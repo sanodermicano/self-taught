@@ -1243,7 +1243,7 @@
                     hideAll("Searching");
                 }
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/recommend?page=' + currPage + '&limit=' + limit,
+                    url: 'https://cors-anywhere.herokuapp.com/http://127.0.0.1:5000/recommend?page=' + currPage + '&limit=' + limit,
                     data: {
                         skillsListFiltered,
                         rangesListFiltered,
