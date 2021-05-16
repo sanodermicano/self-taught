@@ -1,3 +1,4 @@
+import collections
 import json
 import sys
 import re
@@ -45,8 +46,11 @@ class Predict:
                 if s in ns:
                     skillsPrediction.append(s)
 
+
+        counts = collections.Counter(skillsPrediction)
+        skillsPrediction = sorted(skillsPrediction, key=counts.get, reverse=True)
         skillsPrediction = self.removeDuplicatesReverse(skillsPrediction)
-        skillsPrediction = skillsPrediction[::-1] #reverse array
+
         if len(skillsPrediction) > 16:
             skillsPrediction = skillsPrediction[:16]
         print(json.dumps(skillsPrediction))

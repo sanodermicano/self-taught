@@ -222,6 +222,12 @@ class Recommender {
 function pagination(res, result, page, limit, hashKey, startIndex, endIndex) {
     result.results = usersMap.get(hashKey + "temp").slice(startIndex, endIndex);
     result.allPages = Math.round(usersMap.get(hashKey + "temp").length / limit);
+    // console.log("limit: " + limit);
+    // console.log("temp length: " + usersMap.get(hashKey + "temp").length);
+    // console.log("page: " + page);
+    // console.log("result.allPages: " + result.allPages);
+    // console.log("startIndex: " + startIndex);
+    // console.log("endIndex: " + endIndex);
     if (endIndex < usersMap.get(hashKey + "temp").length) {
         console.log("endIndex<usersMap.get(" + hashKey + ").length");
         result.next = {

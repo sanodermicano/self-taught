@@ -11,15 +11,17 @@ from bson import json_util
 dotenv_path = './.env'  # init .env
 load_dotenv(dotenv_path)
 
+
 class CollaborativeBasedFiltering:
     def organize(self):
         # storing info to pandas dataframe
-        mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
+        mongoClient = pymongo.MongoClient(
+            os.environ.get("MONGO_CONNECTION_STRING"))
         mongoDbLr = mongoClient.get_database('self-taught-lr')
         mongoDbRec = mongoClient.get_database('self-taught-recommender')
-        lr_df = pd.read_json(json_util.dumps(mongoDbLr['learning-resources'].find()))
+        lr_df = pd.read_json(json_util.dumps(
+            mongoDbLr['learning-resources'].find()))
         rating_df = pd.read_json(json_util.dumps(mongoDbRec['ratings'].find()))
-
 
         # Only run this script when the user visits new links but first the link must be added to the ratings json file or else the program will crash
 
@@ -52,10 +54,10 @@ class CollaborativeBasedFiltering:
 
         # print(input_lr.head())
 
-
         # Filtering out users that have learned from lr that the input has watched and storing it
 
-        userSubset = rating_df[rating_df['lrId'].isin(input_lr['lrId'].tolist())]
+        userSubset = rating_df[rating_df['lrId'].isin(
+            input_lr['lrId'].tolist())]
         # Groupby creates several sub dataframes where they all have the same value in the column specified as the parameter
         userSubsetGroup = userSubset.groupby(['userId'])
         # print(userSubset.head())
@@ -65,7 +67,6 @@ class CollaborativeBasedFiltering:
             userSubsetGroup, key=lambda x: len(x[1]), reverse=True)
 
         userSubsetGroup = userSubsetGroup[0:100]
-
 
         # Store the Pearson Correlation in a dictionary, where the key is the user Id and the value is the coefficient
         pearsonCorrelationDict = {}
@@ -95,14 +96,15 @@ class CollaborativeBasedFiltering:
             else:
                 pearsonCorrelationDict[name] = 0
 
-        pearsonDF = pd.DataFrame.from_dict(pearsonCorrelationDict, orient='index')
+        pearsonDF = pd.DataFrame.from_dict(
+            pearsonCorrelationDict, orient='index')
         pearsonDF.columns = ['similarityIndex']
         pearsonDF['userId'] = pearsonDF.index
         pearsonDF.index = range(len(pearsonDF))
         # print(pearsonDF.head())
 
-
-        topUsers = pearsonDF.sort_values(by='similarityIndex', ascending=False)[0:50]
+        topUsers = pearsonDF.sort_values(
+            by='similarityIndex', ascending=False)[0:50]
 
         topUsersRating = topUsers.merge(
             rating_df, left_on='userId', right_on='userId', how='inner')
@@ -114,10 +116,10 @@ class CollaborativeBasedFiltering:
         # Applies a sum to the topUsers after grouping it up by userId
         tempTopUsersRating = topUsersRating.groupby(
             'lrId').sum()[['similarityIndex', 'weightedRating']]
-        tempTopUsersRating.columns = ['sum_similarityIndex', 'sum_weightedRating']
+        tempTopUsersRating.columns = [
+            'sum_similarityIndex', 'sum_weightedRating']
 
         # print(tempTopUsersRating.head())
-
 
         # Creates an empty dataframe
         recommendation_df = pd.DataFrame()
@@ -138,19 +140,22 @@ class CollaborativeBasedFiltering:
         # this is how we'll pass the results from python to node.js, kinda slow, we need to improve it - had hard times doing it myself
 
         ###
-        ### Improvement could be only passing lrId's, then adding the rest (missing ones) 
-        ### at the end of the array in Python then in Node.js I do array1 = array2.map((object, i) => array1[object]);
-        ### array1: array of elements to be sorted & array2: array with the indices
+        # Improvement could be only passing lrId's, then adding the rest (missing ones)
+        # at the end of the array in Python then in Node.js I do array1 = array2.map((object, i) => array1[object]);
+        # array1: array of elements to be sorted & array2: array with the indices
         ###
 
         lrData = json_util.loads(json_util.dumps(
             mongoDbLr['learning-resources'].find({}, {'_id': False})))
         toBePrinted = []
         for rec in recommendation_df['lrId']:
-            toBePrinted.append(rec)
+            for lr in lrData:
+                if rec == lr['lrId']:
+                    toBePrinted.append(rec)
+                    break
 
         for lr in lrData:
-            if lr['lrId'] not in recommendation_df['lrId']:
+            if lr['lrId'] not in toBePrinted: #4262
                 toBePrinted.append(lr['lrId'])
         # remove visisted links
         for userin in userInput:
@@ -160,6 +165,7 @@ class CollaborativeBasedFiltering:
                     break
 
         print(json.dumps(toBePrinted))
+
 
 collaborativeBasedFiltering = CollaborativeBasedFiltering()
 collaborativeBasedFiltering.organize()

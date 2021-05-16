@@ -38,7 +38,7 @@ class RecommendSkill:
         mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
         mongoDbRec = mongoClient.get_database('self-taught-recommender')
 
-        lrSortings = mongoDbRec["priority"].find_one()['rec'+str(userId)] #retreive the data more efficiently
+        lrSortings = list(mongoDbRec["priority"].find_one()['rec'+str(userId)]) #retreive the data more efficiently
 
         mongoDb = mongoClient.get_database('self-taught-lr')
 
@@ -72,7 +72,6 @@ class RecommendSkill:
                 if lrSorting == lr['lrId']:
                     data.append(lr)
                     break
-        
         resources = []
         for dataElement in data:
             if 'title' in dataElement:

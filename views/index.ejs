@@ -1250,7 +1250,9 @@
                         // var resources = JSON.stringify(data.message);
                         var resources = data.message;
                         // console.log("resources: " + JSON.stringify(resources));
+                        // console.log("resources: " + resources['results'].length);
 
+                        $("#learningResources").empty();
                         $.each(resources['results'], function (i, value) {
                             var descShortened = String(resources['results'][i].description);
                             var titleShortened = String(resources['results'][i].title);
@@ -1261,7 +1263,8 @@
                                 titleShortened = titleShortened.slice(0, 61).concat("...");
                             }
                             //test the learning resources if they're in the right order using prepend or append
-                            $("#learningResources").prepend('<tr><td><div><h3><a id="lr' + i +
+                            // $("#learningResources").prepend('<tr><td><div><h3><a id="lr' + i +
+                            $("#learningResources").append('<tr><td><div><h3><a id="lr' + i +
                                 '" href="' + resources['results'][i].link +
                                 '" target="_blank">' +
                                 titleShortened + '</a>&nbsp;<span>(' +
