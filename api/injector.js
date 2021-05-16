@@ -219,9 +219,10 @@ async function quickInject(link, res) {
     let lrId = await jsonController.getLrId(link);
     let options = {
         mode: 'json',
-        pythonPath: process.env.PY_PATH,
+        // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: process.env.PY_PROJ, //might cause issues
+        // scriptPath: process.env.PY_PROJ, //might cause issues
+        scriptPath: '/app/py',
         args: [link]
     };
     try {
@@ -328,17 +329,18 @@ async function injectLink(learningLink, res, lrId) {
                 console.log("courseTitle: " + courseTitle);
                 const expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
                 const expressionHTTP = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
-                courseTitle = courseTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 // courseTitle = courseTitle.replace(/[^a-z0-9 ]/gi, "");
-                courseTitle = courseTitle.replace(/\s+/g, ' ').trim();
                 courseTitle = courseTitle.replace(expressionHTTP, "");
                 courseTitle = courseTitle.replace(expression, "");
+                //https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+                courseTitle = courseTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); //might cause issues, should be tested
+                courseTitle = courseTitle.replace(/\s+/g, ' ').trim(); 
                 if (courseDesc) {
                     // courseDesc = courseDesc.replace(/[^a-z0-9 ]/gi, "");
-                    courseDesc = courseDesc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    courseDesc = courseDesc.replace(/\s+/g, ' ').trim();
                     courseDesc = courseDesc.replace(expressionHTTP, "");
                     courseDesc = courseDesc.replace(expression, "");
+                    courseDesc = courseDesc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    courseDesc = courseDesc.replace(/\s+/g, ' ').trim();
                 }
                 console.log("courseDesc: " + courseDesc);
                 let linkHtml = result.result.htmlPage;
@@ -508,9 +510,10 @@ async function quickCheck(link) {
 
     let options = {
         mode: 'json',
-        pythonPath: process.env.PY_PATH,
+        // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: process.env.PY_PROJ, //might cause issues
+        // scriptPath: process.env.PY_PROJ, //might cause issues
+        scriptPath: '/app/py', //might cause issues
         args: [link]
     };
     try {

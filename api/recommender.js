@@ -66,6 +66,7 @@ class Recommender {
 
             let skills = req.body['skillsListFiltered[]'];
             let ranges = req.body['rangesListFiltered[]'];
+            //crash prevention
             if (typeof skills !== "string"){
                 ranges = ranges.slice(0, skills.length);
                 for(var i = ranges.length;i<skills.length;i++)
@@ -192,9 +193,10 @@ class Recommender {
                         console.log("userObj 2: " + userObj);
                         let options = {
                             mode: 'json',
-                            pythonPath: process.env.PY_PATH,
+                            // pythonPath: process.env.PY_PATH,
                             pythonOptions: ['-u'], // get print results in real-time
-                            scriptPath: process.env.PY_PROJ,
+                            // scriptPath: process.env.PY_PROJ,
+                            scriptPath: '/app/py',
                             args: [userObj]
                         };
                         try {
@@ -256,9 +258,10 @@ async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, l
     const rangesList = Array.isArray(ranges) ? ranges : [ranges];
     let options = {
         mode: 'json',
-        pythonPath: process.env.PY_PATH,
+        // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: process.env.PY_PROJ,
+        // scriptPath: process.env.PY_PROJ,
+        scriptPath: '/app/py',
         args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "lrtype": LRType })]
     };
     try {
@@ -308,9 +311,10 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
     // await mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
     let options = {
         mode: 'json',
-        pythonPath: process.env.PY_PATH,
+        // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: process.env.PY_PROJ,
+        // scriptPath: process.env.PY_PROJ,
+        scriptPath: '/app/py',
         args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "id": SQLID, "lrtype": LRType })]
     };
     try {

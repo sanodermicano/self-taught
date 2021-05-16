@@ -2,6 +2,9 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const process = require('process');
+const port = process.env.PORT || 5000;
+
 
 dotenv.config({ path: './.env' });
 
@@ -57,8 +60,8 @@ app.use('/', require('./controllers/skillTreeBuilder'));
 app.use('/', require('./controllers/skillsList'));
 app.use('/', require('./controllers/linksPocket'));
 
-server.listen(8000, function () {
-    console.log("Server listening on port: 8000");
+server.listen(port, function () {
+    console.log("Server listening on port: " + port);
     
     //periodic non-nodemon functions to make the system self-reliant - needs to be tested on a real server
     const injectController = require('./api/Injector').injector;
@@ -66,7 +69,7 @@ server.listen(8000, function () {
     const jsonController = require('./api/JsonOperations').jsonOperations;
     setInterval(async function() {
         console.log("every 1.6 hours visit 50 discovered links 5760000");
-        // await injectController.createLearningResoruces(null, null);
+        await injectController.createLearningResoruces(null, null);
     }, 5760000);
     setInterval(async function() {
         console.log("every 24 hours update the skills list 86400000");
@@ -78,9 +81,7 @@ server.listen(8000, function () {
     }, 600000000);
 });
 
-const process = require('process');
 process.stdin.resume();
-
 //to close connection with with mongodb once the session is over
 async function exitHandler(options, exitCode) {
     await mongodb.close();
