@@ -328,12 +328,14 @@ async function injectLink(learningLink, res, lrId) {
                 console.log("courseTitle: " + courseTitle);
                 const expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
                 const expressionHTTP = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
-                courseTitle = courseTitle.replace(/[^a-z0-9 ]/gi, "");
+                courseTitle = courseTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                // courseTitle = courseTitle.replace(/[^a-z0-9 ]/gi, "");
                 courseTitle = courseTitle.replace(/\s+/g, ' ').trim();
                 courseTitle = courseTitle.replace(expressionHTTP, "");
                 courseTitle = courseTitle.replace(expression, "");
                 if (courseDesc) {
-                    courseDesc = courseDesc.replace(/[^a-z0-9 ]/gi, "");
+                    // courseDesc = courseDesc.replace(/[^a-z0-9 ]/gi, "");
+                    courseDesc = courseDesc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                     courseDesc = courseDesc.replace(/\s+/g, ' ').trim();
                     courseDesc = courseDesc.replace(expressionHTTP, "");
                     courseDesc = courseDesc.replace(expression, "");

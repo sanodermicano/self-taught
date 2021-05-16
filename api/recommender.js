@@ -66,7 +66,11 @@ class Recommender {
 
             let skills = req.body['skillsListFiltered[]'];
             let ranges = req.body['rangesListFiltered[]'];
-            ranges = ranges.slice(0, skills.length);
+            if (typeof skills !== "string"){
+                ranges = ranges.slice(0, skills.length);
+                for(var i = ranges.length;i<skills.length;i++)
+                    ranges.push(1);
+            }
             let LRType = req.body['learningResourceType']; //might make prevLRType and do filteration on Python
             console.log("LRType: " + LRType);
 

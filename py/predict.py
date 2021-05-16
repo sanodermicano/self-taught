@@ -18,7 +18,7 @@ class Predict:
 
     def whatDoILearnNext(self):
         skill = sys.argv[1]
-        if len(skill) <= 3:
+        if len(skill) <= 2:
             skill = ' ' + skill + ' '
 
         mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
