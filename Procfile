@@ -1,2 +1,1 @@
-pipinstall: pip install -r requirements.txt
-web: node start
+web: node server.js
