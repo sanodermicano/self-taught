@@ -56,7 +56,7 @@ app.use('/', require('./controllers/navigation'));
 app.use('/', require('./controllers/injector'));
 app.use('/', require('./controllers/predictor'));
 app.use('/', require('./controllers/recommender'));
-app.use('/', require('./controllers/skillTreeBuilder'));
+app.use('/', require('./controllers/skilltreeBuilder'));
 app.use('/', require('./controllers/skillsList'));
 app.use('/', require('./controllers/linksPocket'));
 
