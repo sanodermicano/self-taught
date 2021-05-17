@@ -3,6 +3,7 @@ import sys
 import os
 import pymongo
 from dotenv import load_dotenv
+import dns
 
 dotenv_path = './.env' #init .env
 load_dotenv(dotenv_path)

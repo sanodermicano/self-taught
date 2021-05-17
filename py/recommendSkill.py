@@ -6,6 +6,7 @@ import pymongo
 from dotenv import load_dotenv
 from bson import json_util
 import re
+import dns
 
 # https://stackoverflow.com/questions/41546883/what-is-the-use-of-python-dotenv
 dotenv_path = './.env' #init .env
