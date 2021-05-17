@@ -122,7 +122,7 @@ class SkillTreeBuilder {
             // pythonPath: process.env.PY_PATH,
             pythonOptions: ['-u'], // get print results in real-time
             // scriptPath: process.env.PY_PROJ,
-            scriptPath: '/py',
+            scriptPath: '/app/py',
         };
         // pShell.run('BuildTree.py', options, function (err, results) { //when in nodemon
         try {
@@ -258,7 +258,7 @@ async function filterReqs() {
         // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         // scriptPath: process.env.PY_PROJ,
-        scriptPath: '/py',
+        scriptPath: '/app/py',
     };
     try {
         pShell.run('buildTree.py', options, function (err, results) {

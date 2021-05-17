@@ -222,7 +222,7 @@ async function quickInject(link, res) {
         // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         // scriptPath: process.env.PY_PROJ, //might cause issues
-        scriptPath: '/py',
+        scriptPath: '/app/py',
         args: [link]
     };
     try {
@@ -513,7 +513,7 @@ async function quickCheck(link) {
         // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
         // scriptPath: process.env.PY_PROJ, //might cause issues
-        scriptPath: '/py', //might cause issues
+        scriptPath: '/app/py', //might cause issues
         args: [link]
     };
     try {
