@@ -7,7 +7,7 @@ class MySQL {
 
     // util = mysql.createConnection({
     util = mysql.createPool({
-        // connectionLimit: 5,
+        connectionLimit: 5,
         database: process.env.DATABASE,
         user: process.env.DATABASE_USER,
         password: process.env.DATABASE_PASSWORD,

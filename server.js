@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 dotenv.config({ path: './.env' });
 
 const db = require('./models/mysql').mySQL;
-db.util.connect(function (error) {
+db.util.getConnection(function (error) {
     if (error) {
         console.log(error);
     } else {
