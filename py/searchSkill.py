@@ -6,7 +6,7 @@ import pymongo
 from dotenv import load_dotenv
 from bson import json_util
 import re
-import dnspython
+import dns
 
 dotenv_path = './.env'  # init .env
 load_dotenv(dotenv_path)
