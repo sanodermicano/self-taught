@@ -750,6 +750,8 @@
                                             "Learning Resources Difficulty: \nLevel 1 & 2: Beginner\nLevel 3: Intermediate\nLevel 4: Advanced\nLevel 5: Advanced (Sign in to Unlock the Next Skill Prediction)"
                                         )
                                         $("#skils-section").prependTo("#siteName");
+                                        $("#middleContainer").removeClass("pure-u-2-5");
+                                        $("#middleContainer").addClass("pure-u-2-3");
                                     }
                                     //https://stackoverflow.com/questions/23327010/how-to-generate-unique-id-with-node-js
                                     const uuid = (new Date()).getTime().toString(36) + Math.random().toString(36)
@@ -865,7 +867,7 @@
                 </div>
             </div>
 
-            <div class="pure-u-2-5 injector">
+            <div class="pure-u-2-5 injector" id="middleContainer">
                 <img src="./img/self-taught.png" alt="Self-Taught" width="148" height="148" />
                 <h2 class="title">Self-Taught</h2>
                 <br>
@@ -1042,7 +1044,7 @@
                     type: 'POST',
                     jsonpCallback: 'callback',
                     success: function (data) {
-
+                        console.log("cleaned");
                     },
                     error: function (xhr, status, error) {
 
