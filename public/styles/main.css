@@ -48,13 +48,7 @@ button:hover {
     padding: 15px;
     background-color: #FFFFFF;
     box-shadow: 0 0px 0px 0 rgba(39, 39, 39, 0.3), 0 4px 14px 0 rgba(39, 39, 39, 0.29);
-}
 
-.isfree{
-    width: fit-content;
-    justify-content: center;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 /* The container */
@@ -253,9 +247,15 @@ button:hover {
 .injector {
     text-align: center;
     padding-top: 9%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.isfree{
+    width: fit-content;
     justify-content: center;
-    /* margin-left: auto;
-    margin-right: auto; */
+    margin-left: auto;
+    margin-right: auto;
 }
 
 @font-face {
