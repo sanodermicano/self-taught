@@ -204,7 +204,7 @@
                                                 // backhere
                                                 hideAll("Predicting the Next Skills you can Improve at");
                                                 $.ajax({
-                                                    url: 'http://127.0.0.1:5000/predict',
+                                                    url: '/predict',
                                                     data: {
                                                         skill: skillName,
                                                         userid: uid,
@@ -435,7 +435,7 @@
                                             email: "<%- user.email; %>"
                                         };
                                         $.ajax({
-                                            url: 'http://127.0.0.1:5000/editSkill',
+                                            url: '/editSkill',
                                             data: editSkill,
                                             type: 'POST',
                                             jsonpCallback: 'callback',
@@ -455,7 +455,7 @@
                                             email: "<%- user.email; %>"
                                         };
                                         $.ajax({
-                                            url: 'http://127.0.0.1:5000/delSkill',
+                                            url: '/delSkill',
                                             data: delSkill,
                                             type: 'POST',
                                             jsonpCallback: 'callback',
@@ -480,7 +480,7 @@
                                                 email: "<%- user.email; %>"
                                             };
                                             $.ajax({
-                                                url: 'http://127.0.0.1:5000/skills',
+                                                url: '/skills',
                                                 data: addSkill,
                                                 type: 'POST',
                                                 jsonpCallback: 'callback',
@@ -502,7 +502,7 @@
                                             email: "<%- user.email; %>"
                                         };
                                         $.ajax({
-                                            url: 'http://127.0.0.1:5000/switchSkill',
+                                            url: '/switchSkill',
                                             data: switchedSkill,
                                             type: 'POST',
                                             jsonpCallback: 'callback',
@@ -639,7 +639,7 @@
                                             email: "<%- user.email; %>"
                                         };
                                         $.ajax({
-                                            url: 'http://127.0.0.1:5000/rlinkspocket',
+                                            url: '/rlinkspocket',
                                             data: editRating,
                                             type: 'POST',
                                             jsonpCallback: 'callback',
@@ -661,7 +661,7 @@
                                             email: "<%- user.email; %>"
                                         };
                                         $.ajax({
-                                            url: 'http://127.0.0.1:5000/ulinkspocket',
+                                            url: '/ulinkspocket',
                                             data: updateDate,
                                             type: 'POST',
                                             jsonpCallback: 'callback',
@@ -690,7 +690,7 @@
                                                 email: "<%- user.email; %>"
                                             };
                                             $.ajax({
-                                                url: 'http://127.0.0.1:5000/clinkspocket',
+                                                url: '/clinkspocket',
                                                 data: newLink,
                                                 type: 'POST',
                                                 jsonpCallback: 'callback',
@@ -1033,7 +1033,7 @@
         <script>
             function cleanData() {
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/clean',
+                    url: '/clean',
                     data: {
                         uniqueID: uuid,
                         userid: uid,
@@ -1062,7 +1062,7 @@
                 $("#plzWait").show();
                 hideAll("Guessing what you're trying to Learn");
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/link',
+                    url: '/link',
                     data: {
                         url: injectedLink
                     },
@@ -1243,7 +1243,7 @@
                     hideAll("Searching");
                 }
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/recommend?page=' + currPage + '&limit=' + limit,
+                    url: '/recommend?page=' + currPage + '&limit=' + limit,
                     data: {
                         skillsListFiltered,
                         rangesListFiltered,

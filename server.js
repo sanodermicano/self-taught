@@ -57,13 +57,13 @@ app.use(function (req, res, next) {
 );
 app.use(cookieParser());
 var corsOptions = {
-    origin: 'http://127.0.0.1:5000',
+    origin: '',
     optionsSuccessStatus: 200, // For legacy browser support
     methods: "GET, POST"
 }
 app.use(cors(corsOptions))
 app.use(limiter);
-app.use(express.json());
+app.use(express.json()); //CORS error?
 app.use('/acc', require('./controllers/account'));
 app.use('/', require('./controllers/navigation'));
 app.use('/', require('./controllers/injector'));

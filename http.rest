@@ -2,19 +2,19 @@
 # ___ DEMO AND TESTING PURPOSES GET REQUESTS (To be Removed on Release) ___
 # _________________________________________________________________________
 
-# POST 'http://127.0.0.1:5000/recommend?page=1&limit=10'
+# POST '/recommend?page=1&limit=10'
 
 ### To build the skilltree, WARNING: THIS WILL TAKE HOURS, DON'T USE IT IF YOU HAVE AN EXISTING SKILLTREE
-# GET http://127.0.0.1:5000/initializeSkillTree
+# GET /initializeSkillTree
 
 ### To build the skilltree from rawdata, then build the skills list from the skilltree - TAKES A MINUTE
-GET http://127.0.0.1:5000/buildSkills
+GET /buildSkills
 
 ### Crawl into discovered links to generate new learning resources and filter DiscoveredLinks.json based on if the content exists in the skills list or not
-GET http://127.0.0.1:5000/createLearningResoruces
+GET /createLearningResoruces
 
 ###
-GET http://127.0.0.1:5000/deleteBlockedLinks
+GET /deleteBlockedLinks
 
 ### backhere use dotenv instead of hard coded mongodb string https://stackoverflow.com/questions/41546883/what-is-the-use-of-python-dotenv
 ### backhere to revert back from mongoDB m10 to m0 https://stackoverflow.com/questions/62156731/how-to-downgrade-from-m2-to-m0-mongodb-cluster-tier since m10 costs 64.8$ a month
