@@ -152,6 +152,7 @@ async function getMoreTopics(topicLink) {
 
     try {
         const crawler = await HCCrawler.launch({
+            args: ['--no-sandbox'],
             maxConcurrency: 1,
             evaluatePage: (() => ({
                 topics: Array.from(document.querySelectorAll("a[class ='udlite-heading-md popular-topics-unit--topic-tag--6fHd8']")).map(topic => {
@@ -181,6 +182,7 @@ async function crawlIntoTopic(topicLink, optionsLink) {
     console.log("Processing: " + topicLink);
     try {
         const crawler = await HCCrawler.launch({
+            args: ['--no-sandbox'],
             maxConcurrency: 1,
             evaluatePage: (() => ({
                 courses: Array.from(document.querySelectorAll("div.course-list--container--3zXPS > div > a[class='udlite-custom-focus-visible browse-course-card--link--3KIkQ']")).map(topic => {
@@ -212,6 +214,7 @@ async function crawlIntoCourse(courseLink) {
 
     try {
         const crawler = await HCCrawler.launch({
+            args: ['--no-sandbox'],
             maxConcurrency: 1,
             evaluatePage: (() => ({
                 parent: document.title,

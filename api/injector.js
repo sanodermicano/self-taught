@@ -295,6 +295,7 @@ async function injectLink(learningLink, res, lrId) {
     console.log("Processing...\n");
     try {
         const crawler = await HCCrawler.launch({
+            args: ['--no-sandbox'],
             maxConcurrency: 1,
             // userAgent:
             //     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36",
@@ -544,6 +545,7 @@ async function hccCheck(link) {
     try {
         console.log("hccCheck");
         const crawler = await HCCrawler.launch({
+            args: ['--no-sandbox'],
             maxConcurrency: 1,
             evaluatePage: (() => ({
                 title: document.title,
