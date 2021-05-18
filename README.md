@@ -2,7 +2,13 @@
 # [Self-Taught](http://self-taught.me/)
 Self-Taught is a Skill-Based Search Engine which gets smarter the more people interact with it!
 
-### Screenshots:
+## Contents
+- [Screenshots](#screenshots)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [About](#about)
+
+## Screenshots
 On the Phone (Logged in)
 
 ![2021-05-18 12_12_43-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630288-10a48080-b7d7-11eb-99bd-b62b29685755.jpg) ![2021-05-18 12_15_35-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630196-fe2a4700-b7d6-11eb-8b46-e06415ae409f.jpg) ![2021-05-18 12_13_56-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630276-0e422680-b7d7-11eb-95ef-f9b17fe06288.jpg) ![2021-05-18 12_14_53-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630239-06828200-b7d7-11eb-9c37-cac5628d3c20.jpg)
@@ -21,6 +27,7 @@ On a Desktop Screen (Non-logged in)
 
 ## Features
 ### Fully-Featured Search Engine:
+#### Search Engine:
 - Search Result links are being added automatically, e.g. if today you saw ten Java online courses, in a year you might see thousands!
 - Search Results can be filtered by type (Online Course, Quizzes, Articles...etc) and by difficulty (Beginner, Intermediate, Advanced).
 - Search Results order is affected by a Collaborative-Based Recommender System for registered users.
