@@ -109,6 +109,8 @@ On a Desktop Screen (Non-logged in)
 - [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/)
 - [NLTK](https://www.nltk.org/)
 - [JsonWebToken](https://jwt.io/)
+- [Python-Shell](https://www.npmjs.com/package/python-shell)
+- [bcrypt](https://www.npmjs.com/package/bcrypt)
 
 ## About
 Self-Taught is Hassan Al-Nouri's (sanodermicano) and Noor Jaradat's Graduation Project, Hassan had the idea back in 2019, [wrote an idea document](https://docs.google.com/document/d/10f1fuN0AOXHndaimc8v4jRIaSGa3DJQ2wlghcB0si28/edit?usp=sharing) in late 2020 and that was the start of a 10 months Software Engineering journey, from Requirements to Deployment, we did all the steps in the entire Software Engineering Life-Cycle, basically we applied what we learned but we also went the extra mile.
