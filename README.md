@@ -99,15 +99,16 @@ On a Desktop Screen (Non-logged in)
 
 ## Technologies Used
 #### Cloud Services:
-- Heroku
-- MongoDb
-- ClearDB MySQL
+- [Heroku](https://www.heroku.com/)
+- [MongoDb](https://www.mongodb.com/)
+- [ClearDB MySQL](https://devcenter.heroku.com/articles/cleardb)
 
 #### Libraries:
-- Headless Chrome Crawler
-- Pandas
-- BeautifulSoup
-- NLTK
+- [Headless Chrome Crawler](https://github.com/yujiosaka/headless-chrome-crawler)
+- [Pandas](https://pandas.pydata.org/)
+- [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/)
+- [NLTK](https://www.nltk.org/)
+- [JsonWebToken](https://jwt.io/)
 
 ## About
 Self-Taught is Hassan Al-Nouri's (sanodermicano) and Noor Jaradat's Graduation Project, Hassan had the idea back in 2019, [wrote an idea document](https://docs.google.com/document/d/10f1fuN0AOXHndaimc8v4jRIaSGa3DJQ2wlghcB0si28/edit?usp=sharing) in late 2020 and that was the start of a 10 months Software Engineering journey, from Requirements to Deployment, we did all the steps in the entire Software Engineering Life-Cycle, basically we applied what we learned but we also went the extra mile.
