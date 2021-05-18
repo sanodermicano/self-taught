@@ -3,12 +3,27 @@
 Self-Taught is a Skill-Based Search Engine which gets smarter the more people interact with it!
 
 ## Contents
-- [Screenshots](#screenshots)
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [About](#about)
+[Screenshots](#screenshots)
+
+- [On the Phone](#on-the-phone)
+- [On a Desktop Screen](#on-a-desktop-screen)
+
+[Features](#features)
+
+- [Fully-Featured Search Engine](#fully-featured-search-engine)
+- [Skills List](#skills-list)
+- [Conclude Skills from Links you Provide](#conclude-skills-from-links-you-provide)
+- [Learning History](#learning-history)
+
+[Technologies Used](#technologies-used)
+
+- [Cloud Services](#cloud-services)
+- [Libraries](#libraries)
+
+[About](#about)
 
 ## Screenshots
+### On the Phone
 On the Phone (Logged in)
 
 ![2021-05-18 12_12_43-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630288-10a48080-b7d7-11eb-99bd-b62b29685755.jpg) ![2021-05-18 12_15_35-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630196-fe2a4700-b7d6-11eb-8b46-e06415ae409f.jpg) ![2021-05-18 12_13_56-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630276-0e422680-b7d7-11eb-95ef-f9b17fe06288.jpg) ![2021-05-18 12_14_53-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630239-06828200-b7d7-11eb-9c37-cac5628d3c20.jpg)
@@ -16,6 +31,8 @@ On the Phone (Logged in)
 On the Phone (Non-logged in)
 
 ![2021-05-18 12_11_30-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630619-5eb98400-b7d7-11eb-8a5f-900188d02f3a.jpg) ![2021-05-18 12_11_45-Self-Taught and 7 more pages - Personal - Microsoft​ Edge](https://user-images.githubusercontent.com/13939081/118630631-611bde00-b7d7-11eb-8e94-111e12521880.jpg)
+
+### On a Desktop Screen
 
 On a Desktop Screen (Logged in)
 
@@ -62,7 +79,7 @@ On a Desktop Screen (Non-logged in)
 - The Next Skill will be added automatically to the Skills section and once you master this Skill, Self-Taught will suggest again!
 - The Next Skill added will affect the Search Results in the Search Engine.
 
-#### Conclude Skills from Links you Provide:
+### Conclude Skills from Links you Provide:
 - Registered users can insert links in the link injector and Self-Taught will try to guess the Skill you're trying to learn
 
 ![image](https://user-images.githubusercontent.com/13939081/118631533-41d18080-b7d8-11eb-9124-d740f9c928a2.png)
@@ -72,7 +89,7 @@ On a Desktop Screen (Non-logged in)
 
 ![image](https://user-images.githubusercontent.com/13939081/118632046-b99fab00-b7d8-11eb-8285-11f37ca25c5f.png)
 
-#### Learning History:
+### Learning History:
 - Regsitered users can keep track of the Learning Resource links you visisted.
 - Rate the links you visited to affect how Search Results are ordered personally for you.
 - Sort them by Date or Rate.
