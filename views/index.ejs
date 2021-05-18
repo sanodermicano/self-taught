@@ -69,7 +69,7 @@
         </div>
         <!-- <div class="grid-wrap"> -->
         <div class="pure-g">
-            <div class="pure-u" style="width: 25%;min-width: fit-content;">
+            <div class="pure-u" style="width: 25%;min-width: fit-content;" id="skillsContainer">
                 <img id="options-img" title="Skills List" class="collapsible fade" src="./img/myskillsimg2.png"
                     width="64" height="64" />
                 <div class="skillsection skills" id="skils-section">
@@ -750,8 +750,10 @@
                                             "Learning Resources Difficulty: \nLevel 1 & 2: Beginner\nLevel 3: Intermediate\nLevel 4: Advanced\nLevel 5: Advanced (Sign in to Unlock the Next Skill Prediction)"
                                         )
                                         $("#skils-section").prependTo("#siteName");
+                                        $("#skillsContainer").removeClass("pure-u");
+                                        $("#linkspocket").removeClass("pure-u");
                                         $("#middleContainer").removeClass("pure-u-2-5");
-                                        $("#middleContainer").addClass("pure-u-1-1");
+                                        $("#middleContainer").addClass("pure-u");
                                         $("#middleContainer").addClass("isfree");
                                     }
                                     //https://stackoverflow.com/questions/23327010/how-to-generate-unique-id-with-node-js
