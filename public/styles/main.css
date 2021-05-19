@@ -180,6 +180,13 @@ button:hover {
         right: 100%;
         position: absolute;
     }
+
+    /* .isfree{
+        width: fit-content;
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+    } */
 }
 
 @media (min-width: 600px) and (orientation:landscape) {
@@ -254,7 +261,7 @@ button:hover {
 .isfree{
     width: fit-content;
     justify-content: center;
-    margin-left: auto;
+    margin-left: 14%;
     margin-right: auto;
 }
 
