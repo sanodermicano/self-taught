@@ -20,6 +20,10 @@ class QuickScrape:
                 description = soup.find('meta', attrs={'name': 'description'})['content']
 
             learningResource = []
+            if (title is None or title == "") and (description is None or description == ""):
+                print(json.dumps("Failed"))
+                return
+
             if title is not None:
                 learningResource.append(title)
             if description is not None:
