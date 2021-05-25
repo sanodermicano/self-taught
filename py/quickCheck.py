@@ -17,7 +17,8 @@ class QuickCheck:
         # link = "https://www.skillshare.com/classes/Fundamentals-of-DSLR-Photography/1111783378" #no
         # link = "https://developer.mozilla.org/en-US/docs/Learn/Getting_started_with_the_web/JavaScript_basics" #yes
         try:
-            soup = BeautifulSoup(urlopen(link), "lxml")
+            # soup = BeautifulSoup(urlopen(link), "lxml")
+            soup = BeautifulSoup(urlopen(link), "html.parser")
             title = ""
             description = ""
             if (soup.title is not None):

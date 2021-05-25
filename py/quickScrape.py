@@ -10,8 +10,8 @@ class QuickScrape:
         # link = "https://stackoverflow.com/questions/18134318/extracting-contents-from-specific-meta-tags-that-are-not-closed-using-beautifuls" #fails
         link = sys.argv[1]
         try:
-            soup = BeautifulSoup(urlopen(link), "lxml")
-            # soup = BeautifulSoup(urlopen(link), "html.parser")
+            # soup = BeautifulSoup(urlopen(link), "lxml")
+            soup = BeautifulSoup(urlopen(link), "html.parser")
             title = ""
             description = ""
             if soup.title is not None:
