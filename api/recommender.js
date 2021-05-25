@@ -68,7 +68,7 @@ class Recommender {
             let ranges = req.body['rangesListFiltered[]'];
             //crash prevention
             if (typeof skills !== "string"){
-                ranges = ranges.slice(0, skills.length);
+                ranges = Array.from(ranges.slice(0, skills.length));
                 for(var i = ranges.length;i<skills.length;i++)
                     ranges.push(1);
             }

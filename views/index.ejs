@@ -569,7 +569,7 @@
                                         console.log("\nlrLink = " + lrLink + "\nlrTitle = " + lrTitle +
                                             "\nlrDesc = " +
                                             lrDesc + "\nlrId = " + lrId + "\nday = " + day);
-                                        var lrTitleShortened = lrTitle
+                                        var lrTitleShortened = lrTitle.slice(0);
                                         if (lrTitleShortened.length > 61) {
                                             lrTitleShortened = lrTitleShortened.slice(0, 61).concat("...");
                                         }
@@ -711,6 +711,7 @@
                                             console.log("NULL");
                                             return;
                                         }
+                                        console.log("loadedLinks:" + loadedLinks);
                                         loadedLinks = JSON.parse(loadedLinks.replace(/&#34;/g, "\""));
                                         if (loadedLinks.length > 0) {
                                             var skillOptions = document.getElementById("img1");
@@ -878,8 +879,9 @@
                 <div id="siteName">
                     <% if (user){ %>
                     <div id="linkInjectorContainer">
+                        <p id="plzWait">Please wait...</p>
+                        <br>
                         <form id="linkSubmit" class="pure-form">
-                            <p id="plzWait">Please wait...</p>
                             <div class="buttonwrapper">
                                 <input type="url" name="url" id="url" class="pure-input-rounded"
                                     style="margin-bottom: 5.8%;"
@@ -1275,12 +1277,12 @@
                         $.each(resources['results'], function (i, value) {
                             var descShortened = String(resources['results'][i].description);
                             var titleShortened = String(resources['results'][i].title);
-                            if (descShortened.length > 150) {
-                                descShortened = descShortened.slice(0, 150).concat("...");
-                            }
-                            if (titleShortened.length > 61) {
-                                titleShortened = titleShortened.slice(0, 61).concat("...");
-                            }
+                            // if (descShortened.length > 150) {
+                            //     descShortened = descShortened.slice(0, 150).concat("...");
+                            // }
+                            // if (titleShortened.length > 61) {
+                            //     titleShortened = titleShortened.slice(0, 61).concat("...");
+                            // }
                             //test the learning resources if they're in the right order using prepend or append
                             // $("#learningResources").prepend('<tr><td><div><h3><a id="lr' + i +
                             $("#learningResources").append('<tr><td><div><h3><a id="lr' + i +
