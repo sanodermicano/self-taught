@@ -13,9 +13,11 @@ class QuickScrape:
             soup = BeautifulSoup(urlopen(link), "lxml")
             # soup = BeautifulSoup(urlopen(link), "html.parser")
             title = ""
-            if (soup.title is not None):
+            description = ""
+            if soup.title is not None:
                 title = soup.title.string
-            description = soup.find('meta', attrs={'name': 'description'})['content']
+            if soup.find('meta', attrs={'name': 'description'}) is not None:
+                description = soup.find('meta', attrs={'name': 'description'})['content']
 
             learningResource = []
             if title is not None:
@@ -23,8 +25,9 @@ class QuickScrape:
             if description is not None:
                 learningResource.append(description)
             print(json.dumps(learningResource))
-        except:
+        except Exception as e:
             print(json.dumps("Failed"))
+            raise Exception(e)
 
 quickScrape = QuickScrape()
 quickScrape.scrape()
