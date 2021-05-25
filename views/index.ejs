@@ -331,22 +331,24 @@
                                     // Get the hideable
                                     var hideable = document.getElementById('nextSkill');
                                     // When the user clicks anywhere outside of the hideable, close it
-                                    function showAll() {
-                                        $("#sResultsDiv").show();
-                                        hideable.style.display = "none";
-                                        $("#allContent").show();
-                                        $("#sFilters").show().fadeTo(150, 1).delay(
+                                    function showAll(isInject = false) {
+                                        if(!isInject){
+                                            $("#sResultsDiv").show();
+                                            hideable.style.display = "none";
+                                            $("#sFilters").show().fadeTo(150, 1).delay(
                                                 10000)
-                                            .fadeTo(150, 0);
+                                                .fadeTo(150, 0);
+                                                $("#pagBot").show();
+                                                $("#recommendation").show();
+                                                $("#learningResources").show();
+                                        }
+                                        $("#allContent").show();
                                         $("#topNav").show();
                                         $("#userInfo").show();
                                         $("#plzWait").hide();
                                         $("#loading").hide();
                                         $("#newSkillsContainer").empty();
-                                        $("#learningResources").show();
-                                        $("#pagBot").show();
                                         $("#searcharea").show();
-                                        $("#recommendation").show();
                                         $("#skils-section").show();
                                         $("#siteName").show();
                                         $("#injectLink").show();
@@ -383,7 +385,7 @@
                                     }
                                     window.onclick = function (event) {
                                         if (event.target == hideable) {
-                                            showAll();
+                                            showAll(true);
                                         }
                                     }
                                 </script>
@@ -1083,7 +1085,7 @@
                             .replace(/['"]+/g, '').replace(/\\|\//g, '');
                         console.log(newSkills);
                         $("#url").val("")
-                        showAll();
+                        showAll(true);
                         foundNewSkills(newSkills);
                         var lrObj = JSON.parse(data.lrObj);
                         console.log(lrObj);
@@ -1093,7 +1095,7 @@
                     error: function (xhr, status, error) {
                         console.log(status);
                         console.log(error);
-                        showAll();
+                        showAll(true);
                         var userAj = "<%- user; %>";
                         if (userAj) {
                             $("#plzWait").text("Error: Please retry or insert another link").delay(

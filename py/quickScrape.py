@@ -31,7 +31,7 @@ class QuickScrape:
             print(json.dumps(learningResource))
         except Exception as e:
             print(json.dumps("Failed"))
-            raise Exception(e)
+            # raise Exception(e)
 
 quickScrape = QuickScrape()
 quickScrape.scrape()
