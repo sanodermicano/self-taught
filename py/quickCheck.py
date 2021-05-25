@@ -23,7 +23,8 @@ class QuickCheck:
             description = ""
             if (soup.title is not None):
                 title = soup.title.string
-            description = soup.find('meta', attrs={'name': 'description'})['content']
+            if soup.find('meta', attrs={'name': 'description'}) is not None:
+                description = soup.find('meta', attrs={'name': 'description'})['content']
 
 
             mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))

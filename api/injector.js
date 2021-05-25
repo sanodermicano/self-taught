@@ -39,7 +39,7 @@ class Injector {
                     }
                     if (enteredURL.length > 10) {
                         if (enteredURL.includes("www.udemy.com") || enteredURL.includes("www.coursera.org") ||
-                            enteredURL.includes("www.udacity.com") || enteredURL.includes("stackoverflow.com")) {
+                            enteredURL.includes("www.udacity.com")) {
                             quickInject(enteredURL, res);
                         } else {
                             const bl = await jsonController.getBlockedLinks();
@@ -104,6 +104,7 @@ class Injector {
         console.log("dl = " + dl.length);
 
         var dlToBeDeleted = [];
+        //those operations should happen before slicing the list to a 50 elements list
         console.log("dl = " + dl.length);
         for (var i = 0; i < dl.length; i++) dlToBeDeleted.push(dl[i].link);
         const bl = await jsonController.getBlockedLinks();
@@ -202,7 +203,7 @@ class Injector {
         }
 
         // destroy what's inside dlToBeDeleted from discoveredLinks
-        await jsonController.deleteDiscoveredLinks(JSON.stringify(dlToBeDeleted));
+        await jsonController.deleteDiscoveredLinks(JSON.stringify(dlToBeDeleted)); //can just put true on Visited
 
         //clear blocked list from links longer than 50 characters
         if (res) {
@@ -370,7 +371,7 @@ async function injectLink(learningLink, res, lrId) {
                         if (children.length > 197) children = children.slice(0, 197);
                         courseDesc = children;
                         console.log("sof: " + children);
-                        skillElement = { "parent": courseTitle, "children": [children] };
+                        // skillElement = { "parent": courseTitle, "children": [children] };
                         break;
                     default:
                         break;
@@ -484,7 +485,7 @@ async function injectLink(learningLink, res, lrId) {
                 learningResource = { "title": courseTitle, "description": courseDesc, "link": learningLink, "type": websiteType, "lrId": lrId, "difficulty": difficultyType };
                 jsonController.appendResource(JSON.stringify(learningResource), desiredLink, JSON.stringify(desiredLinks));
 
-                if (supportedType != "") jsonController.appendSkill(JSON.stringify(skillElement));
+                if (supportedType != "" && supportedType != "stackoverflow") jsonController.appendSkill(JSON.stringify(skillElement));
 
                 if (quickInjectFailed) {
                     quickInjectFailed = false;
