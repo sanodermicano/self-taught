@@ -53,7 +53,7 @@ class Recommender {
     recommend = function (req, res) {
         try {
             console.log(req.body);
-            const { userid, email, uniqueID } = req.body;
+            const { userid, email, uniqueID, isWdlin } = req.body;
             let SQLID = -1;
             const page = parseInt(req.query.page);
             const limit = parseInt(req.query.limit);
@@ -63,6 +63,7 @@ class Recommender {
             const result = {};
             console.log("page = " + page + ", limit = " + limit);
             console.log("startIndex = " + startIndex + ", endIndex = " + endIndex);
+            console.log("isWdlin: " + isWdlin);
 
             let skills = req.body['skillsListFiltered[]'];
             let ranges = req.body['rangesListFiltered[]'];
@@ -95,7 +96,7 @@ class Recommender {
                         const hashKey = String(SQLID);
 
                         
-                        if (String(prevSkills) != String(skills) || String(prevRanges) != String(ranges) || String(prevLRType) != String(LRType)) {
+                        if (isWdlin || String(prevSkills) != String(skills) || String(prevRanges) != String(ranges) || String(prevLRType) != String(LRType)) {
                             console.log("prevSkills != skills");
                             if (await mdb.exists("self-taught-recommender", "priority", "rec" + SQLID)) {
                                 usersMap.set(SQLID + "orig", await mdb.read("self-taught-recommender", "priority", "rec" + SQLID));
@@ -126,7 +127,7 @@ class Recommender {
                 console.log("prevLRType 2: " + String(prevLRType));
                 console.log("skills: " + String(skills));
 
-                if (String(prevSkills) != String(skills) || String(prevRanges) != String(ranges) || String(prevLRType) != String(LRType)) {
+                if (isWdlin || String(prevSkills) != String(skills) || String(prevRanges) != String(ranges) || String(prevLRType) != String(LRType)) {
                     usersMap.set(uniqueID + "prevSkills", skills);
                     usersMap.set(uniqueID + "prevRanges", ranges);
                     usersMap.set(uniqueID + "prevLRType", LRType);
@@ -256,6 +257,9 @@ async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, l
     const pShell = require('python-shell').PythonShell;
     const skillsList = Array.isArray(skills) ? skills : [skills];
     const rangesList = Array.isArray(ranges) ? ranges : [ranges];
+    for(var i = 0;i<rangesList.length;i++){
+        if(rangesList[i] == "" || rangesList[i] == null) rangesList[i] = 1;
+    }
     let options = {
         mode: 'json',
         // pythonPath: process.env.PY_PATH,
@@ -304,6 +308,9 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
     //await save usersMap.get(userObj.userid + "orig") in a json file
     const skillsList = Array.isArray(skills) ? skills : [skills];
     const rangesList = Array.isArray(ranges) ? ranges : [ranges];
+    for(var i = 0;i<rangesList.length;i++){
+        if(rangesList[i] == "" || rangesList[i] == null) rangesList[i] = 1;
+    }
     console.log("SQLID mhm? " + SQLID); //609784fee4c8ef50321b01d0
     //figure out a way to update the data only when needed, it doesn't make sense to update the list if the list 
     //of the links is the same as the one before

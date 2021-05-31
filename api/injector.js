@@ -100,7 +100,7 @@ class Injector {
         //shuffle to make discovered links less biased towards a single website https://flaviocopes.com/how-to-shuffle-array-javascript/
         dl = dl.sort(() => Math.random() - 0.5);
         console.log("dl = " + dl.length);
-        if (dl.length > 50) dl.length = 50; //backhere to inject tons
+        if (dl.length > 3) dl.length = 3; //backhere to inject tons 50
         console.log("dl = " + dl.length);
 
         var dlToBeDeleted = [];

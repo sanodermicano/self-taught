@@ -170,7 +170,6 @@
                                                     'skills').children).indexOf(document.getElementById(
                                                 'tr' +
                                                 thisID));
-                                            //backhere
                                             if ($(this).is(':checked')) {
                                                 $("#tr" + thisID).fadeTo(150, 1)
                                                 skillsListFiltered[position] = skillsListBackup[position];
@@ -202,7 +201,6 @@
                                             var skillName = $("#th" + thisID).html()
                                             $("#level" + thisID).html(level);
                                             if (level == 5 && !uuid) {
-                                                // backhere
                                                 hideAll("Predicting the Next Skills you can Improve at");
                                                 $.ajax({
                                                     url: '/predict',
@@ -301,9 +299,7 @@
                                         // skillID = skillsListBackup.length;
                                         skillID++;
 
-                                        //backhere bug this is empty for non-registered users
                                         if (!uuid) {
-                                            console.log("AHAAAAAAAAAAAAAAAAAA");
                                             rangesListFiltered.push(skillRange);
                                         }
 
@@ -591,15 +587,15 @@
                                             '</div><div class="star star-4"></div></div></div></div></div></div></td></tr>'
                                         );
                                         $("#star" + linksPocketID).hide().fadeIn();
-                                        const lr = {
-                                            id: lrId,
-                                            title: lrTitle,
-                                            desc: lrDesc,
-                                            link: lrLink,
-                                            rating: rating,
-                                            date: d
-                                        };
                                         if (!isReloading) {
+                                            var lr = {
+                                                id: lrId,
+                                                title: lrTitle,
+                                                desc: lrDesc,
+                                                link: lrLink,
+                                                rating: rating,
+                                                date: d
+                                            };
                                             lrList.push(lr);
                                         }
                                         // (C)RUD SQL
@@ -623,6 +619,9 @@
                                         }).bind('starbox-value-changed', function (event, value) {
                                             const starID = String($(this).attr('id')).substring('star'
                                                 .length);
+                                            lrList[starID].rating = value * 5; //backhere
+                                            console.log("starID: " + starID);
+                                            console.log("Not even trying + " + JSON.stringify(lrList));
                                             editRatingSQLLink(value * 5, lrList[starID].id);
                                         });
                                         $("#lp" + linksPocketID).click(function () {
@@ -963,6 +962,7 @@
                     //https://stackoverflow.com/questions/1069666/sorting-object-property-by-values
                     $("#dateSort").click(function () {
                         event.preventDefault();
+                        linksPocketID = 0;
                         $("#dateSort").children().show();
                         if ($(this).children()[0].innerText == "△") {
                             $(this).children()[0].innerText = "▽";
@@ -980,6 +980,7 @@
                     });
                     $("#ratingSort").click(function () {
                         event.preventDefault();
+                        linksPocketID = 0;
                         $("#ratingSort").children().show();
                         if ($(this).children()[0].innerText == "△") {
                             $(this).children()[0].innerText = "▽";
@@ -1230,6 +1231,7 @@
 
             function recommend() {
                 event.preventDefault();
+                let isWdlin = false;
                 if (skillsListBackup.length < 1) {
                     $("#plzWait").text("Cannot recommend Learning Resources, please add a skill to the skills section")
                         .delay(10000).fadeOut(150);
@@ -1245,6 +1247,7 @@
                     console.log(String($(this).attr('id')).substring('pg'.length));
                     currPage = parseInt(String($(this).attr('id')).substring('pg'.length));
                 }
+                if($(this).attr('id') == "wdiln") isWdlin = true;
                 console.log("currPage = " + currPage);
                 console.log(skillsListBackup);
 
@@ -1258,6 +1261,7 @@
                         skillsListFiltered,
                         rangesListFiltered,
                         learningResourceType: LRType,
+                        isWdlin: isWdlin,
                         uniqueID: uuid,
                         userid: uid,
                         email: uEmail
