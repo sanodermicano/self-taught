@@ -20,10 +20,10 @@ class Predictor {
                     const pShell = require('python-shell').PythonShell;
                     let options = {
                         mode: 'json',
-                        // pythonPath: process.env.PY_PATH,
+                        pythonPath: process.env.PY_PATH,
                         pythonOptions: ['-u'], // get print results in real-time
-                        // scriptPath: process.env.PY_PROJ, //might cause issues
-                        scriptPath: '/app/py', //might cause issues
+                        scriptPath: process.env.PY_PROJ, //might cause issues
+                        // scriptPath: '/app/py', //might cause issues
                         args: [newSkill]
                     };
                     try {
@@ -49,10 +49,10 @@ class Predictor {
         const pShell = require('python-shell').PythonShell;
         let options = {
             mode: 'json',
-            // pythonPath: process.env.PY_PATH,
+            pythonPath: process.env.PY_PATH,
             pythonOptions: ['-u'], // get print results in real-time
-            // scriptPath: process.env.PY_PROJ, //might cause issues
-            scriptPath: '/app/py', //might cause issues
+            scriptPath: process.env.PY_PROJ, //might cause issues
+            // scriptPath: '/app/py', //might cause issues
             args: [titleDesc]
         };
         try {
