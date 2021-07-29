@@ -1,6 +1,7 @@
 ![self-taught](https://user-images.githubusercontent.com/13939081/118611100-28730900-b7c5-11eb-9d36-3666708a7ad2.png)
 # [Self-Taught](http://self-taught.me/)
-Self-Taught is a Skill-Based Search Engine which gets smarter the more people interact with it! 
+Self-Taught is a Skill-Based Search Engine which gets smarter the more people interact with it!
+
 Welcome, Join us on [Discord](https://discord.gg/X5wMgMKbbC)
 
 ## Contents
