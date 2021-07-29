@@ -2,7 +2,7 @@
 # [Self-Taught](http://self-taught.me/)
 Self-Taught is a Skill-Based Search Engine which gets smarter the more people interact with it!
 
-Welcome, Join us on [Discord](https://discord.gg/X5wMgMKbbC)
+Welcome, Join us on [Discord](https://discord.gg/X5wMgMKbbC).
 
 ## Contents
 [Screenshots](#screenshots)
