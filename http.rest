@@ -16,6 +16,8 @@ GET http://self-taught.me/buildSkills
 GET /createLearningResoruces
 ###
 GET http://self-taught.me/createLearningResoruces
+###
+GET http://localhost:8000/createLearningResoruces
 
 ###
 GET /deleteBlockedLinks

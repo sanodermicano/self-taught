@@ -1,0 +1,182 @@
+//npm run devStart
+//http://localhost/phpmyadmin/
+//http://localhost:8000/
+
+//Heroku Deployment:
+//When changing the libraries in python add this to the proc file pipinstall: pip install -r requirements.txt
+//Clean Python-Shell pathings all over the project
+//On the CMD:
+////heroku login
+////cd C:\Users\ddeve\Desktop\Software_Engineering\Bachelor_Degree\Last_Semester_2020-2021\Graduation_Project\Project\self-taught
+////git init
+////heroku git:remote -a self-taught-me
+////git add .
+////git commit -am "make it better" ___OR___ git commit --allow-empty -m "empty commit"
+////heroku buildpacks:add --index 1 heroku/nodejs
+////heroku buildpacks:add --index 2 heroku/python
+////git push heroku main ===OR=== git push heroku HEAD:master
+//Undo Clean Python-Shell pathings all over the project
+//for troubleshooting: heroku run bash -a self-taught-me
+
+//monitor heroku logs --source app --app self-taught-me --tail
+
+//restart heroku restart --app self-taught-me
+
+//if size exceeds limit after entering bash heroku run bash -a self-taught-me ---> du -ha --max-depth 1 /app | sort -hr
+
+//clean cache heroku builds:cache:purge -a self-taught-me --confirm self-taught-me
+
+//MySQL:
+//mysql://b00704b2a48143:3f17b388@eu-cdbr-west-01.cleardb.com/heroku_de8b0ff74530d75?reconnect=true
+b00704b2a48143
+
+3f17b388
+
+eu-cdbr-west-01.cleardb.com
+
+//if cors issue: https://cors-anywhere.herokuapp.com/
+
+New crash, new ranges aren't being stored
+args: [
+2021-05-30T15:33:52.940965+00:00 app[web.1]: '{"skills":["Java","React","C++","-1"],"ranges":["5","","","-1"],"id":1,"lrtype":"Any"}'
+2021-05-30T15:33:52.940965+00:00 app[web.1]: 
+]
+
+CRASH THAT LEADS TO THE DB TO GET DESTROYED
+desc: '',
+2021-05-24T14:49:46.053857+00:00 app[web.1]: link: 'https://stackoverflow.com/questions/23318109/is-it-possible-to-use-java-8-for-android-development',
+2021-05-24T14:49:46.053857+00:00 app[web.1]: date: '2021-05-24 14:49:45',
+2021-05-24T14:49:46.053857+00:00 app[web.1]: lrid: '4145',
+2021-05-24T14:49:46.053858+00:00 app[web.1]: userid: '$2b$10$N5U1bW7pvCjcpGMW.N73rO12WUTTShkz56oGpvtg0tC9FK5Gl2olq',
+2021-05-24T14:49:46.053858+00:00 app[web.1]: email: 'joprovideos@gmail.com'
+2021-05-24T14:49:46.053859+00:00 app[web.1]: }
+2021-05-24T14:49:46.061012+00:00 app[web.1]: userid: $2b$10$N5U1bW7pvCjcpGMW.N73rO12WUTTShkz56oGpvtg0tC9FK5Gl2olq
+2021-05-24T14:49:46.061124+00:00 app[web.1]: SQLID: 55
+2021-05-24T14:49:46.176953+00:00 app[web.1]: title: Is it possible to use Java 8 for Android development? - Stack...
+2021-05-24T14:49:46.176955+00:00 app[web.1]: desc:
+2021-05-24T14:49:46.176956+00:00 app[web.1]: link: https://stackoverflow.com/questions/23318109/is-it-possible-to-use-java-8-for-android-development
+2021-05-24T14:49:46.176957+00:00 app[web.1]: date: 2021-05-24 14:49:45
+2021-05-24T14:49:46.176957+00:00 app[web.1]: lrid: 4145
+2021-05-24T14:49:46.176957+00:00 app[web.1]: email: joprovideos@gmail.com
+2021-05-24T14:49:46.176958+00:00 app[web.1]: SQLID: 55
+2021-05-24T14:49:46.177045+00:00 app[web.1]: desc:____________________________________________________
+2021-05-24T14:49:46.177097+00:00 app[web.1]: desc:
+2021-05-24T14:49:46.177223+00:00 app[web.1]: desc into visited:
+2021-05-24T14:49:46.178154+00:00 app[web.1]: started append rating
+2021-05-24T14:49:46.215623+00:00 app[web.1]: ______________________________
+2021-05-24T14:49:46.215624+00:00 app[web.1]: [object Object]
+2021-05-24T14:49:46.247806+00:00 app[web.1]: DOUBLE DOESN'T EXIST
+2021-05-24T14:49:46.283830+00:00 app[web.1]: oh uEmail
+2021-05-24T14:49:46.285588+00:00 app[web.1]: done appendRating
+2021-05-24T14:49:46.297021+00:00 app[web.1]: userid: null
+2021-05-24T14:49:46.297255+00:00 app[web.1]: SQLID: 55
+2021-05-24T14:49:46.312399+00:00 app[web.1]: result.length: 4
+2021-05-24T14:49:53.825204+00:00 app[web.1]: Access-Control-Allow-Headers: Content-Type
+2021-05-24T14:49:53.826160+00:00 app[web.1]: [Object: null prototype] {
+2021-05-24T14:49:53.826162+00:00 app[web.1]: title: 'Deeplearning4j – Machine Learning in Java on Vimeo',
+2021-05-24T14:49:53.826174+00:00 app[web.1]: desc: 'Christoph Henkelmann (DIVISIO GmbH): Python-basierte Frameworks wie TensorFlow und scikit-learn dominieren zurzeit den Machine-Learning-(ML-) und Arti...',
+2021-05-24T14:49:53.826174+00:00 app[web.1]: link: 'https://vimeo.com/288736747',
+2021-05-24T14:49:53.826175+00:00 app[web.1]: date: '2021-05-24 14:49:53',
+2021-05-24T14:49:53.826175+00:00 app[web.1]: lrid: '4235',
+2021-05-24T14:49:53.826176+00:00 app[web.1]: userid: '$2b$10$N5U1bW7pvCjcpGMW.N73rO12WUTTShkz56oGpvtg0tC9FK5Gl2olq',
+2021-05-24T14:49:53.826176+00:00 app[web.1]: email: 'joprovideos@gmail.com'
+2021-05-24T14:49:53.826176+00:00 app[web.1]: }
+2021-05-24T14:49:53.885067+00:00 app[web.1]: userid: $2b$10$N5U1bW7pvCjcpGMW.N73rO12WUTTShkz56oGpvtg0tC9FK5Gl2olq
+2021-05-24T14:49:53.885193+00:00 app[web.1]: SQLID: 55
+2021-05-24T14:49:53.948752+00:00 app[web.1]: Access-Control-Allow-Headers: Content-Type
+2021-05-24T14:49:54.283467+00:00 app[web.1]: title: Deeplearning4j – Machine Learning in Java on Vimeo
+2021-05-24T14:49:54.283494+00:00 app[web.1]: desc: Christoph Henkelmann (DIVISIO GmbH): Python-basierte Frameworks wie TensorFlow und scikit-learn dominieren zurzeit den Machine-Learning-(ML-) und Arti...
+2021-05-24T14:49:54.283495+00:00 app[web.1]: link: https://vimeo.com/288736747
+2021-05-24T14:49:54.283496+00:00 app[web.1]: date: 2021-05-24 14:49:53
+2021-05-24T14:49:54.283496+00:00 app[web.1]: lrid: 4235
+2021-05-24T14:49:54.283497+00:00 app[web.1]: email: joprovideos@gmail.com
+2021-05-24T14:49:54.283497+00:00 app[web.1]: SQLID: 55
+2021-05-24T14:49:54.283768+00:00 app[web.1]: desc:____________________________________________________
+2021-05-24T14:49:54.283846+00:00 app[web.1]: desc: Christoph Henkelmann (DIVISIO GmbH): Python-basierte Frameworks wie TensorFlow und scikit-learn dominieren zurzeit den Machine-Learning-(ML-) und Arti...
+2021-05-24T14:49:54.283967+00:00 app[web.1]: desc into visited: Christoph Henkelmann DIVISIO GmbH Pythonbasierte Frameworks wie TensorFlow und scikitlearn dominieren zurzeit den MachineLearningML und Arti
+2021-05-24T14:49:54.284870+00:00 app[web.1]: started append rating
+2021-05-24T14:49:54.307784+00:00 app[web.1]: ______________________________
+2021-05-24T14:49:54.307786+00:00 app[web.1]: [object Object]
+2021-05-24T14:49:54.348091+00:00 app[web.1]: DOUBLE DOESN'T EXIST
+2021-05-24T14:49:54.402332+00:00 app[web.1]: oh uEmail
+2021-05-24T14:49:54.404983+00:00 app[web.1]: done appendRating
+2021-05-24T14:49:54.407450+00:00 app[web.1]: userid: null
+2021-05-24T14:49:54.415300+00:00 app[web.1]: SQLID: 55
+2021-05-24T14:49:54.428534+00:00 app[web.1]: userObj 2: 1425
+2021-05-24T14:49:54.434497+00:00 app[web.1]: userObj 2: [{"title":"Effective Java by Joshua Bloch","description":"Effective Java book Read 362 reviews from the worlds largest community for readers This is the eBook version of the printed bookAre you looking fo","link":"https://www.goodreads.com/book/show/8129057-effective-java","rating":2.5,"lrid":5353},{"title":"Reactive programming with RxJava | Udemy","description":"Learn functional reactive programming with RxJava a library for easy asynchronous programming","link":"https://www.udemy.com/course/reactive-programming-with-rxjava/","rating":2.5,"lrid":1121},{"title":"methods - Is Java \"pass-by-reference\" or \"pass-by-value\"? - S...","description":"I always thought Java uses passbyreference However Ive seen a couple of blog posts for example this blog that claim that it isnt the blog po","link":"https://stackoverflow.com/questions/40480/is-java-pass-by-reference-or-pass-by-value","rating":2.5,"lrid":5312},{"title":"Is it possible to use Java 8 for Android development? - Stack...","description":"","link":"https://stackoverflow.com/questions/23318109/is-it-possible-to-use-java-8-for-android-development","rating":2.5,"lrid":4145},{"title":"Deeplearning4j – Machine Learning in Java on Vimeo","description":"Christoph Henkelmann DIVISIO GmbH Pythonbasierte Frameworks wie TensorFlow und scikitlearn dominieren zurzeit den MachineLearningML und Arti","link":"https://vimeo.com/288736747","rating":2.5,"lrid":4235}]
+2021-05-24T14:50:05.780585+00:00 app[web.1]: PythonShellError: ValueError: Length mismatch: Expected axis has 0 elements, new values have 1 elements
+2021-05-24T14:50:05.780610+00:00 app[web.1]: at PythonShell.parseError (/app/node_modules/python-shell/index.js:295:21)
+2021-05-24T14:50:05.780611+00:00 app[web.1]: at terminateIfNeeded (/app/node_modules/python-shell/index.js:190:32)
+2021-05-24T14:50:05.780612+00:00 app[web.1]: at ChildProcess.<anonymous> (/app/node_modules/python-shell/index.js:182:13)
+2021-05-24T14:50:05.780612+00:00 app[web.1]: at ChildProcess.emit (events.js:376:20)
+2021-05-24T14:50:05.780613+00:00 app[web.1]: at Process.ChildProcess._handle.onexit (internal/child_process.js:277:12)
+2021-05-24T14:50:05.780613+00:00 app[web.1]: ----- Python Traceback -----
+2021-05-24T14:50:05.780613+00:00 app[web.1]: File "/app/py/collaborativeBasedFiltering.py", line 172, in <module>
+2021-05-24T14:50:05.780614+00:00 app[web.1]: collaborativeBasedFiltering.organize()
+2021-05-24T14:50:05.780614+00:00 app[web.1]: File "/app/py/collaborativeBasedFiltering.py", line 102, in organize
+2021-05-24T14:50:05.780614+00:00 app[web.1]: pearsonDF.columns = ['similarityIndex']
+2021-05-24T14:50:05.780615+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/generic.py", line 5287, in __setattr__
+2021-05-24T14:50:05.780615+00:00 app[web.1]: return object.__setattr__(self, name, value)
+2021-05-24T14:50:05.780615+00:00 app[web.1]: File "pandas/_libs/properties.pyx", line 67, in pandas._libs.properties.AxisProperty.__set__
+2021-05-24T14:50:05.780616+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/generic.py", line 661, in _set_axis
+2021-05-24T14:50:05.780616+00:00 app[web.1]: self._data.set_axis(axis, labels)
+2021-05-24T14:50:05.780617+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/internals/managers.py", line 177, in set_axis
+2021-05-24T14:50:05.780617+00:00 app[web.1]: raise ValueError( {
+2021-05-24T14:50:05.780618+00:00 app[web.1]: traceback: 'Traceback (most recent call last):\n' +
+2021-05-24T14:50:05.780618+00:00 app[web.1]: '  File "/app/py/collaborativeBasedFiltering.py", line 172, in <module>\n' +
+2021-05-24T14:50:05.780618+00:00 app[web.1]: '    collaborativeBasedFiltering.organize()\n' +
+2021-05-24T14:50:05.780618+00:00 app[web.1]: '  File "/app/py/collaborativeBasedFiltering.py", line 102, in organize\n' +
+2021-05-24T14:50:05.780619+00:00 app[web.1]: "    pearsonDF.columns = ['similarityIndex']\n" +
+2021-05-24T14:50:05.780619+00:00 app[web.1]: '  File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/generic.py", line 5287, in __setattr__\n' +
+2021-05-24T14:50:05.780619+00:00 app[web.1]: '    return object.__setattr__(self, name, value)\n' +
+2021-05-24T14:50:05.780619+00:00 app[web.1]: '  File "pandas/_libs/properties.pyx", line 67, in pandas._libs.properties.AxisProperty.__set__\n' +
+2021-05-24T14:50:05.780620+00:00 app[web.1]: '  File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/generic.py", line 661, in _set_axis\n' +
+2021-05-24T14:50:05.780620+00:00 app[web.1]: '    self._data.set_axis(axis, labels)\n' +
+2021-05-24T14:50:05.780620+00:00 app[web.1]: '  File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/internals/managers.py", line 177, in set_axis\n' +
+2021-05-24T14:50:05.780620+00:00 app[web.1]: '    raise ValueError(\n' +
+2021-05-24T14:50:05.780621+00:00 app[web.1]: 'ValueError: Length mismatch: Expected axis has 0 elements, new values have 1 elements\n',
+2021-05-24T14:50:05.780621+00:00 app[web.1]: executable: 'python3',
+2021-05-24T14:50:05.780621+00:00 app[web.1]: options: [ '-u' ],
+2021-05-24T14:50:05.780621+00:00 app[web.1]: script: '/app/py/collaborativeBasedFiltering.py',
+2021-05-24T14:50:05.780622+00:00 app[web.1]: args: [
+2021-05-24T14:50:05.780631+00:00 app[web.1]: '[{"title":"Effective Java by Joshua Bloch","description":"Effective Java book Read 362 reviews from the worlds largest community for readers This is the eBook version of the printed bookAre you looking fo","link":"https://www.goodreads.com/book/show/8129057-effective-java","rating":2.5,"lrid":5353},{"title":"Reactive programming with RxJava | Udemy","description":"Learn functional reactive programming with RxJava a library for easy asynchronous programming","link":"https://www.udemy.com/course/reactive-programming-with-rxjava/","rating":2.5,"lrid":1121},{"title":"methods - Is Java \\"pass-by-reference\\" or \\"pass-by-value\\"? - S...","description":"I always thought Java uses passbyreference However Ive seen a couple of blog posts for example this blog that claim that it isnt the blog po","link":"https://stackoverflow.com/questions/40480/is-java-pass-by-reference-or-pass-by-value","rating":2.5,"lrid":5312},{"title":"Is it possible to use Java 8 for Android development? - Stack...","description":"","link":"https://stackoverflow.com/questions/23318109/is-it-possible-to-use-java-8-for-android-development","rating":2.5,"lrid":4145},{"title":"Deeplearning4j – Machine Learning in Java on Vimeo","description":"Christoph Henkelmann DIVISIO GmbH Pythonbasierte Frameworks wie TensorFlow und scikitlearn dominieren zurzeit den MachineLearningML und Arti","link":"https://vimeo.com/288736747","rating":2.5,"lrid":4235}]'
+2021-05-24T14:49:54.434497+00:00 app[web.1]: userObj 2: [{"title":"Effective Java by Joshua Bloch","description":"Effective Java book Read 362 reviews from the worlds largest community for readers This is the eBook version of the printed bookAre you looking fo","link":"https://www.goodreads.com/book/show/8129057-effective-java","rating":2.5,"lrid":5353},{"title":"Reactive programming with RxJava | Udemy","description":"Learn functional reactive programming with RxJava a library for easy asynchronous programming","link":"https://www.udemy.com/course/reactive-programming-with-rxjava/","rating":2.5,"lrid":1121},{"title":"methods - Is Java \"pass-by-reference\" or \"pass-by-value\"? - S...","description":"I always thought Java uses passbyreference However Ive seen a couple of blog posts for example this blog that claim that it isnt the blog po","link":"https://stackoverflow.com/questions/40480/is-java-pass-by-reference-or-pass-by-value","rating":2.5,"lrid":5312},{"title":"Is it possible to use Java 8 for Android development? - Stack...","description":"","link":"https://stackoverflow.com/questions/23318109/is-it-possible-to-use-java-8-for-android-development","rating":2.5,"lrid":4145},{"title":"Deeplearning4j – Machine Learning in Java on Vimeo","description":"Christoph Henkelmann DIVISIO GmbH Pythonbasierte Frameworks wie TensorFlow und scikitlearn dominieren zurzeit den MachineLearningML und Arti","link":"https://vimeo.com/288736747","rating":2.5,"lrid":4235}]
+2021-05-24T14:50:05.780585+00:00 app[web.1]: PythonShellError: ValueError: Length mismatch: Expected axis has 0 elements, new values have 1 elements
+2021-05-24T14:50:05.780610+00:00 app[web.1]: at PythonShell.parseError (/app/node_modules/python-shell/index.js:295:21)
+2021-05-24T14:50:05.780611+00:00 app[web.1]: at terminateIfNeeded (/app/node_modules/python-shell/index.js:190:32)
+2021-05-24T14:50:05.780612+00:00 app[web.1]: at ChildProcess.<anonymous> (/app/node_modules/python-shell/index.js:182:13)
+2021-05-24T14:50:05.780612+00:00 app[web.1]: at ChildProcess.emit (events.js:376:20)
+2021-05-24T14:50:05.780613+00:00 app[web.1]: at Process.ChildProcess._handle.onexit (internal/child_process.js:277:12)
+2021-05-24T14:50:05.780613+00:00 app[web.1]: ----- Python Traceback -----
+2021-05-24T14:50:05.780613+00:00 app[web.1]: File "/app/py/collaborativeBasedFiltering.py", line 172, in <module>
+2021-05-24T14:50:05.780614+00:00 app[web.1]: collaborativeBasedFiltering.organize()
+2021-05-24T14:50:05.780614+00:00 app[web.1]: File "/app/py/collaborativeBasedFiltering.py", line 102, in organize
+2021-05-24T14:50:05.780614+00:00 app[web.1]: pearsonDF.columns = ['similarityIndex']
+2021-05-24T14:50:05.780615+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/generic.py", line 5287, in __setattr__
+2021-05-24T14:50:05.780615+00:00 app[web.1]: return object.__setattr__(self, name, value)
+2021-05-24T14:50:05.780615+00:00 app[web.1]: File "pandas/_libs/properties.pyx", line 67, in pandas._libs.properties.AxisProperty.__set__
+2021-05-24T14:50:05.780616+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/generic.py", line 661, in _set_axis
+2021-05-24T14:50:05.780616+00:00 app[web.1]: self._data.set_axis(axis, labels)
+2021-05-24T14:50:05.780617+00:00 app[web.1]: File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/internals/managers.py", line 177, in set_axis
+2021-05-24T14:50:05.780617+00:00 app[web.1]: raise ValueError( {
+2021-05-24T14:50:05.780618+00:00 app[web.1]: traceback: 'Traceback (most recent call last):\n' +
+2021-05-24T14:50:05.780618+00:00 app[web.1]: '  File "/app/py/collaborativeBasedFiltering.py", line 172, in <module>\n' +
+2021-05-24T14:50:05.780618+00:00 app[web.1]: '    collaborativeBasedFiltering.organize()\n' +
+2021-05-24T14:50:05.780618+00:00 app[web.1]: '  File "/app/py/collaborativeBasedFiltering.py", line 102, in organize\n' +
+2021-05-24T14:50:05.780619+00:00 app[web.1]: "    pearsonDF.columns = ['similarityIndex']\n" +
+2021-05-24T14:50:05.780619+00:00 app[web.1]: '  File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/generic.py", line 5287, in __setattr__\n' +
+2021-05-24T14:50:05.780619+00:00 app[web.1]: '    return object.__setattr__(self, name, value)\n' +
+2021-05-24T14:50:05.780619+00:00 app[web.1]: '  File "pandas/_libs/properties.pyx", line 67, in pandas._libs.properties.AxisProperty.__set__\n' +
+2021-05-24T14:50:05.780620+00:00 app[web.1]: '  File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/generic.py", line 661, in _set_axis\n' +
+2021-05-24T14:50:05.780620+00:00 app[web.1]: '    self._data.set_axis(axis, labels)\n' +
+2021-05-24T14:50:05.780620+00:00 app[web.1]: '  File "/app/.heroku/python/lib/python3.9/site-packages/pandas/core/internals/managers.py", line 177, in set_axis\n' +
+2021-05-24T14:50:05.780620+00:00 app[web.1]: '    raise ValueError(\n' +
+2021-05-24T14:50:05.780621+00:00 app[web.1]: 'ValueError: Length mismatch: Expected axis has 0 elements, new values have 1 elements\n',
+2021-05-24T14:50:05.780621+00:00 app[web.1]: executable: 'python3',
+2021-05-24T14:50:05.780621+00:00 app[web.1]: options: [ '-u' ],
+2021-05-24T14:50:05.780621+00:00 app[web.1]: script: '/app/py/collaborativeBasedFiltering.py',
+2021-05-24T14:50:05.780622+00:00 app[web.1]: args: [
+2021-05-24T14:50:05.780631+00:00 app[web.1]: '[{"title":"Effective Java by Joshua Bloch","description":"Effective Java book Read 362 reviews from the worlds largest community for readers This is the eBook version of the printed bookAre you looking fo","link":"https://www.goodreads.com/book/show/8129057-effective-java","rating":2.5,"lrid":5353},{"title":"Reactive programming with RxJava | Udemy","description":"Learn functional reactive programming with RxJava a library for easy asynchronous programming","link":"https://www.udemy.com/course/reactive-programming-with-rxjava/","rating":2.5,"lrid":1121},{"title":"methods - Is Java \\"pass-by-reference\\" or \\"pass-by-value\\"? - S...","description":"I always thought Java uses passbyreference However Ive seen a couple of blog posts for example this blog that claim that it isnt the blog po","link":"https://stackoverflow.com/questions/40480/is-java-pass-by-reference-or-pass-by-value","rating":2.5,"lrid":5312},{"title":"Is it possible to use Java 8 for Android development? - Stack...","description":"","link":"https://stackoverflow.com/questions/23318109/is-it-possible-to-use-java-8-for-android-development","rating":2.5,"lrid":4145},{"title":"Deeplearning4j – Machine Learning in Java on Vimeo","description":"Christoph Henkelmann DIVISIO GmbH Pythonbasierte Frameworks wie TensorFlow und scikitlearn dominieren zurzeit den MachineLearningML und Arti","link":"https://vimeo.com/288736747","rating":2.5,"lrid":4235}]'
+2021-05-24T14:50:05.780631+00:00 app[web.1]: ],
+2021-05-24T14:50:05.780632+00:00 app[web.1]: exitCode: 1
+2021-05-24T14:50:05.780632+00:00 app[web.1]: }

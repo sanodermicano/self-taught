@@ -100,7 +100,7 @@ class Injector {
         //shuffle to make discovered links less biased towards a single website https://flaviocopes.com/how-to-shuffle-array-javascript/
         dl = dl.sort(() => Math.random() - 0.5);
         console.log("dl = " + dl.length);
-        if (dl.length > 3) dl.length = 3; //backhere to inject tons 50
+        if (dl.length > 50) dl.length = 50; //backhere to inject tons 50
         console.log("dl = " + dl.length);
 
         var dlToBeDeleted = [];
@@ -190,6 +190,7 @@ class Injector {
         console.log("dl after = " + dl.length);
 
         //store dlTemp in a json file, so that we don't crawl unnecessarily into them again - inside the python file to prevent storing in the first place
+        console.log("dlTemp.length = " + dlTemp.length);
         if (dlTemp.length > 0)
             await jsonController.setBlockedLinks(JSON.stringify(dlTemp));
 
@@ -220,10 +221,10 @@ async function quickInject(link, res) {
     let lrId = await jsonController.getLrId(link);
     let options = {
         mode: 'json',
-        pythonPath: process.env.PY_PATH,
+        // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: process.env.PY_PROJ, //might cause issues
-        // scriptPath: '/app/py',
+        // scriptPath: process.env.PY_PROJ, //might cause issues
+        scriptPath: '/app/py',
         args: [link]
     };
     try {
@@ -512,10 +513,10 @@ async function quickCheck(link) {
 
     let options = {
         mode: 'json',
-        pythonPath: process.env.PY_PATH,
+        // pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        scriptPath: process.env.PY_PROJ, //might cause issues
-        // scriptPath: '/app/py', //might cause issues
+        // scriptPath: process.env.PY_PROJ, //might cause issues
+        scriptPath: '/app/py', //might cause issues
         args: [link]
     };
     try {

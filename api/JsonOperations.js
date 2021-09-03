@@ -29,10 +29,16 @@ class JsonOperations {
                 if (lr) {
                     len = lr.lrId;
                 } else {
-                    len = Object.keys(data).length;
+                    for (var i = 0; i < data.length; i++) {
+                        if(len < data[i].lrId) len = data[i].lrId;
+                    }
+                    len++;
                 }
             } else {
-                len = Object.keys(data).length;
+                for (var i = 0; i < data.length; i++) {
+                    if(len < data[i].lrId) len = data[i].lrId;
+                }
+                len++;
             }
         } catch (err) {
             console.error("err: " + err);
@@ -111,7 +117,8 @@ class JsonOperations {
     appendResource = async function (newResource, desiredLink = "", desiredLinks) {
         // appendJSON.py
         const nr = JSON.parse(newResource);
-        await mdb.insertIfNotFound("self-taught-lr", "learning-resources", "lrId", nr.lrId, nr); //6097891f6f4bbd44a7d0e043 //
+        console.log("nr: " + JSON.stringify(nr));
+        console.log("appendResource: " + await mdb.insertIfNotFound("self-taught-lr", "learning-resources", "lrId", nr.lrId, nr)); //6097891f6f4bbd44a7d0e043 //
         if (desiredLink != "") appendDiscoveredLinks(desiredLinks);
         console.log("done appendResource");
     };
