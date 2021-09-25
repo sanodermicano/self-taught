@@ -1,0 +1,40 @@
+<html>
+
+<head lang="en">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Self Taught - Reset Password</title>
+	<link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sign-in/">
+	<link href="/styles/signin.css" rel="stylesheet">
+	<link href="./styles/gradCSS.css" rel="stylesheet">
+</head>
+
+<body class="text-center">
+	<main class="form-signin">
+		<a href="/">Home</a>
+		<form action="/acc/reset" method="POST">
+			<h1 class="h3 mb-3 fw-normal">Self-Taught Reset Password</h1>
+			<div>
+				<% var message; %>
+				<%if (message) { %>
+				<h3>
+					<%= message %>
+				</h3>
+				<% } %>
+			</div>
+			<label for="inputPassword" class="visually-hidden">Password</label>
+			<input type="password" id="inputPassword" class="form-control" placeholder="Password" name="password" required>
+			<label for="confirmPassword" class="visually-hidden">Confirm Password</label>
+			<input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" name="confirmPassword" required>
+			<br>
+            <br>
+			<button class="w-100 btn btn-lg btn-primary" type="submit">Reset Password</button>
+		</form>
+	</main>
+
+</body>
+
+</html>
