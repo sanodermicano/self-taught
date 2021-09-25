@@ -27,4 +27,12 @@ router.get('/register', accController.isLoggedIn, function (req, res) {
     }
 });
 
+router.get('/forgot', accController.isLoggedIn, function (req, res) {
+    if(!req.user){
+        res.render("forgot");
+    }else{
+        res.redirect("/");
+    }
+});
+
 module.exports = router;

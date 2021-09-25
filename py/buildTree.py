@@ -49,6 +49,10 @@ class BuildTree:
                 for anotherDataElement in data[1:]:
                     if dataElement['parent'].lower() == anotherDataElement['parent'].lower() and dataElement != anotherDataElement:
                         if dataElement in data:
+                            if isinstance(data[data.index(dataElement)]['children'], str):
+                                data[data.index(dataElement)]['children'] = list(data[data.index(dataElement)]['children'])
+                            if isinstance(anotherDataElement['children'], str):
+                                anotherDataElement['children'] = list(anotherDataElement['children'])
                             data[data.index(dataElement)]['children'] = dataElement['children'] + anotherDataElement['children']
                             data.remove(anotherDataElement)
 
