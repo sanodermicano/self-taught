@@ -16,6 +16,7 @@
 ////heroku buildpacks:add --index 2 heroku/python
 ////git push heroku main ===OR=== git push heroku HEAD:master
 //Undo Clean Python-Shell pathings all over the project
+
 //for troubleshooting: heroku run bash -a self-taught-me
 
 //monitor heroku logs --source app --app self-taught-me --tail
