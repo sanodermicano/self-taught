@@ -5,6 +5,11 @@ Self-Taught is a Skill-Based Search Engine which gets smarter the more people in
 Welcome, Join us on [Discord](https://discord.gg/X5wMgMKbbC).
 
 ## Contents
+
+[Intro](#intro)
+- [Poster](#poster)
+- [Presentation](#presentation)
+
 [Screenshots](#screenshots)
 
 - [On the Phone](#on-the-phone)
@@ -23,6 +28,14 @@ Welcome, Join us on [Discord](https://discord.gg/X5wMgMKbbC).
 - [Libraries](#libraries)
 
 [About](#about)
+
+## Intro
+
+### Poster
+
+![Self-Taught](https://user-images.githubusercontent.com/13939081/150755502-3e2dd1cd-d61a-44cd-ad34-55852999477b.jpg)
+
+### [Presentation](https://docs.google.com/presentation/d/1sWwQNqtStz8go5fejG_L2NXbACR9JvWQQhGYkYlyzHc/edit?usp=sharing)
 
 ## Screenshots
 ### On the Phone
