@@ -75,7 +75,8 @@ class RecommendSkill:
                     data.append(lr)
                     break
         resources = []
-        data = data[:100]
+        if len(data) > 60:
+            data = data[:60]
         for dataElement in data:
             if 'title' in dataElement:
                 for i in range(0, nrLen):

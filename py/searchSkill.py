@@ -72,6 +72,8 @@ class Searchskill:
                         re.escape(newResources['skills'][i]), re.IGNORECASE)]}, "difficulty": "Advanced"}, {'_id': False})))
 
         resources = []
+        if len(data) > 100:
+            data = data[:100]
         for dataElement in data:
             if 'title' in dataElement:
                 for i in range(0, nrLen):
