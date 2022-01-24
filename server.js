@@ -84,7 +84,11 @@ server.listen(port, function () {
         console.log("every 1.6 hours visit 50 discovered links 5760000");
         // await injectController.createLearningResoruces(null, null);
 <<<<<<< HEAD
+<<<<<<< HEAD
     }, 760000);
+=======
+    }, 5760000);
+>>>>>>> parent of 6c6206e (empty commit)
 =======
     }, 5760000);
 >>>>>>> parent of 6c6206e (empty commit)
