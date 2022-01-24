@@ -82,7 +82,7 @@ server.listen(port, function () {
     const jsonController = require('./api/JsonOperations').jsonOperations;
     setInterval(async function () {
         console.log("every 1.6 hours visit 50 discovered links 5760000");
-        await injectController.createLearningResoruces(null, null);
+        // await injectController.createLearningResoruces(null, null);
     }, 760000);
     setInterval(async function () {
         console.log("every 24 hours update the skills list 86400000");
@@ -93,10 +93,10 @@ server.listen(port, function () {
         // await jsonController.deleteBlockedLinks();
     }, 600000000);
 
-    setTimeout(async function () {
-        console.log("5000"); //BACKHERE import blockedLinks from ..\Graduation_Project\Project\blockedLinks.json
-        // console.log(await jsonController.getBlockedLinks()); // instead of getting all the blocked list, compare a link with the mongodb collection
-    }, 5000);
+    // setTimeout(async function () {
+    //     console.log("5000"); //BACKHERE import blockedLinks from ..\Graduation_Project\Project\blockedLinks.json
+    //     // console.log(await jsonController.getBlockedLinks()); // instead of getting all the blocked list, compare a link with the mongodb collection
+    // }, 5000);
 });
 
 process.stdin.resume();
