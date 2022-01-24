@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from bson import json_util
 import re
 import dns
+# import certifi
 
 dotenv_path = './.env'  # init .env
 load_dotenv(dotenv_path)
@@ -23,8 +24,8 @@ class Searchskill:
     def contentBasedFiltering(self):
         # for now shuffle is used
         # make resources into an array of arrays and each array contains LRs related only to each skill
-        # rawData = json.loads('{"skills": ["Unity", "Java"], "ranges": ["-1", "1"], "lrtype": "Questions & Answers"}')
-        rawData = json.loads(sys.argv[1])
+        rawData = json.loads('{"skills": ["Unity", "Java"], "ranges": ["-1", "1"], "lrtype": "Questions & Answers"}')
+        # rawData = json.loads(sys.argv[1])
         newResources = None
         nrLen = 0
         if isinstance(rawData['skills'], str):
@@ -37,8 +38,13 @@ class Searchskill:
 
         lrtype = newResources['lrtype']
 
+
         mongoClient = pymongo.MongoClient(
             os.environ.get("MONGO_CONNECTION_STRING"))
+        #testing
+        # ca = certifi.where()
+        # mongoClient = pymongo.MongoClient(
+        #     os.environ.get("MONGO_CONNECTION_STRING"), tlsCAFile=ca)
         mongoDb = mongoClient.get_database('self-taught-lr')
 
         data = []

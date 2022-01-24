@@ -38,8 +38,10 @@ class Injector {
                         return;
                     }
                     if (enteredURL.length > 10) {
+                        console.log("length > 10");
                         if (enteredURL.includes("www.udemy.com") || enteredURL.includes("www.coursera.org") ||
                             enteredURL.includes("www.udacity.com")) {
+                            console.log("Entered was udemy link");
                             quickInject(enteredURL, res);
                         } else {
                             const bl = await jsonController.getBlockedLinks();

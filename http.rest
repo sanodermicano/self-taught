@@ -8,7 +8,7 @@
 # GET /initializeSkillTree
 
 ### To build the skilltree from rawdata, then build the skills list from the skilltree - TAKES A MINUTE
-GET /buildSkills
+GET http://localhost:8000/buildSkills
 ###
 GET http://self-taught.me/buildSkills
 
