@@ -46,11 +46,11 @@ class MongoDb {
         const { db, client } = await connectDB(dbName);
         const collection = db.collection(colName);
         if (!await collection.find({ [key]: condition }).count() > 0) {
+            console.log("ACCEPTED"); //doesn't exist
             await collection.insertOne(value);
-            console.log("insertIfNotFound ACCEPTED"); //doesn't exist
             return true;
         } else {
-            console.log("insertIfNotFound REJECTED");
+            console.log("REJECTED");
             return false;
         }
     }
@@ -64,13 +64,6 @@ class MongoDb {
             console.log("DOESN'T EXIST");
             return false;
         }
-    }
-    getMax = async function (dbName, colName, key) {
-        const { db, client } = await connectDB(dbName);
-        const collection = db.collection(colName);
-        let max = await collection.findOne({[key]:-1});
-        console.log("max = " + JSON.stringify(max));
-        return max;
     }
     doubleExists = async function (dbName, colName, key1, condition1, key2, condition2) {
         const { db, client } = await connectDB(dbName);

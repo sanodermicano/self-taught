@@ -119,10 +119,10 @@ class SkillTreeBuilder {
         const pShell = require('python-shell').PythonShell;
         let options = {
             mode: 'json',
-            // pythonPath: process.env.PY_PATH,
+            pythonPath: process.env.PY_PATH,
             pythonOptions: ['-u'], // get print results in real-time
-            // scriptPath: process.env.PY_PROJ,
-            scriptPath: '/app/py',
+            scriptPath: process.env.PY_PROJ,
+            // scriptPath: '/app/py',
         };
         // pShell.run('BuildTree.py', options, function (err, results) { //when in nodemon
         try {
@@ -258,10 +258,10 @@ async function filterReqs() {
     const pShell = require('python-shell').PythonShell;
     let options = {
         mode: 'json',
-        // pythonPath: process.env.PY_PATH,
+        pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        // scriptPath: process.env.PY_PROJ,
-        scriptPath: '/app/py',
+        scriptPath: process.env.PY_PROJ,
+        // scriptPath: '/app/py',
     };
     try {
         pShell.run('buildTree.py', options, function (err, results) {

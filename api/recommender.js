@@ -194,26 +194,22 @@ class Recommender {
                         console.log("userObj 2: " + userObj);
                         let options = {
                             mode: 'json',
-                            // pythonPath: process.env.PY_PATH,
+                            pythonPath: process.env.PY_PATH,
                             pythonOptions: ['-u'], // get print results in real-time
-                            // scriptPath: process.env.PY_PROJ,
-                            scriptPath: '/app/py',
+                            scriptPath: process.env.PY_PROJ,
+                            // scriptPath: '/app/py',
                             args: [userObj]
                         };
                         try {
                             pShell.run('collaborativeBasedFiltering.py', options, function (err, results) {
-                                if (err) console.log(err);
-                                else{
-                                    // console.log(results);
-                                    if(results != "error"){
-                                        console.log("SQLID collaborativeBasedFiltering: " + SQLID);
-                                        usersMap.set(SQLID + "orig", results[0]);
-                                        mdb.destroy("self-taught-recommender", "priority", "rec" + SQLID);
-                                        mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
-                                        console.log("saved in hashmap: "
-                                        + usersMap.get(SQLID + "orig").length);
-                                    }
-                                }
+                                if (err) throw err;
+                                // console.log(results);
+                                console.log("SQLID collaborativeBasedFiltering: " + SQLID);
+                                usersMap.set(SQLID + "orig", results[0]);
+                                mdb.destroy("self-taught-recommender", "priority", "rec" + SQLID);
+                                mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
+                                console.log("saved in hashmap: "
+                                    + usersMap.get(SQLID + "orig").length);
                             });
                         } catch (e) {
                             console.log("collaborativeBasedFiltering: " + e);
@@ -266,10 +262,10 @@ async function searchSkill(skills, ranges, LRType, hashKey, res, result, page, l
     }
     let options = {
         mode: 'json',
-        // pythonPath: process.env.PY_PATH,
+        pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        // scriptPath: process.env.PY_PROJ,
-        scriptPath: '/app/py',
+        scriptPath: process.env.PY_PROJ,
+        // scriptPath: '/app/py',
         args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "lrtype": LRType })]
     };
     try {
@@ -322,10 +318,10 @@ async function recommendSkill(skills, ranges, LRType, SQLID, res, result, page, 
     // await mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
     let options = {
         mode: 'json',
-        // pythonPath: process.env.PY_PATH,
+        pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        // scriptPath: process.env.PY_PROJ,
-        scriptPath: '/app/py',
+        scriptPath: process.env.PY_PROJ,
+        // scriptPath: '/app/py',
         args: [JSON.stringify({ "skills": skillsList, "ranges": rangesList, "id": SQLID, "lrtype": LRType })]
     };
     try {
