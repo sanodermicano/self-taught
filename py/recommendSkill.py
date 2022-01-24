@@ -68,13 +68,14 @@ class RecommendSkill:
                     rawData.extend(list(mongoDb['learning-resources'].find({"title": {"$in": [re.compile(
                         re.escape(newResources['skills'][i]), re.IGNORECASE)]}, "difficulty": "Advanced"}, {'_id': False})))
         
-        data = []
+        data = [] #first 100 then let the rest be sorted randomly
         for lrSorting in lrSortings:
             for lr in rawData:
                 if lrSorting == lr['lrId']:
                     data.append(lr)
                     break
         resources = []
+        data = data[:100]
         for dataElement in data:
             if 'title' in dataElement:
                 for i in range(0, nrLen):
