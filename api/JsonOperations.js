@@ -171,9 +171,14 @@ async function getSkills() {
 
 async function getBlockedUrls() {
     try {
-        let data = JSON.parse(JSON.stringify(await mdb.read("self-taught-injector", "blockedLinks", "blockedLinks")));
-        console.log("getBlockedUrls: " + data['blockedLinks'].length);
-        return data['blockedLinks'];
+        let data = await mdb.readAll("self-taught-injector", "blockedLinks");
+        // let data = JSON.parse(JSON.stringify(await mdb.read("self-taught-injector", "blockedLinks")));
+        let sData = []
+        for (var i = 0; i < data.length; i++) {
+            sData.push(data[i].blockedLink);
+        }
+        console.log("getBlockedUrls: " + sData.length);
+        return sData;
     } catch (err) {
         console.error("err: " + err);
         return null;

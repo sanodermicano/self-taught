@@ -92,6 +92,11 @@ server.listen(port, function () {
         console.log("every around a week, clean blocked links 600000000");
         await jsonController.deleteBlockedLinks();
     }, 600000000);
+
+    setTimeout(async function () {
+        console.log("5000"); //BACKHERE import blockedLinks from ..\Graduation_Project\Project\blockedLinks.json
+        console.log(await jsonController.getBlockedLinks()); // instead of getting all the blocked list, compare a link with the mongodb collection
+    }, 5000);
 });
 
 process.stdin.resume();

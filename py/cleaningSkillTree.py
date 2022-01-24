@@ -14,6 +14,7 @@ import random
 import pymongo
 from dotenv import load_dotenv
 import dns
+# import certifi
 
 dotenv_path = './.env'  # init .env
 load_dotenv(dotenv_path)
@@ -27,6 +28,9 @@ class CleaningSkillTree:
         # source https://www.nltk.org/book/ch03.html
         mongoClient = pymongo.MongoClient(
             os.environ.get("MONGO_CONNECTION_STRING"))
+        # ca = certifi.where()
+        # mongoClient = pymongo.MongoClient(
+        #     os.environ.get("MONGO_CONNECTION_STRING"), tlsCAFile=ca)
         mongoDb = mongoClient.get_database('self-taught-stb')
 
         data = list(mongoDb['skilltree'].find({}, {'_id': False}))
