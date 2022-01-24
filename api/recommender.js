@@ -202,18 +202,14 @@ class Recommender {
                         };
                         try {
                             pShell.run('collaborativeBasedFiltering.py', options, function (err, results) {
-                                if (err) console.log(err);
-                                else{
-                                    // console.log(results);
-                                    if(results != "error"){
-                                        console.log("SQLID collaborativeBasedFiltering: " + SQLID);
-                                        usersMap.set(SQLID + "orig", results[0]);
-                                        mdb.destroy("self-taught-recommender", "priority", "rec" + SQLID);
-                                        mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
-                                        console.log("saved in hashmap: "
-                                        + usersMap.get(SQLID + "orig").length);
-                                    }
-                                }
+                                if (err) throw err;
+                                // console.log(results);
+                                console.log("SQLID collaborativeBasedFiltering: " + SQLID);
+                                usersMap.set(SQLID + "orig", results[0]);
+                                mdb.destroy("self-taught-recommender", "priority", "rec" + SQLID);
+                                mdb.create("self-taught-recommender", "priority", "rec" + SQLID, usersMap.get(SQLID + "orig"));
+                                console.log("saved in hashmap: "
+                                    + usersMap.get(SQLID + "orig").length);
                             });
                         } catch (e) {
                             console.log("collaborativeBasedFiltering: " + e);

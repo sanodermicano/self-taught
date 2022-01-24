@@ -49,7 +49,6 @@
             }
         });
     </script>
-    <a target="_blank" href="https://github.com/sanodermicano/self-taught" aria-label="Open GitHub project"><svg width="57" height="57" viewBox="0 0 250 250" style="position: absolute; top: 0px; fill: rgb(255, 248, 245); left: 0px;"><path class="octo-banner" d="M250 0L135 115h-15l-12 27L0 250V0z" fill="#272727"></path><path class="octo-arm" d="M122 109c15-9 9-19 9-19-3-7-2-11-2-11 1-7-3-2-3-2-4 5-2 11-2 11 3 10-5 15-9 16" style="transform-origin: 120px 144px 0px;"></path><path class="octo-body" d="M135 115s-4 2-5 0l-14-14c-3-2-6-3-8-3 8-11 15-24-2-41-5-5-10-7-16-7-1-2-3-7-12-11 0 0-5 3-7 16-4 2-8 5-12 9s-7 8-9 12c-14 4-17 9-17 9 4 8 9 11 11 11 0 6 2 11 7 16 16 16 30 10 41 2 0 3 1 7 5 11l12 11c1 2-1 6-1 6z"></path></svg></a>
     <!-- source: loading source http://www.ajaxload.info/ -->
     <div id="loading" class="loading" style="display: none;">
         <h1 class="loadingtext">Please Wait...</h1>
@@ -88,7 +87,7 @@
                                         </td>
                                         <td>
                                             <img src="img/help.png" id="halp" width="16" height="16" class="fade"
-                                                title="Maxing out a Skill will make you recieve a list of More Advanced Next Skills to Choose from&#013;&#013;Can't find the Skill you're looking for? Add a custom skill using the + button or Insert learning resources' links related to that skill and wait a day, the Skill you're looking for will be automatically added to the Skills List."
+                                                title="Learning Resources Difficulty: &#013;Level 1 & 2: Beginner&#013;Level 3: Intermediate&#013;Level 4: Advanced&#013;Level 5: Advanced + You Recieve a list of More Advanced Next Skills to Choose from&#013;&#013;Can't find the Skill you're looking for? Insert learning resources' links related to that skill and wait a day, the Skill you're looking for will be automatically added to the Skills List."
                                                 alt="Help" />
                                         </td>
                                     </tr>
@@ -142,27 +141,7 @@
                                         $("#paginator").hide();
                                         $("#learningResources").hide();
                                         $("#sResultsDiv").hide();
-                                        
-                                        let skillLevelText = "Beginner";
-                                        switch (skillRange) {
-                                            case 1:
-                                                skillLevelText = "Beginner"
-                                                break;
-                                            case 2:
-                                                skillLevelText = "Beginner"
-                                                break;
-                                            case 3:
-                                                skillLevelText = "Intermediate"
-                                                break;
-                                            case 4:
-                                                skillLevelText = "Advanced"
-                                                break;
-                                            case 5:
-                                                skillLevelText = "Maxed Out"
-                                                break;
-                                            default:
-                                                break;
-                                        }
+
                                         //use prepend and instead but remember to mirror all skills list operations; unshift CRUD instead of pushing
 
                                         // $("#skills").prepend('<tr id="tr' + skillID +
@@ -176,8 +155,8 @@
                                             '</th><td class="skillscontent"><input type="range" min="1" max="5" value="' +
                                             skillRange + '" ' +
                                             'id="range' + skillID +
-                                            '" class="slider"></td><td class="skillscontent"><span id="level' +
-                                            skillID + '">' + skillLevelText +
+                                            '" class="slider"></td><td class="skillscontent">Level: <span id="level' +
+                                            skillID + '">' + skillRange +
                                             '</span></td>' +
                                             '<td class="skillscontent"><img width="20" height="20" class="fade" style="margin-left: 5px;" alt="Delete Skill" src="img/delete.png" id="del' +
                                             skillID + '"></td></tr>');
@@ -219,30 +198,8 @@
                                             var thisID = String($(this).attr('id')).substring('level'
                                                 .length);
                                             var level = $(this).val();
-                                            var skillName = $("#th" + thisID).html();
-                                            var newSkillLevelText = "Beginner";
-                                            console.log("level: " + level);
-                                            switch (parseInt(level)) {
-                                                case 1:
-                                                    newSkillLevelText = "Beginner";
-                                                    break;
-                                                case 2:
-                                                    newSkillLevelText = "Beginner";
-                                                    break;
-                                                case 3:
-                                                    newSkillLevelText = "Intermediate";
-                                                    break;
-                                                case 4:
-                                                    newSkillLevelText = "Advanced";
-                                                    break;
-                                                case 5:
-                                                    newSkillLevelText = "Maxed Out";
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
-                                            console.log("newSkillLevelText: " + newSkillLevelText);
-                                            $("#level" + thisID).html(newSkillLevelText);
+                                            var skillName = $("#th" + thisID).html()
+                                            $("#level" + thisID).html(level);
                                             if (level == 5 && !uuid) {
                                                 hideAll("Predicting the Next Skills you can Improve at");
                                                 $.ajax({
@@ -427,9 +384,6 @@
                                             showAll(true);
                                         }
                                     }
-                                    $("#halp").click(function () {
-                                        alert($("#halp").attr('title'));
-                                    });
                                 </script>
                                 <% var user; %>
                                 <%if (user) { %>
@@ -796,7 +750,15 @@
                                     function isFree() {
                                         $("#options-img").hide();
                                         $("#halp").attr("title",
-                                            "Maxing out a Skill will make you recieve a list of More Advanced Next Skills to Choose from, Sign in to Unlock the Next Skill Prediction)"
+<<<<<<< HEAD
+<<<<<<< HEAD
+                                            "Maxing out a Skill will make you recieve a list of More Advanced Next Skills to Choose from, Sign in to Unlock the Next Skill Prediction"
+=======
+                                            "Learning Resources Difficulty: \nLevel 1 & 2: Beginner\nLevel 3: Intermediate\nLevel 4: Advanced\nLevel 5: Advanced (Sign in to Unlock the Next Skill Prediction)"
+>>>>>>> parent of 6c6206e (empty commit)
+=======
+                                            "Learning Resources Difficulty: \nLevel 1 & 2: Beginner\nLevel 3: Intermediate\nLevel 4: Advanced\nLevel 5: Advanced (Sign in to Unlock the Next Skill Prediction)"
+>>>>>>> parent of 6c6206e (empty commit)
                                         );
                                         $("#skils-section").prependTo("#siteName");
                                         $("#skillsContainer").removeClass("pure-u");
@@ -1440,7 +1402,7 @@
         </span>
     </div>
     <% } %>
-    <p id="educational" class="educational">All information used is for educational purposes</p>
+    <p id="educational" class="educational">All information used is for educational purposes (When the data got bigger a lot of things got ruined on this website, got too lazy to fix it)</p>
 </footer>
 
 </html>

@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const process = require('process');
 const cors = require('cors');
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 5000;
 
 
 dotenv.config({ path: './.env' });
@@ -82,21 +82,21 @@ server.listen(port, function () {
     const jsonController = require('./api/JsonOperations').jsonOperations;
     setInterval(async function () {
         console.log("every 1.6 hours visit 50 discovered links 5760000");
-        await injectController.createLearningResoruces(null, null);
-    }, 760000);
+        // await injectController.createLearningResoruces(null, null);
+    }, 5760000);
     setInterval(async function () {
         console.log("every 24 hours update the skills list 86400000");
-        await buildController.buildTree(null, null, null);
+        // await buildController.buildTree(null, null, null);
     }, 86400000);
     setInterval(async function () {
         console.log("every around a week, clean blocked links 600000000");
-        await jsonController.deleteBlockedLinks();
+        // await jsonController.deleteBlockedLinks();
     }, 600000000);
 
-    setTimeout(async function () {
-        console.log("5000"); //BACKHERE import blockedLinks from ..\Graduation_Project\Project\blockedLinks.json
-        console.log(await jsonController.getBlockedLinks()); // instead of getting all the blocked list, compare a link with the mongodb collection
-    }, 5000);
+    // setTimeout(async function () {
+    //     console.log("5000"); //BACKHERE import blockedLinks from ..\Graduation_Project\Project\blockedLinks.json
+    //     // console.log(await jsonController.getBlockedLinks()); // instead of getting all the blocked list, compare a link with the mongodb collection
+    // }, 5000);
 });
 
 process.stdin.resume();
