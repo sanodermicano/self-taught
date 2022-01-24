@@ -38,8 +38,10 @@ class Injector {
                         return;
                     }
                     if (enteredURL.length > 10) {
+                        console.log("length > 10");
                         if (enteredURL.includes("www.udemy.com") || enteredURL.includes("www.coursera.org") ||
                             enteredURL.includes("www.udacity.com")) {
+                            console.log("Entered was udemy link");
                             quickInject(enteredURL, res);
                         } else {
                             const bl = await jsonController.getBlockedLinks();
@@ -220,10 +222,10 @@ async function quickInject(link, res) {
     let lrId = await jsonController.getLrId(link);
     let options = {
         mode: 'json',
-        // pythonPath: process.env.PY_PATH,
+        pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        // scriptPath: process.env.PY_PROJ, //might cause issues
-        scriptPath: '/app/py',
+        scriptPath: process.env.PY_PROJ, //might cause issues
+        // scriptPath: '/app/py',
         args: [link]
     };
     try {
@@ -512,10 +514,10 @@ async function quickCheck(link) {
 
     let options = {
         mode: 'json',
-        // pythonPath: process.env.PY_PATH,
+        pythonPath: process.env.PY_PATH,
         pythonOptions: ['-u'], // get print results in real-time
-        // scriptPath: process.env.PY_PROJ, //might cause issues
-        scriptPath: '/app/py', //might cause issues
+        scriptPath: process.env.PY_PROJ, //might cause issues
+        // scriptPath: '/app/py', //might cause issues
         args: [link]
     };
     try {

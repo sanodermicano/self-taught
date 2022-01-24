@@ -83,7 +83,15 @@ server.listen(port, function () {
     setInterval(async function () {
         console.log("every 1.6 hours visit 50 discovered links 5760000");
         // await injectController.createLearningResoruces(null, null);
+<<<<<<< HEAD
+<<<<<<< HEAD
+    }, 760000);
+=======
     }, 5760000);
+>>>>>>> parent of 6c6206e (empty commit)
+=======
+    }, 5760000);
+>>>>>>> parent of 6c6206e (empty commit)
     setInterval(async function () {
         console.log("every 24 hours update the skills list 86400000");
         // await buildController.buildTree(null, null, null);
@@ -92,6 +100,11 @@ server.listen(port, function () {
         console.log("every around a week, clean blocked links 600000000");
         // await jsonController.deleteBlockedLinks();
     }, 600000000);
+
+    // setTimeout(async function () {
+    //     console.log("5000"); //BACKHERE import blockedLinks from ..\Graduation_Project\Project\blockedLinks.json
+    //     // console.log(await jsonController.getBlockedLinks()); // instead of getting all the blocked list, compare a link with the mongodb collection
+    // }, 5000);
 });
 
 process.stdin.resume();

@@ -5,6 +5,8 @@ import pymongo
 from dotenv import load_dotenv
 from bson import json_util
 import dns
+# import certifi
+
 
 dotenv_path = './.env' #init .env
 load_dotenv(dotenv_path)
@@ -16,6 +18,9 @@ class BuildTree:
         return [x for x in arr[::-1] if not (x in seen or seen_add(x))][::-1]
     
     def buildSkillTree(self):
+        # ca = certifi.where()
+        # mongoClient = pymongo.MongoClient(
+        #     os.environ.get("MONGO_CONNECTION_STRING"), tlsCAFile=ca)
         mongoClient = pymongo.MongoClient(os.environ.get("MONGO_CONNECTION_STRING"))
         mongoDb = mongoClient.get_database('self-taught-stb')
 
@@ -49,6 +54,10 @@ class BuildTree:
                 for anotherDataElement in data[1:]:
                     if dataElement['parent'].lower() == anotherDataElement['parent'].lower() and dataElement != anotherDataElement:
                         if dataElement in data:
+                            if isinstance(data[data.index(dataElement)]['children'], str):
+                                data[data.index(dataElement)]['children'] = list(data[data.index(dataElement)]['children'])
+                            if isinstance(anotherDataElement['children'], str):
+                                anotherDataElement['children'] = list(anotherDataElement['children'])
                             data[data.index(dataElement)]['children'] = dataElement['children'] + anotherDataElement['children']
                             data.remove(anotherDataElement)
 

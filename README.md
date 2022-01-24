@@ -1,8 +1,15 @@
 ![self-taught](https://user-images.githubusercontent.com/13939081/118611100-28730900-b7c5-11eb-9d36-3666708a7ad2.png)
-# [Self-Taught](http://self-taught.me/)
+# [Self-Taught](http://self-taught.xyz/)
 Self-Taught is a Skill-Based Search Engine which gets smarter the more people interact with it!
 
+Welcome, Join us on [Discord](https://discord.gg/X5wMgMKbbC).
+
 ## Contents
+
+[Intro](#intro)
+- [Poster](#poster)
+- [Presentation](#presentation)
+
 [Screenshots](#screenshots)
 
 - [On the Phone](#on-the-phone)
@@ -21,6 +28,14 @@ Self-Taught is a Skill-Based Search Engine which gets smarter the more people in
 - [Libraries](#libraries)
 
 [About](#about)
+
+## Intro
+
+### Poster
+
+![Self-Taught](https://user-images.githubusercontent.com/13939081/150755502-3e2dd1cd-d61a-44cd-ad34-55852999477b.jpg)
+
+### [Presentation](https://docs.google.com/presentation/d/1sWwQNqtStz8go5fejG_L2NXbACR9JvWQQhGYkYlyzHc/edit?usp=sharing)
 
 ## Screenshots
 ### On the Phone
@@ -113,4 +128,4 @@ On a Desktop Screen (Non-logged in)
 - [bcrypt](https://www.npmjs.com/package/bcrypt)
 
 ## About
-Self-Taught is Hassan Al-Nouri's (sanodermicano) and Noor Jaradat's Graduation Project, Hassan had the idea back in 2019, [wrote an idea document](https://docs.google.com/document/d/10f1fuN0AOXHndaimc8v4jRIaSGa3DJQ2wlghcB0si28/edit?usp=sharing) in late 2020 and that was the start of a 10 months Software Engineering journey, from Requirements to Deployment, we did all the steps in the entire Software Engineering Life-Cycle, basically we applied what we learned but we also went the extra mile.
+Self-Taught is Hassan Al-Nouri's (sanodermicano) and Noor Jaradat's Bachelor's of Science Degree in Software Engineering's Graduation Project, Hassan had the idea back in 2019, [wrote an idea document](https://docs.google.com/document/d/10f1fuN0AOXHndaimc8v4jRIaSGa3DJQ2wlghcB0si28/edit?usp=sharing) in late 2020 and that was the start of a 10 months Software Engineering journey, from Requirements to Deployment, we did all the steps in the entire Software Engineering Life-Cycle, basically we applied what we learned but we also went the extra mile.
